@@ -2,52 +2,22 @@ import { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/login',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { path: '', component: () => import('pages/account/UserLogIn.vue') },
-    ],
-  },
-
-  // account
-  {
-    path: '/signup',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { path: '', component: () => import('pages/account/UserSignUp.vue') },
-    ],
-  },
-  {
-    path: '/guide',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { path: '', component: () => import('pages/navigation/UserGuide.vue') },
-    ],
-  },
-
-  // navigation
-  {
-    path: '/dashboard',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { path: '', component: () => import('pages/navigation/DashBoard.vue') },
-    ],
-  },
-  {
-    path: '/settings',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      {
-        path: '',
-        component: () => import('pages/navigation/UserSettings.vue'),
-      },
-    ],
-  },
-
-  {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+    children: [
+      { path: '', component: () => import('pages/IndexPage.vue'), name: 'index' },
+      { path: 'guide', component: () => import('pages/navigation/AppGuide.vue'), name: 'guide'},
+      { path: 'dashboard', component: () => import('pages/navigation/HistoryDashboard.vue'), name: 'dashboard' },
+      { path: 'settings', component: () => import('pages/navigation/AppSettings.vue'), name: 'settings' },
+    ],
+  },
+  {
+    path: '/users',
+    // component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: 'login', component: () => import('pages/users/UserLogIn.vue'), name: 'login' },
+      { path: 'signup', component: () => import('pages/users/UserSignUp.vue'), name: 'signup' },
+    ],
   },
   // Always leave this as last one,
   // but you can also remove it
