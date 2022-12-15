@@ -1,7 +1,14 @@
 <template>
   <div class="q-pa-md absolute-center" style="min-width: 400px">
     <div class="text-h4 q-mb-lg">Login</div>
-    <q-form @submit.prevent="onSubmit" class="q-gutter-sm" autocomplete="off">
+    <q-form
+      @submit.prevent="onSubmit"
+      class="q-gutter-sm"
+      autocorrect="off"
+      autocapitalize="off"
+      autocomplete="off"
+      spellcheck="false"
+    >
       <q-input
         filled
         v-model="email"
@@ -52,6 +59,7 @@ import { toFormValidator } from '@vee-validate/zod';
 import { getMeFn, loginUserFn } from 'src/api/authApi';
 import { ILoginInput } from 'src/api/userTypes';
 import * as zod from 'zod';
+import * as gc from 'src/api/globalConst'
 
 const router = useRouter();
 
@@ -63,9 +71,9 @@ const loginSchema = toFormValidator(
   zod.object({
     email: zod
       .string()
-      .min(1, '이메일을 입력해주세요.')
-      .email('유효하지 않은 이메일 형식입니다.'),
-    password: zod.string().min(1, '비밀번호를 입력해주세요.'),
+      .min(1, gc.accountMsg.EMPTY_USER_EMAIL)
+      .email(gc.accountMsg.INVALID_USER_EMAIL),
+    password: zod.string().min(gc.accountVar.CHECK_EMPTY, gc.accountMsg.EMPTY_USER_PASSWORD),
   })
 );
 
@@ -109,12 +117,12 @@ const { isLoading, mutate } = useMutation(
     },
     onSuccess: () => {
       queryClient.refetchQueries('api');
+      router.push({ name: 'index' });
       $q.notify({
         type: 'positive',
-        message: '로그인에 성공했습니다.',
+        message: gc.accountMsg.SUCCESS_USER_LOGIN,
         icon: 'warning',
       });
-      router.push({ name: 'index' });
     },
   }
 );
