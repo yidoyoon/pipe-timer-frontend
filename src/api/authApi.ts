@@ -30,8 +30,9 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 export const signUpUserFn = async (user: ISignUpInput) => {
-  const response = await api.post<GenericResponse>('auth/register', user);
+  const response = await api.post<GenericResponse>('/users', user)
   return response.data;
 };
 
