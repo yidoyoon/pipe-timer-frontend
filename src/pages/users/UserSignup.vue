@@ -147,7 +147,7 @@ const { isLoading, mutate } = useMutation(
         });
       }
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       router.push({ name: 'index' });
       $q.notify({
         type: 'positive',
