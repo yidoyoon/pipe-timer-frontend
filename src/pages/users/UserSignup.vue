@@ -122,6 +122,13 @@ const { isLoading, mutate } = useMutation(
   (credentials: ISignUpInput) => signUpUserFn(credentials),
   {
     onError: (error) => {
+      if ((<any>error).response === undefined) {
+        $q.notify({
+          type: 'negative',
+          message: '서버 점검중입니다.',
+          icon: 'warning',
+        });
+      }
       const errorMsg = (<any>error).response.data.error;
       const responseMsg = (<any>error).response.data.message;
       if (Array.isArray(errorMsg)) {
