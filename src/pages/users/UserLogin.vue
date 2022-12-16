@@ -54,7 +54,7 @@ import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { useMutation, useQuery, useQueryClient } from 'vue-query';
 import { useField, useForm } from 'vee-validate';
-import { useAuthStore } from 'src/router/authStore';
+import { useAuthStore } from 'stores/authStore';
 import { toFormValidator } from '@vee-validate/zod';
 import { getMeFn, loginUserFn } from 'src/api/authApi';
 import { ILoginInput } from 'src/api/userTypes';
@@ -71,9 +71,9 @@ const loginSchema = toFormValidator(
   zod.object({
     email: zod
       .string()
-      .min(1, gc.accountMsg.EMPTY_USER_EMAIL)
-      .email(gc.accountMsg.INVALID_USER_EMAIL),
-    password: zod.string().min(gc.accountVar.CHECK_EMPTY, gc.accountMsg.EMPTY_USER_PASSWORD),
+      .min(1, gc.userMsg.EMPTY_USER_EMAIL)
+      .email(gc.userMsg.INVALID_USER_EMAIL),
+    password: zod.string().min(gc.CHECK_EMPTY, gc.userMsg.EMPTY_USER_PASSWORD),
   })
 );
 
@@ -120,7 +120,7 @@ const { isLoading, mutate } = useMutation(
       router.push({ name: 'index' });
       $q.notify({
         type: 'positive',
-        message: gc.accountMsg.SUCCESS_USER_LOGIN,
+        message: gc.userMsg.SUCCESS_USER_LOGIN,
         icon: 'warning',
       });
     },
@@ -139,12 +139,7 @@ onBeforeUpdate(() => {
   if (authResult.isSuccess.value) {
     const authUser = Object.assign({}, authResult.data.value?.data.user);
     authStore.setAuthUser(authUser);
+    router.push({name: 'index'})
   }
 });
 </script>
-
-<style lang="scss">
-.text-caption {
-  color: $negative;
-}
-</style>
