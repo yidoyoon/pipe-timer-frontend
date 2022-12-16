@@ -10,10 +10,20 @@
   <div class="q-space"></div>
 
   <!--  Log in-->
-  <q-btn v-if="!isLoggedIn" color="secondary" label="LOG IN" to="/login" />
+  <q-btn
+    v-if="!isLoggedIn"
+    color="secondary"
+    label="LOG IN"
+    :to="{ name: 'login' }"
+  />
 
   <!--  Profile-->
-  <q-btn v-if="isLoggedIn" color="info" label="PROFILE" to="/profile" />
+  <q-btn
+    v-if="isLoggedIn"
+    color="info"
+    label="PROFILE"
+    :to="{ name: 'profile' }"
+  />
 
   <!--  Logout-->
   <q-btn
@@ -27,7 +37,7 @@
 
 <script setup lang="ts">
 import { createApp } from 'vue';
-import { useAuthStore } from 'src/router/authStore';
+import { useAuthStore } from 'stores/authStore';
 import { useMutation } from 'vue-query';
 import { logoutUserFn } from 'src/api/authApi';
 import { useQuasar } from 'quasar';
@@ -74,19 +84,19 @@ const navLinks = [
     icon: 'icon-mat-menu_book-bk',
     label: 'Guide',
     value: 'guide',
-    to: '/guide',
+    to: { name: 'guide' },
   },
   {
     icon: 'icon-mat-assessment-bk',
     label: 'Dashboard',
     value: 'dashboard',
-    to: '/dashboard',
+    to: { name: 'dashboard' },
   },
   {
     icon: 'icon-mat-settings-bk',
     label: 'Settings',
     value: 'settings',
-    to: '/settings',
+    to: { name: 'settings' },
   },
 ];
 </script>
