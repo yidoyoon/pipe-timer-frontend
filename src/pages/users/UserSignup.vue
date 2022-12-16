@@ -5,7 +5,7 @@
       <q-input
         filled
         v-model="name"
-        label="유저네임"
+        label="User name"
         :hint="!nameError ? '' : '유저네임을 설정해주세요.'"
         :error-message="nameError"
         :error="!!nameError"
@@ -14,7 +14,7 @@
       <q-input
         filled
         v-model="email"
-        label="이메일"
+        label="Email"
         :hint="!emailError ? '' : '로그인에 사용될 이메일을 입력해주세요.'"
         :error-message="emailError"
         :error="!!emailError"
@@ -23,7 +23,7 @@
       <q-input
         v-model="password"
         filled
-        label="비밀번호"
+        label="Password"
         :type="isPwd ? 'password' : 'text'"
         hint="8 - 128자까지 설정할 수 있습니다."
         :error-message="passwordError"
@@ -41,7 +41,7 @@
       <q-input
         v-model="passwordConfirm"
         filled
-        label="비밀번호 재입력"
+        label="Re-enter password"
         :type="isPwd ? 'password' : 'text'"
         hint="비밀번호를 한번 더 입력해주세요."
         :error-message="passwordConfirmError"
@@ -80,31 +80,31 @@ const registerSchema = toFormValidator(
       name: zod
         .string()
         .min(
-          gc.accountVar.USER_NAME_MIN_LEN,
-          gc.accountMsg.BELOW_MIN_USER_NAME
+          gc.userVar.USER_NAME_MIN_LEN,
+          gc.userMsg.BELOW_MIN_USER_NAME
         ),
       email: zod
         .string()
-        .min(gc.accountVar.CHECK_EMPTY, gc.accountMsg.EMPTY_USER_EMAIL)
-        .email(gc.accountMsg.INVALID_USER_EMAIL),
+        .min(gc.CHECK_EMPTY, gc.userMsg.EMPTY_USER_EMAIL)
+        .email(gc.userMsg.INVALID_USER_EMAIL),
       password: zod
         .string()
-        .min(gc.accountVar.CHECK_EMPTY, gc.accountMsg.EMPTY_USER_PASSWORD)
+        .min(gc.CHECK_EMPTY, gc.userMsg.EMPTY_USER_PASSWORD)
         .min(
-          gc.accountVar.PASSWORD_MIN_LEN,
-          gc.accountMsg.BELOW_MIN_USER_PASSWORD
+          gc.userVar.PASSWORD_MIN_LEN,
+          gc.userMsg.BELOW_MIN_USER_PASSWORD
         )
         .max(
-          gc.accountVar.PASSWORD_MAX_LEN,
-          gc.accountMsg.ABOVE_MAX_USER_PASSWORD
+          gc.userVar.PASSWORD_MAX_LEN,
+          gc.userMsg.ABOVE_MAX_USER_PASSWORD
         ),
       passwordConfirm: zod
         .string()
-        .min(gc.accountVar.CHECK_EMPTY, gc.accountMsg.EMPTY_CONFIRM_PASSWORD),
+        .min(gc.CHECK_EMPTY, gc.userMsg.EMPTY_CONFIRM_PASSWORD),
     })
     .refine((data) => data.password === data.passwordConfirm, {
       path: ['passwordConfirm'],
-      message: gc.accountMsg.MISMATCH_PASSWORD,
+      message: gc.userMsg.MISMATCH_PASSWORD,
     })
 );
 
@@ -122,6 +122,13 @@ const { isLoading, mutate } = useMutation(
   (credentials: ISignUpInput) => signUpUserFn(credentials),
   {
     onError: (error) => {
+      if ((<any>error).response === undefined) {
+        $q.notify({
+          type: 'negative',
+          message: '서버 점검중입니다.',
+          icon: 'warning',
+        });
+      }
       const errorMsg = (<any>error).response.data.error;
       const responseMsg = (<any>error).response.data.message;
       if (Array.isArray(errorMsg)) {
@@ -140,11 +147,11 @@ const { isLoading, mutate } = useMutation(
         });
       }
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       router.push({ name: 'index' });
       $q.notify({
         type: 'positive',
-        message: gc.accountMsg.SEND_USER_SIGNUP,
+        message: gc.userMsg.SEND_USER_SIGNUP,
         icon: 'warning',
       });
     },

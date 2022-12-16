@@ -15,7 +15,7 @@ declare module '@vue/runtime-core' {
 // for each client)
 // const api = axios.create({ baseURL: 'https://api.example.com' });
 
-const apiURL = `${process.env.API_BASE_URL}`;
+const apiURL = `http://${process.env.API_BASE_URL}`;
 
 const api = axios.create({
   baseURL: apiURL,
@@ -34,6 +34,7 @@ export default boot(({ app }) => {
 
   // TODO: Change axios instance name
   api.defaults.headers.common['Content-Type'] = 'application/json';
+  axios.defaults.headers.post['Access-Control-Allow-Origin'] = 'http://localhost:3000';
 });
 
 export { axios, api };
