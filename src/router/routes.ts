@@ -35,6 +35,18 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/users/UserSignup.vue'),
         name: 'signup',
       },
+      {
+        path: 'verify-email',
+        component: () => import('pages/users/UserSignupVerify.vue'),
+        name: 'verify-email',
+        children: [
+          {
+            path: ':verificationCode',
+            component: () => import('pages/users/UserSignupVerify.vue'),
+            name: 'verify-email',
+          },
+        ]
+      },
     ],
   },
   {
@@ -47,6 +59,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue'),
+    name: 'error'
   },
 ];
 
