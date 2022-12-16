@@ -80,31 +80,31 @@ const registerSchema = toFormValidator(
       name: zod
         .string()
         .min(
-          gc.accountVar.USER_NAME_MIN_LEN,
-          gc.accountMsg.BELOW_MIN_USER_NAME
+          gc.userVar.USER_NAME_MIN_LEN,
+          gc.userMsg.BELOW_MIN_USER_NAME
         ),
       email: zod
         .string()
-        .min(gc.accountVar.CHECK_EMPTY, gc.accountMsg.EMPTY_USER_EMAIL)
-        .email(gc.accountMsg.INVALID_USER_EMAIL),
+        .min(gc.CHECK_EMPTY, gc.userMsg.EMPTY_USER_EMAIL)
+        .email(gc.userMsg.INVALID_USER_EMAIL),
       password: zod
         .string()
-        .min(gc.accountVar.CHECK_EMPTY, gc.accountMsg.EMPTY_USER_PASSWORD)
+        .min(gc.CHECK_EMPTY, gc.userMsg.EMPTY_USER_PASSWORD)
         .min(
-          gc.accountVar.PASSWORD_MIN_LEN,
-          gc.accountMsg.BELOW_MIN_USER_PASSWORD
+          gc.userVar.PASSWORD_MIN_LEN,
+          gc.userMsg.BELOW_MIN_USER_PASSWORD
         )
         .max(
-          gc.accountVar.PASSWORD_MAX_LEN,
-          gc.accountMsg.ABOVE_MAX_USER_PASSWORD
+          gc.userVar.PASSWORD_MAX_LEN,
+          gc.userMsg.ABOVE_MAX_USER_PASSWORD
         ),
       passwordConfirm: zod
         .string()
-        .min(gc.accountVar.CHECK_EMPTY, gc.accountMsg.EMPTY_CONFIRM_PASSWORD),
+        .min(gc.CHECK_EMPTY, gc.userMsg.EMPTY_CONFIRM_PASSWORD),
     })
     .refine((data) => data.password === data.passwordConfirm, {
       path: ['passwordConfirm'],
-      message: gc.accountMsg.MISMATCH_PASSWORD,
+      message: gc.userMsg.MISMATCH_PASSWORD,
     })
 );
 
@@ -144,7 +144,7 @@ const { isLoading, mutate } = useMutation(
       router.push({ name: 'index' });
       $q.notify({
         type: 'positive',
-        message: gc.accountMsg.SEND_USER_SIGNUP,
+        message: gc.userMsg.SEND_USER_SIGNUP,
         icon: 'warning',
       });
     },
