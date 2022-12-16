@@ -5,7 +5,7 @@
       <q-input
         filled
         v-model="name"
-        label="유저네임"
+        label="User name"
         :hint="!nameError ? '' : '유저네임을 설정해주세요.'"
         :error-message="nameError"
         :error="!!nameError"
@@ -14,7 +14,7 @@
       <q-input
         filled
         v-model="email"
-        label="이메일"
+        label="Email"
         :hint="!emailError ? '' : '로그인에 사용될 이메일을 입력해주세요.'"
         :error-message="emailError"
         :error="!!emailError"
@@ -23,7 +23,7 @@
       <q-input
         v-model="password"
         filled
-        label="비밀번호"
+        label="Password"
         :type="isPwd ? 'password' : 'text'"
         hint="8 - 128자까지 설정할 수 있습니다."
         :error-message="passwordError"
@@ -41,7 +41,7 @@
       <q-input
         v-model="passwordConfirm"
         filled
-        label="비밀번호 재입력"
+        label="Re-enter password"
         :type="isPwd ? 'password' : 'text'"
         hint="비밀번호를 한번 더 입력해주세요."
         :error-message="passwordConfirmError"
