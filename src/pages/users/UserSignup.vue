@@ -147,11 +147,11 @@ const { isLoading, mutate } = useMutation(
         });
       }
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       router.push({ name: 'index' });
       $q.notify({
         type: 'positive',
-        message: gc.userMsg.SEND_USER_SIGNUP,
+        message: variables.email + gc.userMsg.SEND_USER_SIGNUP_VERIFICATION_EMAIL,
         icon: 'warning',
       });
     },
