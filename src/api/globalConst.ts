@@ -18,7 +18,7 @@ export const userMsg = {
   ABOVE_MAX_USER_PASSWORD: `비밀번호를 ${userVar.PASSWORD_MAX_LEN}자 미만으로 설정해주세요.`,
   EMPTY_CONFIRM_PASSWORD: '비밀번호를 한번 더 입력해주세요.',
   MISMATCH_PASSWORD: '비밀번호가 일치하지 않습니다.',
-  SEND_USER_SIGNUP: '회원가입 요청이 전송됐습니다.',
+  SEND_USER_SIGNUP_VERIFICATION_EMAIL: '로 인증 메일이 전송됐습니다. 메일함을 확인해주세요.',
 
   VERIFY_USER_EMAIL: '인증 코드를 입력해주세요.',
   VERIFY_COMPLETE: '인증 완료됐습니다.'
