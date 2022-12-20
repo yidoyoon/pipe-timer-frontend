@@ -2,7 +2,7 @@
   <!--  Navigation-->
   <div class="q-ml-lg">
     <template v-for="(link, index) in navLinks" :key="index">
-      <q-btn flat style="color: white" :label="link.label" :to="link.to" />
+      <q-btn flat style="color: white" :icon="link.icon" :label="link.label" :to="link.to" />
     </template>
   </div>
 
