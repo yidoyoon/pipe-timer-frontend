@@ -38,7 +38,7 @@ export const signUpUserFn = async (user: ISignUpInput) => {
 };
 
 export const loginUserFn = async (user: ILoginInput) => {
-  const response = await api.post<ILoginResponse>('auth/login', user);
+  const response = await api.post<ILoginResponse>('/users/login', user);
   return response.data;
 };
 
