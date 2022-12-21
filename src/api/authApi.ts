@@ -55,7 +55,7 @@ export const logoutUserFn = async () => {
   return response.data;
 };
 
-export const getMeFn = async () => {
-  const response = await api.get<IUserResponse>('users/me');
+export const getMeFn = async (userIdentifier:string) => {
+  const response = await api.get<IUserResponse>(`users/${userIdentifier}`);
   return response.data;
 };
