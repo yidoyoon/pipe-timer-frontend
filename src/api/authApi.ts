@@ -12,6 +12,7 @@ export const refreshAccessTokenFn = async () => {
   return response.data;
 };
 
+// TODO: api 이름 구분
 api.interceptors.response.use(
   (response) => {
     return response;
@@ -41,9 +42,10 @@ export const loginUserFn = async (user: ILoginInput) => {
   return response.data;
 };
 
-export const verifyEmailFn = async (verificationCode: string) => {
-  const response = await api.get<GenericResponse>(
-    `auth/verify-email/${verificationCode}`
+// TODO: 이메일 인증 시, 로그인까지 진행
+export const verifyEmailFn = async (signupVerifyToken: string) => {
+  const response = await api.post<GenericResponse>(
+    `users/verify-email?signupVerifyToken=${signupVerifyToken}`
   );
   return response.data;
 };
