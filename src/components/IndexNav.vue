@@ -9,11 +9,21 @@
   <!--  Spacing-->
   <div class="q-space"></div>
 
-  <!--  Log in-->
+  <!--  Login-->
   <q-btn
+    outline
+    class="q-ml-lg"
     v-if="!isLoggedIn"
-    color="secondary"
     label="LOG IN"
+    :to="{ name: 'login' }"
+  />
+
+  <!--  Signup-->
+  <q-btn
+    class="q-ml-lg"
+    v-if="!isLoggedIn"
+    color="accent"
+    label="SIGN UP"
     :to="{ name: 'login' }"
   />
 

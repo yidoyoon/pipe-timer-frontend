@@ -3,9 +3,10 @@
     <q-header elevated>
       <q-toolbar>
         <q-btn flat stretch to="/">
-          <q-avatar>
+          <q-avatar class="q-mr-sm">
             <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
           </q-avatar>
+          Flexible Pomodoro
         </q-btn>
 
         <!--        Navigation-->
