@@ -16,6 +16,7 @@
         placeholder="account@example.com"
         :error-message="emailError"
         :error="!!emailError"
+        debounce="500"
       />
       <q-input
         filled
@@ -25,6 +26,7 @@
         placeholder="8 - 128 characters"
         :error-message="passwordError"
         :error="!!passwordError"
+        debounce="500"
       >
         <template v-slot:append>
           <q-icon
@@ -59,7 +61,7 @@ import { toFormValidator } from '@vee-validate/zod';
 import { getMeFn, loginUserFn } from 'src/api/authApi';
 import { ILoginInput } from 'src/api/userTypes';
 import * as zod from 'zod';
-import * as gc from 'src/api/globalConst'
+import * as gc from 'src/api/globalConst';
 
 const router = useRouter();
 
@@ -99,11 +101,13 @@ const { isLoading, mutate } = useMutation(
     onError: (error) => {
       const errorMsg = (<any>error).response.data.error;
       const responseMsg = (<any>error).response.data.message;
+      console.log(responseMsg);
+      console.log(errorMsg);
       if (Array.isArray(errorMsg)) {
-        errorMsg.forEach((el: any) => {
+        errorMsg.forEach((err: any) => {
           $q.notify({
             type: 'negative',
-            message: el.message,
+            message: err.message,
             icon: 'warning',
           });
         });
@@ -135,11 +139,13 @@ const onSubmit = handleSubmit((values) => {
   resetForm();
 });
 
+// const loading = authResult.isFetching || authResult.isLoading || isLoading;
+
 onBeforeUpdate(() => {
   if (authResult.isSuccess.value) {
     const authUser = Object.assign({}, authResult.data.value?.data.user);
     authStore.setAuthUser(authUser);
-    router.push({name: 'index'})
+    router.push({ name: 'index' });
   }
 });
 </script>
