@@ -4,9 +4,13 @@ import {
   createRouter,
   createWebHashHistory,
   createWebHistory,
+  NavigationGuardNext,
+  RouteLocationNormalized,
 } from 'vue-router';
 
 import routes from './routes';
+import { useAuthStore } from 'stores/authStore';
+import middlewarePipeline from 'src/router/middlewarePipeline';
 
 /*
  * If not building with SSR mode, you can
@@ -17,7 +21,7 @@ import routes from './routes';
  * with the Router instance.
  */
 
-export default route( (/*{ store, ssrContext }*/) => {
+export default route((/*{ store, ssrContext }*/) => {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : process.env.VUE_ROUTER_MODE === 'history'
@@ -34,5 +38,32 @@ export default route( (/*{ store, ssrContext }*/) => {
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
+
+  Router.beforeEach(
+    (
+      to: RouteLocationNormalized,
+      from: RouteLocationNormalized,
+      next: NavigationGuardNext
+    ) => {
+      const authStore = useAuthStore();
+
+      if (!to.meta.middleware) {
+        return next();
+      }
+      const middleware = <any>to.meta.middleware;
+
+      const context = {
+        to,
+        from,
+        next,
+        authStore,
+      };
+
+      return middleware[0]({
+        ...context,
+        next: middlewarePipeline(context, middleware, 1),
+      });
+    }
+  );
   return Router;
 });
