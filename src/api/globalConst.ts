@@ -21,5 +21,6 @@ export const userMsg = {
   SEND_USER_SIGNUP_VERIFICATION_EMAIL: '로 인증 메일이 전송됐습니다. 메일을 확인해주세요.',
 
   VERIFY_USER_EMAIL: '인증 코드를 입력해주세요.',
-  VERIFY_COMPLETE: '인증 되었습니다. 서비스를 이용하시려면 로그인해주세요.'
+  VERIFY_COMPLETE: '인증 되었습니다. 서비스를 이용하시려면 로그인해주세요.',
+  ERROR_USER_LOGOUT: '로그아웃 중 문제가 발생했습니다.',
 }
