@@ -1,12 +1,11 @@
 import { defineStore } from 'pinia';
-import { IUser } from 'src/api/userTypes';
+import { IUser } from 'src/type-defs/userTypes';
 
 export type AuthStoreState = {
   authUser: IUser | null;
 };
 
-export const useAuthStore = defineStore({
-  id: 'authStore',
+export const useAuthStore = defineStore('authStore', {
   state: () =>
     ({
       authUser: null,

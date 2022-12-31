@@ -34,7 +34,7 @@ export default boot(({ app }) => {
 
   // TODO: Change axios instance name
   api.defaults.headers.common['Content-Type'] = 'application/json';
-  axios.defaults.headers.post['Access-Control-Allow-Origin'] = 'http://localhost:3000';
+  axios.defaults.headers.post['Access-Control-Allow-Origin'] = ['http://localhost:9000', 'http://localhost:3000'];
 });
 
 export { axios, api };

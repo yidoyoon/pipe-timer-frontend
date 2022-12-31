@@ -1,20 +1,21 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="lHh Lpr lFf" class="min-height: unset;">
     <q-header elevated>
-      <q-toolbar>
-        <q-btn flat stretch to="/">
-          <q-avatar class="q-mr-sm">
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
-          </q-avatar>
-          Flexible Pomodoro
+      <q-toolbar shrink>
+        <q-btn flat to="/" style="margin: 0; padding: 0">
+          <q-icon
+            name="img:https://img.yibyeongyong.com/public/dummy-logo-white.svg"
+            class="fit"
+            style="zoom: 11%"
+          />
         </q-btn>
 
-        <!--        Navigation-->
+        <!-- Navigation links -->
         <IndexNav></IndexNav>
       </q-toolbar>
     </q-header>
 
-    <!--    index-->
+    <!-- Main content -->
     <q-page-container>
       <keep-alive>
         <router-view />
@@ -22,7 +23,7 @@
     </q-page-container>
 
     <q-footer class="bg-grey-8 text-white">
-      <q-toolbar>
+      <q-toolbar shrink>
         <q-toolbar-title>
           <q-avatar>
             <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
@@ -41,4 +42,7 @@
 
 <script setup lang="ts">
 import IndexNav from 'components/IndexNav.vue';
+// import { ref } from 'vue';
+//
+// const showDrawer = ref(null);
 </script>

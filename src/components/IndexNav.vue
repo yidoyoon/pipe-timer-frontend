@@ -1,8 +1,15 @@
 <template>
   <!--  Navigation-->
+
   <div class="q-ml-lg">
     <template v-for="(link, index) in navLinks" :key="index">
-      <q-btn flat style="color: white" :icon="link.icon" :label="link.label" :to="link.to" />
+      <q-btn
+        flat
+        style="color: white"
+        :icon="link.icon"
+        :label="link.label"
+        :to="link.to"
+      />
     </template>
   </div>
 
@@ -24,7 +31,7 @@
     v-if="!isLoggedIn"
     color="accent"
     label="SIGN UP"
-    :to="{ name: 'login' }"
+    :to="{ name: 'signup' }"
   />
 
   <!--  Profile-->
@@ -46,19 +53,17 @@
 </template>
 
 <script setup lang="ts">
-import { createApp } from 'vue';
 import { useAuthStore } from 'stores/authStore';
-import { useMutation } from 'vue-query';
 import { logoutUserFn } from 'src/api/authApi';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
-
-const app = createApp({});
-app.component('IndexNav');
+import { useMutation } from '@tanstack/vue-query';
+import { computed } from 'vue';
 
 const authStore = useAuthStore();
-const isLoggedIn = authStore.authUser;
-// const isLoggedIn = true;
+const isLoggedIn = computed(() => {
+  return authStore.authUser;
+});
 
 const $q = useQuasar();
 const router = useRouter();
@@ -66,20 +71,25 @@ const router = useRouter();
 const { mutate: logoutUser } = useMutation(() => logoutUserFn(), {
   onSuccess: () => {
     authStore.setAuthUser(null);
-    router.push({ name: 'index' });
+    router.push({ name: 'login' });
   },
   onError: (error) => {
-    if (Array.isArray((<any>error).response.data.error)) {
-      (<any>error).response.data.error.forEach((el: any) =>
+    const errMsg = (error as any).response.data.error;
+    const response = (error as any).response.data;
+
+    if (Array.isArray(errMsg)) {
+      errMsg.forEach((el: any) =>
         $q.notify({
-          type: 'warning',
+          type: 'negative',
           message: el.message,
+          icon: 'warning',
         })
       );
     } else {
       $q.notify({
         type: 'negative',
-        message: (<any>error).response.data.message,
+        message: response,
+        icon: 'warning',
       });
     }
   },

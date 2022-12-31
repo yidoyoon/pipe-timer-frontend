@@ -21,24 +21,23 @@ import middlewarePipeline from 'src/router/middlewarePipeline';
  * with the Router instance.
  */
 
+const createHistory = process.env.SERVER
+  ? createMemoryHistory
+  : process.env.VUE_ROUTER_MODE === 'history'
+  ? createWebHistory
+  : createWebHashHistory;
+
+export const Router = createRouter({
+  scrollBehavior: () => ({ left: 0, top: 0 }),
+  routes,
+
+  // Leave this as is and make changes in quasar.conf.js instead!
+  // quasar.conf.js -> build -> vueRouterMode
+  // quasar.conf.js -> build -> publicPath
+  history: createHistory(process.env.VUE_ROUTER_BASE),
+});
+
 export default route((/*{ store, ssrContext }*/) => {
-  const createHistory = process.env.SERVER
-    ? createMemoryHistory
-    : process.env.VUE_ROUTER_MODE === 'history'
-    ? createWebHistory
-    : createWebHashHistory;
-
-  const Router = createRouter({
-    scrollBehavior: () => ({ left: 0, top: 0 }),
-    linkActiveClass: 'active',
-    routes,
-
-    // Leave this as is and make changes in quasar.conf.js instead!
-    // quasar.conf.js -> build -> vueRouterMode
-    // quasar.conf.js -> build -> publicPath
-    history: createHistory(process.env.VUE_ROUTER_BASE),
-  });
-
   Router.beforeEach(
     (
       to: RouteLocationNormalized,
@@ -50,7 +49,7 @@ export default route((/*{ store, ssrContext }*/) => {
       if (!to.meta.middleware) {
         return next();
       }
-      const middleware = <any>to.meta.middleware;
+      const middleware = to.meta.middleware as any;
 
       const context = {
         to,
