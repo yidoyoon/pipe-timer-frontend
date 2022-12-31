@@ -1,15 +1,7 @@
 <template>
-  <q-layout view="lHh Lpr lFf" class="min-height: unset;">
+  <q-layout view="lHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar shrink>
-        <q-btn flat to="/" style="margin: 0; padding: 0">
-          <q-icon
-            name="img:https://img.yibyeongyong.com/public/dummy-logo-white.svg"
-            class="fit"
-            style="zoom: 11%"
-          />
-        </q-btn>
-
+      <q-toolbar class="row justify-between no-padding">
         <!-- Navigation links -->
         <IndexNav></IndexNav>
       </q-toolbar>
@@ -41,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import IndexNav from 'components/IndexNav.vue';
+import IndexNav from 'components/NavigationBar.vue';
 // import { ref } from 'vue';
 //
 // const showDrawer = ref(null);

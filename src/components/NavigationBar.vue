@@ -1,55 +1,63 @@
 <template>
-  <!--  Navigation-->
-
-  <div class="q-ml-lg">
-    <template v-for="(link, index) in navLinks" :key="index">
-      <q-btn
-        flat
-        style="color: white"
-        :icon="link.icon"
-        :label="link.label"
-        :to="link.to"
+  <!--  logo-->
+  <div class="col-xs-12 col-sm-9 col-md-3">
+    <q-btn flat to="/" style="margin-left:0.2rem;">
+      <q-icon
+        name="img:https://img.yibyeongyong.com/public/dummy-logo-white.svg"
+        class="fit"
+        style="zoom: 11%"
       />
-    </template>
+    </q-btn>
   </div>
 
-  <!--  Spacing-->
-  <div class="q-space"></div>
+  <!--  Navigation-->
+  <div class="col-xs-12 col-sm-3 col-md-6">
+    <q-btn
+      v-for="(link, index) in navLinks"
+      :key="index"
+      flat
+      style="color: white"
+      :label="link.label"
+      :to="link.to"
+    />
+  </div>
 
   <!--  Login-->
-  <q-btn
-    outline
-    class="q-ml-lg"
-    v-if="!isLoggedIn"
-    label="LOG IN"
-    :to="{ name: 'login' }"
-  />
+  <div class="col-xs-12 col-sm-0 col-md-1">
+    <q-btn
+      outline
+      class="q-ml-lg"
+      v-if="!isLoggedIn"
+      label="LOG IN"
+      :to="{ name: 'login' }"
+    />
 
-  <!--  Signup-->
-  <q-btn
-    class="q-ml-lg"
-    v-if="!isLoggedIn"
-    color="accent"
-    label="SIGN UP"
-    :to="{ name: 'signup' }"
-  />
+<!--    &lt;!&ndash;  Signup&ndash;&gt;-->
+<!--    <q-btn-->
+<!--      class="q-ml-lg"-->
+<!--      v-if="!isLoggedIn"-->
+<!--      color="accent"-->
+<!--      label="SIGN UP"-->
+<!--      :to="{ name: 'signup' }"-->
+<!--    />-->
 
-  <!--  Profile-->
-  <q-btn
-    v-if="isLoggedIn"
-    color="info"
-    label="PROFILE"
-    :to="{ name: 'profile' }"
-  />
+    <!--  Profile-->
+    <q-btn
+      v-if="isLoggedIn"
+      color="info"
+      label="PROFILE"
+      :to="{ name: 'profile' }"
+    />
 
-  <!--  Logout-->
-  <q-btn
-    class="q-ml-sm"
-    v-if="isLoggedIn"
-    color="negative"
-    label="LOGOUT"
-    @click="handleLogout"
-  />
+    <!--  Logout-->
+    <q-btn
+      class="q-ml-sm"
+      v-if="isLoggedIn"
+      color="negative"
+      label="LOGOUT"
+      @click="handleLogout"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
