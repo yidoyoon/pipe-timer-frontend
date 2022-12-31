@@ -22,12 +22,5 @@ onMounted(async () => {
       });
       router.push({name: 'login'});
     })
-    .catch((err) => {
-      $q.notify({
-        type: 'negative',
-        message: err.message,
-        icon: 'warning',
-      });
-    });
 });
 </script>

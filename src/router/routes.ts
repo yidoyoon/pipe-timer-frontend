@@ -1,3 +1,4 @@
+import requireAuth from 'src/router/middleware/requireAuth';
 import { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
@@ -19,6 +20,9 @@ const routes: RouteRecordRaw[] = [
         path: 'dashboard',
         component: () => import('pages/navigation/HistoryDashboard.vue'),
         name: 'dashboard',
+        meta: {
+          middleware: [requireAuth],
+        },
       },
       {
         path: 'settings',
@@ -53,7 +57,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue'),
-    name: 'error'
+    name: 'error',
   },
 ];
 
