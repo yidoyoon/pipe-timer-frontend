@@ -112,7 +112,7 @@ module.exports = configure(function (ctx) {
 
       // Quasar plugins
       plugins: ['Notify', 'Cookies'],
-      cssAddon: true,
+      cssAddon: false,
     },
 
     // animations: 'all', // --- includes all animations
