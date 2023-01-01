@@ -32,14 +32,14 @@
       :to="{ name: 'login' }"
     />
 
-<!--    &lt;!&ndash;  Signup&ndash;&gt;-->
-<!--    <q-btn-->
-<!--      class="q-ml-lg"-->
-<!--      v-if="!isLoggedIn"-->
-<!--      color="accent"-->
-<!--      label="SIGN UP"-->
-<!--      :to="{ name: 'signup' }"-->
-<!--    />-->
+    <!--    &lt;!&ndash;  Signup&ndash;&gt;-->
+    <!--    <q-btn-->
+    <!--      class="q-ml-lg"-->
+    <!--      v-if="!isLoggedIn"-->
+    <!--      color="accent"-->
+    <!--      label="SIGN UP"-->
+    <!--      :to="{ name: 'signup' }"-->
+    <!--    />-->
 
     <!--  Profile-->
     <q-btn
