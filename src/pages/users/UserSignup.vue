@@ -159,7 +159,7 @@ const { isLoading, mutate } = useMutation(
 
 const onSubmit = handleSubmit((values) => {
   mutate({
-    name: values.name,
+    userName: values.name,
     email: values.email,
     password: values.password,
     passwordConfirm: values.passwordConfirm,

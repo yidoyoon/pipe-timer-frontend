@@ -46,7 +46,7 @@ api.interceptors.response.use(
   }
 );
 
-export const signUpUserFn = async (user: IUser) => {
+export const signUpUserFn = async (user: ISignupInput) => {
   const response = await api.post('users', user);
   return response.data;
 };
