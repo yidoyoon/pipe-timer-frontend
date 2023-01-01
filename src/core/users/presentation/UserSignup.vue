@@ -65,16 +65,16 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-import { useQuasar } from 'quasar';
-import { useMutation } from '@tanstack/vue-query';
+import * as gc               from 'src/core/users/domain/userConst';
+import * as zod              from 'zod';
+import { ISignupInput }      from 'src/type-defs/userTypes';
+import { ref }               from 'vue';
+import { toFormValidator }   from '@vee-validate/zod';
 import { useField, useForm } from 'vee-validate';
-import { toFormValidator } from '@vee-validate/zod';
-import { signUpUserFn } from 'src/api/authApi';
-import { ref } from 'vue';
-import { ISignupInput } from 'src/type-defs/userTypes';
-import * as zod from 'zod';
-import * as gc from 'src/api/globalConst';
+import { useMutation }       from '@tanstack/vue-query';
+import { useQuasar }         from 'quasar';
+import { useRouter }         from 'vue-router';
+import {signUpUserFn}        from 'src/core/users/infra/userController';
 
 const $q = useQuasar();
 const router = useRouter();

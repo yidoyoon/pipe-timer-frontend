@@ -51,17 +51,17 @@
 </template>
 
 <script setup lang="ts">
-import {ILoginInput}                             from 'src/type-defs/userTypes';
-import { onBeforeUpdate, ref }                   from 'vue';
-import { useRouter }                             from 'vue-router';
-import { useQuasar }                             from 'quasar';
-import { useField, useForm }                     from 'vee-validate';
-import { useAuthStore }                          from 'stores/authStore';
-import { toFormValidator }                       from '@vee-validate/zod';
-import { getMeFn, loginUserFn }                  from 'src/api/authApi';
-import * as zod                                  from 'zod';
-import * as gc                                   from 'src/api/globalConst';
+import * as gc from 'src/core/users/domain/userConst';
+import * as zod from 'zod';
+import { ILoginInput } from 'src/type-defs/userTypes';
+import { getMeFn, loginUserFn } from 'src/core/users/infra/userController';
+import { onBeforeUpdate, ref } from 'vue';
+import { toFormValidator } from '@vee-validate/zod';
+import { useAuthStore } from 'stores/authStore';
+import { useField, useForm } from 'vee-validate';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
+import { useQuasar } from 'quasar';
+import { useRouter } from 'vue-router';
 
 const $q = useQuasar();
 const isPwd = ref(true);

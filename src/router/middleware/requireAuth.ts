@@ -1,8 +1,8 @@
+import { NavigationGuardNext } from 'vue-router';
 import { Notify } from 'quasar';
 import { Router } from 'src/router';
+import { getMeFn } from 'src/core/users/infra/userController';
 import { useAuthStore } from 'stores/authStore';
-import { NavigationGuardNext } from 'vue-router';
-import { getMeFn } from 'src/api/authApi';
 
 export default async function requireAuth({
   next,
