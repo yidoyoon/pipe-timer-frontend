@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar class="row justify-between no-padding">
+      <q-toolbar class="row justify-between q-px-none">
         <!-- Navigation links -->
         <IndexNav></IndexNav>
       </q-toolbar>
