@@ -72,7 +72,7 @@ import { useField, useForm } from 'vee-validate';
 import { toFormValidator } from '@vee-validate/zod';
 import { signUpUserFn } from 'src/api/authApi';
 import { ref } from 'vue';
-import { ISignUpInput } from 'src/type-defs/userTypes';
+import { ISignupInput } from 'src/type-defs/userTypes';
 import * as zod from 'zod';
 import * as gc from 'src/api/globalConst';
 
@@ -116,7 +116,7 @@ const { value: passwordConfirm, errorMessage: passwordConfirmError } =
   useField('passwordConfirm');
 
 const { isLoading, mutate } = useMutation(
-  (credentials: ISignUpInput) => signUpUserFn(credentials),
+  (credentials: ISignupInput) => signUpUserFn(credentials),
   {
     onError: (error) => {
       const errorMsg = (<any>error).response.data.error;

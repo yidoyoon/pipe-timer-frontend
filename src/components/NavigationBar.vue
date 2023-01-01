@@ -1,7 +1,7 @@
 <template>
   <!--  logo-->
   <div class="col-xs-12 col-sm-9 col-md-3">
-    <q-btn flat to="/" style="margin-left:0.2rem;">
+    <q-btn flat to="/" style="margin-left: 0.2rem">
       <q-icon
         name="img:https://img.yibyeongyong.com/public/dummy-logo-white.svg"
         class="fit"
@@ -28,7 +28,7 @@
       outline
       class="q-ml-lg"
       v-if="!isLoggedIn"
-      label="LOG IN"
+      label="LOGIN"
       :to="{ name: 'login' }"
     />
 
