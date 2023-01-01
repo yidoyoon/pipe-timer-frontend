@@ -65,12 +65,13 @@
 import { useAuthStore } from 'stores/authStore';
 import { logoutUserFn } from 'src/api/authApi';
 import { useQuasar } from 'quasar';
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMutation } from '@tanstack/vue-query';
-import { computed } from 'vue';
 
 const authStore = useAuthStore();
-const isLoggedIn = computed(() => {
+
+let isLoggedIn = computed(() => {
   return authStore.authUser;
 });
 
