@@ -26,7 +26,7 @@
   <div class="col-xs-12 col-sm-0 col-md-1">
     <q-btn
       outline
-      class="q-ml-lg"
+      class="q-ml-sm"
       v-if="!isLoggedIn"
       label="LOGIN"
       :to="{ name: 'login' }"
@@ -42,18 +42,19 @@
     <!--    />-->
 
     <!--  Profile-->
-    <q-btn
-      v-if="isLoggedIn"
-      color="info"
-      label="PROFILE"
-      :to="{ name: 'profile' }"
-    />
+    <!--    <q-btn-->
+    <!--      v-if="isLoggedIn"-->
+    <!--      flat-->
+    <!--      style="color: white"-->
+    <!--      label="PROFILE"-->
+    <!--      :to="{ name: 'profile' }"-->
+    <!--    />-->
 
     <!--  Logout-->
     <q-btn
       class="q-ml-sm"
       v-if="isLoggedIn"
-      color="negative"
+      outline
       label="LOGOUT"
       @click="handleLogout"
     />
