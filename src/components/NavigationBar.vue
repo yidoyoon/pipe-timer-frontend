@@ -62,12 +62,12 @@
 </template>
 
 <script setup lang="ts">
+import {logoutUserFn}   from 'src/core/users/infra/userController';
 import { useAuthStore } from 'stores/authStore';
-import { logoutUserFn } from 'src/api/authApi';
-import { useQuasar } from 'quasar';
-import { computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { useMutation } from '@tanstack/vue-query';
+import { useQuasar }    from 'quasar';
+import { computed }     from 'vue';
+import { useRouter }    from 'vue-router';
+import { useMutation }  from '@tanstack/vue-query';
 
 const authStore = useAuthStore();
 

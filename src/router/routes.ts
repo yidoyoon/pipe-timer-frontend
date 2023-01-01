@@ -4,21 +4,21 @@ import { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('../core/common/presentation/layouts/MainLayout.vue'),
     children: [
       {
         path: '',
-        component: () => import('pages/IndexPage.vue'),
+        component: () => import('../core/common/presentation/page/IndexPage.vue'),
         name: 'index',
       },
       {
         path: 'guide',
-        component: () => import('pages/navigation/AppGuide.vue'),
+        component: () => import('../core/guide/presentation/AppGuide.vue'),
         name: 'guide',
       },
       {
         path: 'dashboard',
-        component: () => import('pages/navigation/HistoryDashboard.vue'),
+        component: () => import('../core/dashboard/presentation/HistoryDashboard.vue'),
         name: 'dashboard',
         meta: {
           middleware: [requireAuth],
@@ -26,17 +26,17 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'settings',
-        component: () => import('pages/navigation/AppSettings.vue'),
+        component: () => import('../core/setting/presentation/AppSettings.vue'),
         name: 'settings',
       },
       {
         path: 'login',
-        component: () => import('pages/users/UserLogin.vue'),
+        component: () => import('../core/users/presentation/UserLogin.vue'),
         name: 'login',
       },
       {
         path: 'signup',
-        component: () => import('pages/users/UserSignup.vue'),
+        component: () => import('../core/users/presentation/UserSignup.vue'),
         name: 'signup',
       },
     ],
@@ -56,7 +56,7 @@ const routes: RouteRecordRaw[] = [
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue'),
+    component: () => import('../core/common/presentation/page/ErrorNotFound.vue'),
     name: 'error',
   },
 ];
