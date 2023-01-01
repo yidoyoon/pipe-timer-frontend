@@ -1,12 +1,11 @@
 import {
   IErrorResponse,
   IGeneralResponse,
-  ILoginInput,
+  ILoginInput, ISignupInput,
   IUser,
 } from 'src/type-defs/userTypes';
+import { Notify } from 'quasar';
 import { api } from 'boot/axios';
-import { Cookies, Notify } from 'quasar';
-import { useRouter } from 'vue-router';
 
 export const refreshAccessTokenFn = async () => {
   const response = await api.get<IGeneralResponse<IUser> | IErrorResponse>(
@@ -46,7 +45,7 @@ api.interceptors.response.use(
   }
 );
 
-export const signUpUserFn = async (user: IUser) => {
+export const signUpUserFn = async (user: ISignupInput) => {
   const response = await api.post('users', user);
   return response.data;
 };

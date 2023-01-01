@@ -55,8 +55,6 @@ module.exports = configure(function (ctx) {
         node: 'node16',
       },
 
-      devtool: 'source-map',
-
       vueRouterMode: 'history', // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
@@ -112,7 +110,6 @@ module.exports = configure(function (ctx) {
 
       // Quasar plugins
       plugins: ['Notify', 'Cookies'],
-      cssAddon: false,
     },
 
     // animations: 'all', // --- includes all animations

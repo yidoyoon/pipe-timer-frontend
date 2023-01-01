@@ -1,7 +1,7 @@
 <template>
   <!--  logo-->
   <div class="col-xs-12 col-sm-9 col-md-3">
-    <q-btn flat to="/" style="margin-left:0.2rem;">
+    <q-btn flat to="/" style="margin-left: 0.2rem">
       <q-icon
         name="img:https://img.yibyeongyong.com/public/dummy-logo-white.svg"
         class="fit"
@@ -26,34 +26,35 @@
   <div class="col-xs-12 col-sm-0 col-md-1">
     <q-btn
       outline
-      class="q-ml-lg"
+      class="q-ml-sm"
       v-if="!isLoggedIn"
-      label="LOG IN"
+      label="LOGIN"
       :to="{ name: 'login' }"
     />
 
-<!--    &lt;!&ndash;  Signup&ndash;&gt;-->
-<!--    <q-btn-->
-<!--      class="q-ml-lg"-->
-<!--      v-if="!isLoggedIn"-->
-<!--      color="accent"-->
-<!--      label="SIGN UP"-->
-<!--      :to="{ name: 'signup' }"-->
-<!--    />-->
+    <!--    &lt;!&ndash;  Signup&ndash;&gt;-->
+    <!--    <q-btn-->
+    <!--      class="q-ml-lg"-->
+    <!--      v-if="!isLoggedIn"-->
+    <!--      color="accent"-->
+    <!--      label="SIGN UP"-->
+    <!--      :to="{ name: 'signup' }"-->
+    <!--    />-->
 
     <!--  Profile-->
-    <q-btn
-      v-if="isLoggedIn"
-      color="info"
-      label="PROFILE"
-      :to="{ name: 'profile' }"
-    />
+    <!--    <q-btn-->
+    <!--      v-if="isLoggedIn"-->
+    <!--      flat-->
+    <!--      style="color: white"-->
+    <!--      label="PROFILE"-->
+    <!--      :to="{ name: 'profile' }"-->
+    <!--    />-->
 
     <!--  Logout-->
     <q-btn
       class="q-ml-sm"
       v-if="isLoggedIn"
-      color="negative"
+      outline
       label="LOGOUT"
       @click="handleLogout"
     />
@@ -64,12 +65,13 @@
 import { useAuthStore } from 'stores/authStore';
 import { logoutUserFn } from 'src/api/authApi';
 import { useQuasar } from 'quasar';
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMutation } from '@tanstack/vue-query';
-import { computed } from 'vue';
 
 const authStore = useAuthStore();
-const isLoggedIn = computed(() => {
+
+let isLoggedIn = computed(() => {
   return authStore.authUser;
 });
 
