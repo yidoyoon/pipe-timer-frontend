@@ -53,11 +53,11 @@
 <script setup lang="ts">
 import * as gc from 'src/core/users/domain/userConst';
 import * as zod from 'zod';
-import { ILoginInput } from 'src/type-defs/userTypes';
-import { getMeFn, loginUserFn } from 'src/core/users/infra/userController';
-import { onBeforeUpdate, ref } from 'vue';
+import { ILoginInput }          from 'src/type-defs/userTypes';
+import { getMeFn, loginUserFn } from 'src/core/users/infra/user.repository';
+import { onBeforeUpdate, ref }  from 'vue';
 import { toFormValidator } from '@vee-validate/zod';
-import { useAuthStore } from 'stores/authStore';
+import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { useField, useForm } from 'vee-validate';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 import { useQuasar } from 'quasar';
@@ -67,8 +67,8 @@ const $q = useQuasar();
 const isPwd = ref(true);
 const router = useRouter();
 
-const authStore = useAuthStore();
-const userData = authStore.authUser;
+const userStore = useUserStore();
+const userData = userStore.user;
 
 const loginSchema = toFormValidator(
   zod.object({
@@ -90,7 +90,7 @@ const { value: password, errorMessage: passwordError } = useField('password');
 let authResult: any;
 
 if (userData !== null) {
-  authResult = useQuery(['authUser'], () => getMeFn(), {
+  authResult = useQuery(['user'], () => getMeFn(), {
     enabled: false,
     retry: 1,
   });
@@ -124,10 +124,10 @@ const { isLoading, mutate } = useMutation(
       }
     },
     onSuccess: (data) => {
-      const authUser = Object.assign({}, data.userPayload);
+      const user = Object.assign({}, data.userPayload);
 
-      authStore.setAuthUser(authUser);
-      queryClient.refetchQueries(['authUser']);
+      userStore.setUser(user);
+      queryClient.refetchQueries(['user']);
 
       $q.notify({
         type: 'positive',
@@ -149,8 +149,8 @@ const onSubmit = handleSubmit((values) => {
 onBeforeUpdate(() => {
   console.log(authResult);
   if (authResult.data.value?.userPayload) {
-    const authUser = Object.assign({}, authResult.data.value?.userPayload);
-    authStore.setAuthUser(authUser);
+    const user = Object.assign({}, authResult.data.value?.userPayload);
+    userStore.setUser(user);
   }
 });
 </script>

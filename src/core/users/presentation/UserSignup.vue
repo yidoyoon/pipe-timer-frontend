@@ -73,8 +73,8 @@ import { toFormValidator }   from '@vee-validate/zod';
 import { useField, useForm } from 'vee-validate';
 import { useMutation }       from '@tanstack/vue-query';
 import { useQuasar }         from 'quasar';
-import { useRouter }         from 'vue-router';
-import {signUpUserFn}        from 'src/core/users/infra/userController';
+import { useRouter }  from 'vue-router';
+import {signUpUserFn} from 'src/core/users/infra/user.repository';
 
 const $q = useQuasar();
 const router = useRouter();
