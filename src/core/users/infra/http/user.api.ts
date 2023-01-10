@@ -7,11 +7,11 @@ import {
 import { Notify } from 'quasar';
 import { api } from 'boot/axios';
 
-export const refreshAccessTokenFn = async () => {
-  const response = await api.get<IGeneralResponse<IUser> | IErrorResponse>(
-    'users/auth/refresh'
+export const refreshAccessTokenFn = () => {
+  const response = api.get<IGeneralResponse<IUser> | IErrorResponse>(
+    'auth/refresh'
   );
-  return response.data;
+  return response;
 };
 
 // TODO: api 이름 구분
