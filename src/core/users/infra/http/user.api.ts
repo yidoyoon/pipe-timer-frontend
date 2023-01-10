@@ -25,8 +25,9 @@ api.interceptors.response.use(
   // TODO: 토큰 만료 확인 기능 추가
   // 토근 만료로 인한 에러 메시지 발생
   async (error) => {
-    const originalRequest = error.config;
+    // const originalRequest = error.config;
     const errMessage = error.response.data.message as string;
+    console.log(error);
 
     if (errMessage === 'Email authenticated') {
       await Router.push({ name: 'login' });
@@ -35,7 +36,12 @@ api.interceptors.response.use(
         message: '이미 인증된 계정입니다.',
       });
     } else if (errMessage === 'Unauthorized') {
-      return await refreshAccessTokenFn();
+      return await refreshAccessTokenFn().catch(() => {
+        Notify.create({
+          color: 'negative',
+          message: '인증 정보가 없습니다. 다시 로그인해주세요.',
+        });
+      });
     }
     return Promise.reject(error);
   }
