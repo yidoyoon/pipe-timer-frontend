@@ -53,9 +53,9 @@
 <script setup lang="ts">
 import * as gc from 'src/core/users/domain/userConst';
 import * as zod from 'zod';
-import { ILoginInput }          from 'src/type-defs/userTypes';
-import { getMeFn, loginUserFn } from 'src/core/users/infra/user.repository';
-import { onBeforeUpdate, ref }  from 'vue';
+import { ILoginInput } from 'src/type-defs/userTypes';
+import { getMeFn, loginUserFn } from 'src/core/users/infra/http/user.api';
+import { onBeforeUpdate, ref } from 'vue';
 import { toFormValidator } from '@vee-validate/zod';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { useField, useForm } from 'vee-validate';
@@ -89,6 +89,7 @@ const { value: password, errorMessage: passwordError } = useField('password');
 
 let authResult: any;
 
+// TODO: 항상 True로 나오는 것 수정
 if (userData !== null) {
   authResult = useQuery(['user'], () => getMeFn(), {
     enabled: false,
@@ -147,7 +148,6 @@ const onSubmit = handleSubmit((values) => {
 });
 
 onBeforeUpdate(() => {
-  console.log(authResult);
   if (authResult.data.value?.userPayload) {
     const user = Object.assign({}, authResult.data.value?.userPayload);
     userStore.setUser(user);

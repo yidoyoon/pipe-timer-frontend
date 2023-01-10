@@ -74,7 +74,7 @@ import { useField, useForm } from 'vee-validate';
 import { useMutation }       from '@tanstack/vue-query';
 import { useQuasar }         from 'quasar';
 import { useRouter }  from 'vue-router';
-import {signUpUserFn} from 'src/core/users/infra/user.repository';
+import {signUpUserFn} from 'src/core/users/infra/http/user.api';
 
 const $q = useQuasar();
 const router = useRouter();
