@@ -3,7 +3,7 @@
     <q-header elevated>
       <q-toolbar class="row justify-between q-px-none">
         <!-- Navigation links -->
-        <IndexNav></IndexNav>
+        <NavigationBar></NavigationBar>
       </q-toolbar>
     </q-header>
 
@@ -33,8 +33,8 @@
 </template>
 
 <script setup lang="ts">
-import IndexNav from 'components/NavigationBar.vue';
 // import { ref } from 'vue';
 //
 // const showDrawer = ref(null);
+import NavigationBar from 'src/core/common/presentation/layouts/NavigationBar.vue';
 </script>

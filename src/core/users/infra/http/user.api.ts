@@ -1,17 +1,19 @@
+import { Router } from 'src/router';
 import {
   IErrorResponse,
   IGeneralResponse,
-  ILoginInput, ISignupInput,
+  ILoginInput,
+  ISignupInput,
   IUser,
 } from 'src/type-defs/userTypes';
 import { Notify } from 'quasar';
 import { api } from 'boot/axios';
 
-export const refreshAccessTokenFn = async () => {
-  const response = await api.get<IGeneralResponse<IUser> | IErrorResponse>(
-    'users/auth/refresh'
+export const refreshAccessTokenFn = () => {
+  const response = api.get<IGeneralResponse<IUser> | IErrorResponse>(
+    'auth/refresh'
   );
-  return response.data;
+  return response;
 };
 
 // TODO: api 이름 구분
@@ -24,34 +26,28 @@ api.interceptors.response.use(
   // 토근 만료로 인한 에러 메시지 발생
   async (error) => {
     const originalRequest = error.config;
-    const errMessage = <string>error.response.data?.message;
+    const errMessage = error.response.data.message as string;
 
-    if (errMessage === '이미 인증되었습니다.') {
+    if (errMessage === 'Email authenticated') {
+      await Router.push({ name: 'login' });
       Notify.create({
         color: 'positive',
-        message: '이미 인증되었습니다.',
+        message: '이미 인증된 계정입니다.',
       });
-      // TODO: 메시지 출력과 함께 로그인창으로 이동
-    } else if (errMessage === 'No access token') {
-      Notify.create({
-        color: 'warning',
-        message: '인증정보가 없습니다. 우선 로그인 해주세요.',
-      });
-    } else if (errMessage === 'jwt expired') {
-      await refreshAccessTokenFn();
-      return api(originalRequest);
+    } else if (errMessage === 'Unauthorized') {
+      return await refreshAccessTokenFn();
     }
     return Promise.reject(error);
   }
 );
 
 export const signUpUserFn = async (user: ISignupInput) => {
-  const response = await api.post('users', user);
+  const response = await api.post('auth/register', user);
   return response.data;
 };
 
 export const loginUserFn = async (user: ILoginInput) => {
-  const response = await api.post('users/login', user);
+  const response = await api.post('auth/login', user);
   return response.data;
 };
 
@@ -64,11 +60,11 @@ export const verifyEmailFn = async (signupVerifyToken: string) => {
 };
 
 export const logoutUserFn = async () => {
-  const response = await api.get('users/logout');
+  const response = await api.delete('auth/logout');
   return response.data;
 };
 
 export const getMeFn = async () => {
-  const response = await api.get('users/me');
+  const response = await api.get('auth/me');
   return response.data;
 };

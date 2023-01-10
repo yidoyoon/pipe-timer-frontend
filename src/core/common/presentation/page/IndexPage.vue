@@ -1,12 +1,12 @@
 <template>
   <q-page>
-    <div>authUserData: {{ allData }}</div>
+    <div>UserData: {{ allData }}</div>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from 'stores/authStore';
+import { useUserStore } from 'src/core/users/infra/store/user.store';
 
-const authStore = useAuthStore();
-const allData = authStore.authUser;
+const userStore = useUserStore();
+const allData = userStore.user;
 </script>

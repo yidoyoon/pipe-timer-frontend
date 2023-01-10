@@ -62,17 +62,17 @@
 </template>
 
 <script setup lang="ts">
-import {logoutUserFn}   from 'src/core/users/infra/userController';
-import { useAuthStore } from 'stores/authStore';
-import { useQuasar }    from 'quasar';
-import { computed }     from 'vue';
-import { useRouter }    from 'vue-router';
-import { useMutation }  from '@tanstack/vue-query';
+import { logoutUserFn } from 'src/core/users/infra/user.repository';
+import { useUserStore } from 'src/core/users/infra/store/user.store';
+import { useQuasar } from 'quasar';
+import { computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useMutation } from '@tanstack/vue-query';
 
-const authStore = useAuthStore();
+const userStore = useUserStore();
 
 let isLoggedIn = computed(() => {
-  return authStore.authUser;
+  return userStore.user;
 });
 
 const $q = useQuasar();
@@ -80,7 +80,7 @@ const router = useRouter();
 
 const { mutate: logoutUser } = useMutation(() => logoutUserFn(), {
   onSuccess: () => {
-    authStore.setAuthUser(null);
+    userStore.setUser(null);
     router.push({ name: 'login' });
   },
   onError: (error) => {

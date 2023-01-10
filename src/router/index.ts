@@ -9,7 +9,7 @@ import {
 } from 'vue-router';
 
 import routes from './routes';
-import { useAuthStore } from 'stores/authStore';
+import { useUserStore } from 'src/core/users/infra/store/user.store';
 import middlewarePipeline from 'src/router/middlewarePipeline';
 
 /*
@@ -44,7 +44,7 @@ export default route((/*{ store, ssrContext }*/) => {
       from: RouteLocationNormalized,
       next: NavigationGuardNext
     ) => {
-      const authStore = useAuthStore();
+      const userStore = useUserStore();
 
       if (!to.meta.middleware) {
         return next();
@@ -55,7 +55,7 @@ export default route((/*{ store, ssrContext }*/) => {
         to,
         from,
         next,
-        authStore,
+        userStore: userStore,
       };
 
       return middleware[0]({

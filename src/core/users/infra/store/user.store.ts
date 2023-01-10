@@ -2,14 +2,14 @@ import { useLocalStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
 import { IUser } from 'src/type-defs/userTypes';
 
-export const useAuthStore = defineStore('authStore', {
+export const useUserStore = defineStore('userStore', {
   state: () => ({
-    authUser: useLocalStorage<IUser | null>('authUser', null),
+    user: useLocalStorage<IUser | null>('user', null),
   }),
   getters: {},
   actions: {
-    setAuthUser(user: IUser | null) {
-      this.authUser = user;
+    setUser(user: IUser | null) {
+      this.user = user;
     },
   },
 });

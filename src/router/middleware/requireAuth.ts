@@ -1,17 +1,17 @@
 import { NavigationGuardNext } from 'vue-router';
 import { Notify } from 'quasar';
 import { Router } from 'src/router';
-import { getMeFn } from 'src/core/users/infra/userController';
-import { useAuthStore } from 'stores/authStore';
+import { getMeFn } from 'src/core/users/infra/http/user.api';
+import { useUserStore } from 'src/core/users/infra/store/user.store';
 
 export default async function requireAuth({
   next,
-  authStore,
+  userStore,
 }: {
   next: NavigationGuardNext;
-  authStore: any;
+  userStore: any;
 }) {
-  if (!useAuthStore().authUser) {
+  if (!useUserStore().user) {
     await Router.push({ name: 'login' });
     Notify.create({
       color: 'blue',
@@ -20,9 +20,9 @@ export default async function requireAuth({
     return next();
   }
   try {
-    const data = await getMeFn();
-    const user = data.data;
-    authStore.setAuthUser(data.data);
+    const responseData = await getMeFn();
+    const user = responseData.passport.user;
+    userStore.setUser(user);
 
     if (!user) {
       return next({

@@ -1,3 +1,4 @@
+import axiosRetry from 'axios-retry';
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
 
@@ -32,9 +33,23 @@ export default boot(({ app }) => {
   // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
   //       so you can easily perform requests against your app's API
 
+  axiosRetry(axios, {
+    retries: 3,
+    retryDelay: axiosRetry.exponentialDelay,
+    retryCondition: (error) => {
+      console.log(error);
+      // You could do this way or try to implement your own
+      return error.response?.data.status > 400;
+      // something like this works too.
+      // error.response.status === 401 || error.response.status >= 500;
+    },
+  });
+
   // TODO: Change axios instance name
   api.defaults.headers.common['Content-Type'] = 'application/json';
-  axios.defaults.headers.post['Access-Control-Allow-Origin'] = ['http://localhost:9000', 'http://localhost:3000'];
+  api.defaults.headers.post['Access-Control-Allow-Origin'] = [
+    'http://localhost:3000',
+  ];
 });
 
 export { axios, api };
