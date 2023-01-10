@@ -34,7 +34,7 @@ export default boot(({ app }) => {
   //       so you can easily perform requests against your app's API
 
   axiosRetry(axios, {
-    retries: 3,
+    retries: 1,
     retryDelay: axiosRetry.exponentialDelay,
     retryCondition: (error) => {
       console.log(error);
