@@ -39,6 +39,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../core/users/presentation/UserSignup.vue'),
         name: 'signup',
       },
+      {
+        path: 'create-timefrag',
+        component: () => import('../core/timefrag/presentation/pages/CreateTimefrag.vue'),
+        name: 'create-timefrag',
+      },
     ],
   },
   {
