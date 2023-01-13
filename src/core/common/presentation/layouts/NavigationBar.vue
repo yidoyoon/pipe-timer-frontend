@@ -62,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import { logoutUserFn } from 'src/core/users/infra/user.repository';
+import { logoutUserFn } from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { useQuasar } from 'quasar';
 import { computed } from 'vue';
@@ -127,6 +127,12 @@ const navLinks = [
     label: 'Settings',
     value: 'settings',
     to: { name: 'settings' },
+  },
+  {
+    // icon: 'icon-mat-settings-bk',
+    label: 'Create Timer',
+    value: 'create-timefrag',
+    to: { name: 'create-timefrag' },
   },
 ];
 </script>
