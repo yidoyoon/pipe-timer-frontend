@@ -46,6 +46,13 @@ export const useTimefragStore = defineStore('timefragStore', {
       isLoading: false,
     };
   },
+  persist: {
+    key: 'test',
+    storage: sessionStorage,
+    beforeRestore: (ctx) => {
+      console.log(`about to restore '${ctx.store.$id}'`);
+    },
+  },
 
   getters: {
     list(): ITimefrag[] {
