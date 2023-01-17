@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import * as gc from 'src/core/users/domain/userConst';
+import { userMsg } from 'src/core/users/domain/userConst';
 import { onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import { useRoute, useRouter } from 'vue-router';
-import { verifyEmailFn }       from 'src/core/users/infra/http/user.api';
+import { verifyEmailFn } from 'src/core/users/infra/http/user.api';
 
 const router = useRouter();
 const route = useRoute();
@@ -16,7 +16,7 @@ onMounted(async () => {
   await verifyEmailFn(<string>signupVerifyToken).then(() => {
     $q.notify({
       type: 'positive',
-      message: gc.userMsg.VERIFY_COMPLETE,
+      message: userMsg.VERIFY_COMPLETE,
       icon: 'warning',
     });
     router.push({ name: 'login' });

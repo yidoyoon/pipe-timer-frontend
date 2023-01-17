@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import { ITimefrag } from 'src/core/timefrag/domain/timefrag';
 import { useTimefragStore } from 'src/core/timefrag/infra/store/timefrag.store';
-import type { ITimefrag } from 'src/core/timefrag/infra/store/timefrag.store';
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 
 const props = defineProps<{ timefrag: ITimefrag }>();
+
 const emit = defineEmits<{
   (e: 'upsert', data: ITimefrag): void;
   (e: 'remove', id: string): void;
@@ -16,34 +17,33 @@ const { isLoading } = storeToRefs(timefragStore);
 
 const $q = useQuasar();
 
-const _name = ref(props.timefrag.name);
-const _duration = ref(props.timefrag.duration);
-const _count = ref(props.timefrag.count);
-const _color = ref(props.timefrag.color);
-const _isEditing = ref(props.timefrag.isEditing);
+const _name = ref(props.timefrag._name);
+const _duration = ref(props.timefrag._duration);
+const _count = ref(props.timefrag._count);
+const _color = ref(props.timefrag._color);
+const _isEditing = ref(props.timefrag._isEditing);
 
 // TODO: 아래 코드처럼 emit 사용하여 데이터 전송하지않고 컴포넌트에서 처리하도록 다른 함수들 수정
 const update = () => {
-  const newCar = {
+  const newFrag = {
     ...props.timefrag,
-    name: _name.value,
-    duration: _duration.value,
-    color: _color.value,
-    isEditing: !_isEditing.value,
+    _name: _name.value,
+    _duration: _duration.value,
+    _color: _color.value,
+    _isEditing: !_isEditing.value,
   };
-  timefragStore.edit(newCar);
+  timefragStore.edit(newFrag);
 };
 
 const upsert = () => {
   emit('upsert', {
-    id: props.timefrag.id,
-    userId: props.timefrag.userId,
-    name: _name.value,
-    duration: _duration.value,
-    count: _count.value,
-    color: _color.value,
-    isEditing: _isEditing.value,
-  } as ITimefrag);
+    _id: props.timefrag._id,
+    _name: _name.value,
+    _duration: _duration.value,
+    _count: _count.value,
+    _color: _color.value,
+    _isEditing: _isEditing.value,
+  });
   update();
 };
 
@@ -59,7 +59,7 @@ const remove = () => {
         color: 'negative',
         handler: () => {
           isLoading.value = false;
-          emit('remove', props.timefrag.id);
+          emit('remove', props.timefrag._id);
         },
       },
       { label: '취소', color: 'white' },
@@ -68,9 +68,9 @@ const remove = () => {
 };
 
 const cancel = () => {
-  _name.value = props.timefrag.name;
-  _duration.value = props.timefrag.duration;
-  _color.value = props.timefrag.color;
+  _name.value = props.timefrag._name;
+  _duration.value = props.timefrag._duration;
+  _color.value = props.timefrag._color;
 
   update();
 };
@@ -86,6 +86,7 @@ const cancel = () => {
       <q-spinner size="50px" color="primary" />
     </q-inner-loading>
 
+<!--    // TODO: 수정 표시가 아닌, 더블 클릭으로 수정하도록 변경-->
     <q-card-section>
       <div class="row justify-between">
         <div class="row items-center q-gutter-x-xs col-6">

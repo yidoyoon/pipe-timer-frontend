@@ -1,3 +1,4 @@
+import { userMsg } from 'src/core/users/domain/userConst';
 import { Router } from 'src/router';
 import {
   IErrorResponse,
@@ -16,34 +17,53 @@ export const refreshAccessTokenFn = () => {
   return response;
 };
 
-// TODO: api 이름 구분
 // TODO: retry, retryDelay, maxRetries 설정
 api.interceptors.response.use(
   (response) => {
     return response;
   },
   // TODO: 토큰 만료 확인 기능 추가
-  // 토근 만료로 인한 에러 메시지 발생
-  async (error) => {
+  // 토큰 만료로 인한 에러 메시지 발생
+  // TODO: 서버 자체가 열려있지 않을 때 로그인 비활성화
+  // TODO: 에러메시지를 각 서비스로 분산
+  async (err) => {
     // const originalRequest = error.config;
-    const errMessage = error.response.data.message as string;
-    console.log(error);
+    const errMsg = err.response.data.message as string;
 
-    if (errMessage === 'Email authenticated') {
+    if (errMsg === 'Already verified email') {
       await Router.push({ name: 'login' });
       Notify.create({
         color: 'positive',
-        message: '이미 인증된 계정입니다.',
+        message: userMsg.ALREADY_VERIFIED_EMAIL,
+        icon: 'verified',
       });
-    } else if (errMessage === 'Unauthorized') {
+    } else if (errMsg === 'Unauthorized') {
       return await refreshAccessTokenFn().catch(() => {
         Notify.create({
           color: 'negative',
-          message: '인증 정보가 없습니다. 다시 로그인해주세요.',
+          message: userMsg.INVALID_TOKEN,
+          icon: 'error',
         });
       });
+    } else if (errMsg === 'No matching account information') {
+      Notify.create({
+        color: 'negative',
+        message: userMsg.NO_MATCHING_ACCOUNT,
+        icon: 'error',
+      });
+    } else if (errMsg === 'Incorrect password') {
+      Notify.create({
+        color: 'negative',
+        message: userMsg.UNAUTHORIZED_PASSWORD,
+      });
+    } else if (errMsg === 'Invalid email verification code') {
+      Notify.create({
+        color: 'negative',
+        message: userMsg.INVALID_EMAIL_VERIFICATION_CODE,
+        icon: 'error',
+      });
     }
-    return Promise.reject(error);
+    return Promise.reject(err);
   }
 );
 
@@ -60,7 +80,7 @@ export const loginUserFn = async (user: ILoginInput) => {
 // TODO: 이메일 인증 시, 로그인까지 진행하도록 구현
 export const verifyEmailFn = async (signupVerifyToken: string) => {
   const response = await api.post(
-    `users/verify-email?signupVerifyToken=${signupVerifyToken}`
+    `user/verify-email?signupVerifyToken=${signupVerifyToken}`
   );
   return response.data ? response.data : response;
 };
