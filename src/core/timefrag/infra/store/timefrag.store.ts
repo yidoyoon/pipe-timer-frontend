@@ -59,6 +59,10 @@ export const useTimefragStore = defineStore('timefragStore', {
   actions: {
     async fetchAll() {
       if (this.loaded) return;
+      this.isLoading = true;
+      const res = await api.get('frag/fetch');
+      const frags = res.data;
+      this.isLoading = false;
 
       // const res = await fetch(`${fakeStoreUrl}/products`);
       // const data: Product[] = await res.json();
