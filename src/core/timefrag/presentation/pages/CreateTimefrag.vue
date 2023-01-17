@@ -1,32 +1,22 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import { Timefrag } from 'src/core/timefrag/domain/timefrag';
 import TimefragCore from 'src/core/timefrag/presentation/components/TimefragCore.vue';
-import { ulid } from 'ulid';
-import { ITimefrag } from 'src/core/timefrag/infra/store/timefrag.store';
 import { useTimefragStore } from 'src/core/timefrag/infra/store/timefrag.store';
-import SaveTimefragsDB      from 'src/core/timefrag/presentation/components/SaveTimefragsDB.vue';
+import SaveTimefragsDB from 'src/core/timefrag/presentation/components/SaveTimefragsDB.vue';
 
 const timefragStore = useTimefragStore();
 const timefragStoreRefs = storeToRefs(timefragStore);
-const { list, timefrags, canSave, isLoading} = timefragStoreRefs;
 
 timefragStore.fetchAll();
 
+const { list, timefrags, canSave, isLoading } = timefragStoreRefs;
 const addTimefrag = () => {
-  timefragStore.add({
-    id: ulid(),
-    name: '',
-    duration: 0,
-    color: '',
-    count: 0,
-    userId: '',
-    isEditing: false,
-  });
+  timefragStore.add(new Timefrag({}));
 };
-const upsertTimefrag = (timefrag: ITimefrag) => {
+const upsertTimefrag = (timefrag: Timefrag) => {
   timefragStore.edit(timefrag);
 };
-
 const removeTimefrag = (id: string) => {
   timefragStore.remove(id);
 };
@@ -36,7 +26,7 @@ const removeTimefrag = (id: string) => {
   productList:<br /><br />
   {{ timefrags }}
   <br />
-  canSave: {{ canSave }} <br>
+  canSave: {{ canSave }} <br />
   isLoading: {{ isLoading }}
 
   <div class="row justify-end q-pb-sm">
@@ -53,6 +43,6 @@ const removeTimefrag = (id: string) => {
   </div>
 
   <q-footer>
-    <SaveTimefragsDB/>
+    <SaveTimefragsDB />
   </q-footer>
 </template>
