@@ -70,6 +70,7 @@ export const useTimefragStore = defineStore('timefragStore', {
         this.timefrags[product.id] = product;
         return product.id;
       });
+      this.setInitialState()
     },
 
     add(newTimefrag: ITimefrag) {
@@ -92,6 +93,14 @@ export const useTimefragStore = defineStore('timefragStore', {
         const i = this.timefragIds.lastIndexOf(timefragId);
         if (i > -1) this.timefragIds.splice(i, 1);
       }
+    },
+
+    setInitialState() {
+      LocalStorage.set('frags', JSON.stringify(this.$state));
+    },
+
+    getInitialState(): TimefragState | null {
+      return LocalStorage.getItem('frags');
     },
 
     reset() {
