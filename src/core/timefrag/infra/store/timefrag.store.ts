@@ -41,9 +41,13 @@ export const useTimefragStore = defineStore('timefragStore', {
     },
 
     isEditingOverall(): boolean {
-      const filtered = this.list.find((obj) => {
-        return obj.isEditing;
-      });
+      let filtered;
+      if (!this.isLoading) {
+        filtered = this.list.find((obj) => {
+          return obj._isEditing;
+        });
+      }
+
       return filtered !== undefined;
     },
 
