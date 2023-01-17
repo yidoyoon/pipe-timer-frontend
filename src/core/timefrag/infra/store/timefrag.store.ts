@@ -1,3 +1,4 @@
+import { api } from 'boot/axios';
 import { defineStore } from 'pinia';
 import { ITimefrag } from 'src/core/timefrag/domain/timefrag';
 import { LocalStorage } from 'quasar';
@@ -30,6 +31,11 @@ export const useTimefragStore = defineStore('timefragStore', {
       console.log(`about to restore '${ctx.store.$id}'`);
     },
   },
+  // TODO: hydrate 메서드를 SSR 환경이 아니더라도 상태 초기화에 활용 가능한지 알아보기
+  // hydrate(storeState, initialState) {
+  //   // @ts-expect-error: https://github.com/microsoft/TypeScript/issues/43826
+  //   storeState = useLocalStorage('test', 0);
+  // },
 
   getters: {
     list(): ITimefrag[] {
@@ -64,25 +70,23 @@ export const useTimefragStore = defineStore('timefragStore', {
       const frags = res.data;
       this.isLoading = false;
 
-      // const res = await fetch(`${fakeStoreUrl}/products`);
-      // const data: Product[] = await res.json();
-      this.timefragIds = dummy.map((product) => {
-        this.timefrags[product.id] = product;
-        return product.id;
+      this.timefragIds = frags.map((frag: ITimefrag) => {
+        this.timefrags[frag._id] = frag;
+        return frag._id;
       });
       this.setInitialState()
     },
 
     add(newTimefrag: ITimefrag) {
-      this.timefrags[newTimefrag.id] = newTimefrag;
-      this.timefragIds.push(newTimefrag.id);
+      this.timefrags[newTimefrag._id] = newTimefrag;
+      this.timefragIds.push(newTimefrag._id);
     },
 
     edit(newTimefrag: ITimefrag) {
-      const tradfrag = this.timefrags[newTimefrag.id];
+      const tradfrag = this.timefrags[newTimefrag._id];
 
       if (!!tradfrag) {
-        this.timefrags[newTimefrag.id] = newTimefrag;
+        this.timefrags[newTimefrag._id] = newTimefrag;
       }
     },
 
