@@ -56,7 +56,7 @@
         debounce="500"
       />
       <div class="row">
-        <q-btn label="SIGN UP" color="secondary" type="submit" />
+        <q-btn label="SIGN UP" color="primary" type="submit" />
         <div class="q-space"></div>
         <q-btn label="CANCEL" to="/" color="primary" flat class="q-ml-sm" />
       </div>
@@ -65,16 +65,16 @@
 </template>
 
 <script setup lang="ts">
-import * as gc               from 'src/core/users/domain/userConst';
-import * as zod              from 'zod';
-import { ISignupInput }      from 'src/type-defs/userTypes';
-import { ref }               from 'vue';
-import { toFormValidator }   from '@vee-validate/zod';
+import { CHECK_EMPTY, userMsg, userVar } from 'src/core/users/domain/userConst';
+import * as zod from 'zod';
+import { ISignupInput } from 'src/type-defs/userTypes';
+import { ref } from 'vue';
+import { toFormValidator } from '@vee-validate/zod';
 import { useField, useForm } from 'vee-validate';
-import { useMutation }       from '@tanstack/vue-query';
-import { useQuasar }         from 'quasar';
-import { useRouter }  from 'vue-router';
-import {signUpUserFn} from 'src/core/users/infra/http/user.api';
+import { useMutation } from '@tanstack/vue-query';
+import { useQuasar } from 'quasar';
+import { useRouter } from 'vue-router';
+import { signUpUserFn } from 'src/core/users/infra/http/user.api';
 
 const $q = useQuasar();
 const router = useRouter();
@@ -85,23 +85,23 @@ const registerSchema = toFormValidator(
     .object({
       name: zod
         .string()
-        .min(gc.userVar.USER_NAME_MIN_LEN, gc.userMsg.BELOW_MIN_USER_NAME),
+        .min(userVar.USER_NAME_MIN_LEN, userMsg.BELOW_MIN_USER_NAME),
       email: zod
         .string()
-        .min(gc.CHECK_EMPTY, gc.userMsg.EMPTY_USER_EMAIL)
-        .email(gc.userMsg.INVALID_USER_EMAIL),
+        .min(CHECK_EMPTY, userMsg.EMPTY_USER_EMAIL)
+        .email(userMsg.INVALID_USER_EMAIL),
       password: zod
         .string()
-        .min(gc.CHECK_EMPTY, gc.userMsg.EMPTY_USER_PASSWORD)
-        .min(gc.userVar.PASSWORD_MIN_LEN, gc.userMsg.BELOW_MIN_USER_PASSWORD)
-        .max(gc.userVar.PASSWORD_MAX_LEN, gc.userMsg.ABOVE_MAX_USER_PASSWORD),
+        .min(CHECK_EMPTY, userMsg.EMPTY_USER_PASSWORD)
+        .min(userVar.PASSWORD_MIN_LEN, userMsg.BELOW_MIN_USER_PASSWORD)
+        .max(userVar.PASSWORD_MAX_LEN, userMsg.ABOVE_MAX_USER_PASSWORD),
       passwordConfirm: zod
         .string()
-        .min(gc.CHECK_EMPTY, gc.userMsg.EMPTY_CONFIRM_PASSWORD),
+        .min(CHECK_EMPTY, userMsg.EMPTY_CONFIRM_PASSWORD),
     })
     .refine((data) => data.password === data.passwordConfirm, {
       path: ['passwordConfirm'],
-      message: gc.userMsg.MISMATCH_PASSWORD,
+      message: userMsg.MISMATCH_PASSWORD,
     })
 );
 
@@ -149,8 +149,7 @@ const { isLoading, mutate } = useMutation(
       router.push({ name: 'index' });
       $q.notify({
         type: 'positive',
-        message:
-          variables.email + gc.userMsg.SEND_USER_SIGNUP_VERIFICATION_EMAIL,
+        message: variables.email + userMsg.SEND_USER_SIGNUP_VERIFICATION_EMAIL,
         icon: 'warning',
       });
     },

@@ -38,7 +38,7 @@
       </q-input>
 
       <div class="row">
-        <q-btn label="SIGN IN" type="submit" color="primary" />
+        <q-btn label="LOGIN" type="submit" color="primary" />
         <div class="q-space"></div>
         <q-btn label="CANCEL" to="/" color="primary" flat class="q-ml-sm" />
       </div>
@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import * as gc from 'src/core/users/domain/userConst';
+import { CHECK_EMPTY, userMsg } from 'src/core/users/domain/userConst';
 import * as zod from 'zod';
 import { ILoginInput } from 'src/type-defs/userTypes';
 import { getMeFn, loginUserFn } from 'src/core/users/infra/http/user.api';
@@ -74,9 +74,9 @@ const loginSchema = toFormValidator(
   zod.object({
     email: zod
       .string()
-      .min(1, gc.userMsg.EMPTY_USER_EMAIL)
-      .email(gc.userMsg.INVALID_USER_EMAIL),
-    password: zod.string().min(gc.CHECK_EMPTY, gc.userMsg.EMPTY_USER_PASSWORD),
+      .min(1, userMsg.EMPTY_USER_EMAIL)
+      .email(userMsg.INVALID_USER_EMAIL),
+    password: zod.string().min(CHECK_EMPTY, userMsg.EMPTY_USER_PASSWORD),
   })
 );
 
@@ -102,27 +102,15 @@ const queryClient = useQueryClient();
 const { isLoading, mutate } = useMutation(
   (credentials: ILoginInput) => loginUserFn(credentials),
   {
-    onError: (error) => {
-      const errMsg = (error as any).response.data.error;
-      const response = (error as any).response.data;
-      console.log(errMsg);
-      console.log(response);
+    onError: (err: any) => {
+      const errMsg = err.response.data.message as string;
+      const response = err.response.data;
 
-      if (Array.isArray(errMsg)) {
-        errMsg.forEach((el: any) =>
-          $q.notify({
-            type: 'negative',
-            message: el.message,
-            icon: 'warning',
-          })
-        );
-      } else {
-        $q.notify({
-          type: 'negative',
-          message: response,
-          icon: 'warning',
-        });
-      }
+      // $q.notify({
+      //   type: 'negative',
+      //   message: errMsg,
+      //   icon: 'warning',
+      // });
     },
     onSuccess: (data) => {
       const user = Object.assign({}, data.userPayload);
@@ -132,7 +120,7 @@ const { isLoading, mutate } = useMutation(
 
       $q.notify({
         type: 'positive',
-        message: gc.userMsg.SUCCESS_USER_LOGIN,
+        message: userMsg.SUCCESS_USER_LOGIN,
       });
       router.push({ name: 'index' });
     },
