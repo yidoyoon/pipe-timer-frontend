@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia';
 import { Timefrag } from 'src/core/timefrag/domain/timefrag';
 import TimefragCore from 'src/core/timefrag/presentation/components/TimefragCore.vue';
 import { useTimefragStore } from 'src/core/timefrag/infra/store/timefrag.store';
-import SaveTimefragsDB from 'src/core/timefrag/presentation/components/SaveTimefragsDB.vue';
+import SaveTimefrag         from 'src/core/timefrag/presentation/components/SaveTimefrag.vue';
 
 const timefragStore = useTimefragStore();
 const timefragStoreRefs = storeToRefs(timefragStore);
@@ -43,6 +43,6 @@ const removeTimefrag = (id: string) => {
   </div>
 
   <q-footer>
-    <SaveTimefragsDB />
+    <SaveTimefrag />
   </q-footer>
 </template>
