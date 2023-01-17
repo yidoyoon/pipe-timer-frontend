@@ -4,11 +4,13 @@ import { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('../core/common/presentation/layouts/MainLayout.vue'),
+    component: () =>
+      import('../core/common/presentation/layouts/MainLayout.vue'),
     children: [
       {
         path: '',
-        component: () => import('../core/common/presentation/page/IndexPage.vue'),
+        component: () =>
+          import('../core/common/presentation/page/IndexPage.vue'),
         name: 'index',
       },
       {
@@ -18,7 +20,8 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'dashboard',
-        component: () => import('../core/dashboard/presentation/HistoryDashboard.vue'),
+        component: () =>
+          import('../core/dashboard/presentation/HistoryDashboard.vue'),
         name: 'dashboard',
         meta: {
           middleware: [requireAuth],
@@ -41,18 +44,22 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'create-timefrag',
-        component: () => import('../core/timefrag/presentation/pages/CreateTimefrag.vue'),
+        component: () =>
+          import('../core/timefrag/presentation/pages/CreateTimefrag.vue'),
         name: 'create-timefrag',
+        meta: {
+          middleware: [requireAuth],
+        },
       },
     ],
   },
   {
-    path: '/users',
-    component: () => import('layouts/MainLayout.vue'),
+    path: '/user',
     children: [
       {
         path: 'verify-email',
-        component: () => import('pages/users/UserSignupVerify.vue'),
+        component: () =>
+          import('../core/users/presentation/UserSignupVerify.vue'),
         name: 'verify-email',
       },
     ],
@@ -61,7 +68,8 @@ const routes: RouteRecordRaw[] = [
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
-    component: () => import('../core/common/presentation/page/ErrorNotFound.vue'),
+    component: () =>
+      import('../core/common/presentation/page/ErrorNotFound.vue'),
     name: 'error',
   },
 ];
