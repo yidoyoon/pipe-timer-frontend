@@ -1,36 +1,6 @@
 import { defineStore } from 'pinia';
-import { ulid } from 'ulid';
-
-const dummy: ITimefrag[] = [
-  {
-    id: ulid(),
-    userId: 'test1',
-    name: 'name1',
-    duration: 11,
-    count: 12,
-    color: 'Color1',
-    isEditing: false,
-  },
-  {
-    id: ulid(),
-    userId: 'test2',
-    name: 'name2',
-    duration: 21,
-    count: 22,
-    color: 'Color2',
-    isEditing: false,
-  },
-];
-
-export interface ITimefrag {
-  id: string;
-  userId: string;
-  name: string;
-  duration: number;
-  count: number;
-  color: string;
-  isEditing: boolean;
-}
+import { ITimefrag } from 'src/core/timefrag/domain/timefrag';
+import { LocalStorage } from 'quasar';
 
 export interface TimefragState {
   timefrags: Record<string, ITimefrag>;
