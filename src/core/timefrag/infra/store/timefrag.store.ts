@@ -47,8 +47,15 @@ export const useTimefragStore = defineStore('timefragStore', {
     };
   },
   persist: {
-    key: 'test',
-    storage: sessionStorage,
+    key: 'timer-data',
+    storage: {
+      getItem: (key) => {
+        return LocalStorage.getItem(key);
+      },
+      setItem: (key, value) => {
+        return LocalStorage.set(key, value);
+      },
+    },
     beforeRestore: (ctx) => {
       console.log(`about to restore '${ctx.store.$id}'`);
     },
