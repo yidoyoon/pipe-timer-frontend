@@ -1,3 +1,4 @@
+import { IUser } from 'src/type-defs/userTypes';
 import { NavigationGuardNext } from 'vue-router';
 import { Notify } from 'quasar';
 import { Router } from 'src/router';
@@ -20,8 +21,12 @@ export default async function requireAuth({
     return next();
   }
   try {
-    const responseData = await getMeFn();
-    const user = responseData.passport.user;
+    const response = await getMeFn();
+    const { id, userName, email } = response;
+    const user = {} as IUser;
+    user.id = id;
+    user.userName = userName;
+    user.email = email;
     userStore.setUser(user);
 
     if (!user) {
