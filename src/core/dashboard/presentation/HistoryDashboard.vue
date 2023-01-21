@@ -1,9 +1,5 @@
 <template>
-  <q-page>
-    <div>
-      dashboard
-    </div>
-  </q-page>
+  <div>dashboard</div>
 </template>
 
 <script setup lang="ts"></script>
