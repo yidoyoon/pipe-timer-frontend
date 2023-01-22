@@ -51,6 +51,15 @@ const routes: RouteRecordRaw[] = [
           middleware: [requireAuth],
         },
       },
+      {
+        path: 'create-stacks',
+        component: () =>
+          import('../core/stack/presentation/pages/CreateStacks.vue'),
+        name: 'create-stacks',
+        meta: {
+          middleware: [requireAuth],
+        },
+      },
     ],
   },
   {
