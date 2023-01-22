@@ -5,7 +5,7 @@ import { useQuasar } from 'quasar';
 import { useTimefragStore } from 'src/core/timefrag/infra/store/timefrag.store';
 
 const timefragStore = useTimefragStore();
-const { canSave } = storeToRefs(timefragStore);
+const { canSaveFrags } = storeToRefs(timefragStore);
 
 const $q = useQuasar();
 
@@ -41,7 +41,7 @@ const cancelEdit = () => {
 
 // TODO: 최종 저장 전, 인증 정보를 확인하고 진행
 const saveCurrentState = () => {
-  const res = api.post('frag/commit', timefragStore.list);
+  const res = api.post('frag/commit', timefragStore.listFrags);
   if (!res) {
     $q.notify({
       message: '저장이 완료되지 않았습니다. 인터넷 연결 상태를 확인해주세요',
@@ -109,7 +109,7 @@ const resetAll = () => {
         @click="saveEdit"
         color="blue"
         label="Save"
-        :disable="!canSave"
+        :disable="!canSaveFrags"
         class="q-mx-md"
       />
       <q-btn
@@ -119,7 +119,7 @@ const resetAll = () => {
         label="cancel"
       />
     </div>
-    <q-tooltip v-if="!canSave" class="text-body2">
+    <q-tooltip v-if="!canSaveFrags" class="text-body2">
       진행중인 설정이 남아있거나, 데이터 로딩이 완료되지 않았습니다.
     </q-tooltip>
   </div>
