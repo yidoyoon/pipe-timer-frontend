@@ -134,5 +134,10 @@ const navLinks = [
     value: 'create-timefrag',
     to: { name: 'create-timefrag' },
   },
+  {
+    label: 'Create Stacks',
+    value: 'create-stacks',
+    to: { name: 'create-stacks' },
+  },
 ];
 </script>
