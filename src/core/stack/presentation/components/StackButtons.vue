@@ -2,23 +2,23 @@
 import { api } from 'boot/axios';
 import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
-import { useTimefragStore } from 'src/core/timefrag/infra/store/timefrag.store';
+import { useStacksStore } from 'src/core/stack/infra/store/stacks.store';
 
-const timefragStore = useTimefragStore();
-const { canSaveFrags } = storeToRefs(timefragStore);
+const stacksStore = useStacksStore();
+const { canSaveStacks } = storeToRefs(stacksStore);
 
 const $q = useQuasar();
 
 // Cancel 버튼
 // 초기 데이터 fetch시, InitialState를 저장함으로써 백엔드로의 데이터 요청 트래픽을 최소화
 // 그러나, Initial State가 변조되면 계속해서 잘못된 데이터로 초기화될 가능성이 있음
-// TODO: 로컬데이터 변조 차단방안  구현
-const rollbackToInitialState = () => {
-  const initialState = timefragStore.getInitialState();
+// TODO: 로컬데이터 변조 차단방안 구현
+const resetToInitial = () => {
+  const initialState = stacksStore.getInitialState();
   if (!!initialState) {
     const data = JSON.parse(<string>(<unknown>initialState));
-    timefragStore.$reset();
-    timefragStore.$patch(data);
+    stacksStore.$reset();
+    stacksStore.$patch(data);
   }
 };
 
@@ -32,7 +32,7 @@ const cancelEdit = () => {
       {
         label: '확인',
         color: 'negative',
-        handler: rollbackToInitialState,
+        handler: resetToInitial,
       },
       { label: '취소', color: 'white' },
     ],
@@ -41,7 +41,7 @@ const cancelEdit = () => {
 
 // TODO: 최종 저장 전, 인증 정보를 확인하고 진행
 const saveCurrentState = () => {
-  const res = api.post('frag/commit', timefragStore.listFrags);
+  const res = api.post('frag/commit', stacksStore.listStacks);
   if (!res) {
     $q.notify({
       message: '저장이 완료되지 않았습니다. 인터넷 연결 상태를 확인해주세요',
@@ -53,7 +53,7 @@ const saveCurrentState = () => {
       color: 'positive',
     });
   }
-  timefragStore.setInitialState();
+  stacksStore.setInitialState();
 };
 
 // TODO: 저장을 성공하면 Initial state 갱신
@@ -92,14 +92,8 @@ const resetButton = () => {
 };
 
 const resetAll = () => {
-  timefragStore.$reset();
+  stacksStore.$reset();
 };
-
-// TODO: 셋팅 페이지 등에 Frag데이터 초기화 기능에 사용
-// const resetState = () => {
-//   timefragStore.$reset();
-//   timefragStore.fetchAll();
-// };
 </script>
 <template>
   <div class="q-pa-md q-gutter-sm row justify-between">
@@ -109,7 +103,7 @@ const resetAll = () => {
         @click="saveEdit"
         color="blue"
         label="Save"
-        :disable="!canSaveFrags"
+        :disable="!canSaveStacks"
         class="q-mx-md"
       />
       <q-btn
@@ -119,7 +113,7 @@ const resetAll = () => {
         label="cancel"
       />
     </div>
-    <q-tooltip v-if="!canSaveFrags" class="text-body2">
+    <q-tooltip v-if="!canSaveStacks" class="text-body2">
       진행중인 설정이 남아있거나, 데이터 로딩이 완료되지 않았습니다.
     </q-tooltip>
   </div>

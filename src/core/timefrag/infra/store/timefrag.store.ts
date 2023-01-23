@@ -1,20 +1,23 @@
 import { api } from 'boot/axios';
 import { defineStore } from 'pinia';
+import { useStacksStore } from 'src/core/stack/infra/store/stacks.store';
 import { ITimefrag } from 'src/core/timefrag/domain/timefrag';
 import { LocalStorage } from 'quasar';
 
 export interface TimefragState {
   timefrags: Record<string, ITimefrag>;
   timefragIds: string[];
-  isLoading: boolean;
+  isLoadingFrags: boolean;
 }
+
+const stacksStore = useStacksStore();
 
 export const useTimefragStore = defineStore('timefragStore', {
   state: (): TimefragState => {
     return {
       timefrags: {},
       timefragIds: [],
-      isLoading: false,
+      isLoadingFrags: false,
     };
   },
   persist: {
@@ -38,18 +41,18 @@ export const useTimefragStore = defineStore('timefragStore', {
   // },
 
   getters: {
-    list(): ITimefrag[] {
+    listFrags(): ITimefrag[] {
       return this.timefragIds.map((i) => this.timefrags[i]);
     },
 
-    loaded(): boolean {
+    loadedFrags(): boolean {
       return this.timefragIds.length > 0;
     },
 
-    isEditingOverall(): boolean {
+    isEditingOverallFrags(): boolean {
       let filtered;
-      if (!this.isLoading) {
-        filtered = this.list.find((obj) => {
+      if (!this.isLoadingFrags) {
+        filtered = this.listFrags.find((obj) => {
           return obj._isEditing;
         });
       }
@@ -57,24 +60,25 @@ export const useTimefragStore = defineStore('timefragStore', {
       return filtered !== undefined;
     },
 
-    canSave(): boolean {
-      return !(this.isLoading || this.isEditingOverall);
+    canSaveFrags(): boolean {
+      return !(this.isLoadingFrags || this.isEditingOverallFrags);
     },
   },
 
   actions: {
     async fetchAll() {
-      if (this.loaded) return;
-      this.isLoading = true;
+      if (this.loadedFrags) return;
+      this.isLoadingFrags = true;
+      // TODO: 에러 처리 필요
       const res = await api.get('frag/fetch');
       const frags = res.data;
-      this.isLoading = false;
+      this.isLoadingFrags = false;
 
       this.timefragIds = frags.map((frag: ITimefrag) => {
         this.timefrags[frag._id] = frag;
         return frag._id;
       });
-      this.setInitialState()
+      this.setInitialState();
     },
 
     add(newTimefrag: ITimefrag) {
@@ -109,6 +113,14 @@ export const useTimefragStore = defineStore('timefragStore', {
 
     reset() {
       this.$reset();
+    },
+
+    toStack(timefrag: ITimefrag) {
+      try {
+        stacksStore.fragsInStack.push(timefrag);
+      } catch (err) {
+        console.log(err);
+      }
     },
   },
 });

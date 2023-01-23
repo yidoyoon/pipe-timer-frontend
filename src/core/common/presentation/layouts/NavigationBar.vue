@@ -70,6 +70,8 @@ import { useRouter } from 'vue-router';
 import { useMutation } from '@tanstack/vue-query';
 
 const userStore = useUserStore();
+const userStoreRefs = storeToRefs(userStore);
+const fragStore = useTimefragStore();
 
 let isLoggedIn = computed(() => {
   return userStore.user;
@@ -82,6 +84,8 @@ const { mutate: logoutUser } = useMutation(() => logoutUserFn(), {
   onSuccess: () => {
     userStore.setUser(null);
     router.push({ name: 'login' });
+    userStore.$reset();
+    fragStore.$reset();
   },
   onError: (error) => {
     const errMsg = (error as any).response.data.error;
@@ -133,6 +137,11 @@ const navLinks = [
     label: 'Create Timer',
     value: 'create-timefrag',
     to: { name: 'create-timefrag' },
+  },
+  {
+    label: 'Create Stacks',
+    value: 'create-stacks',
+    to: { name: 'create-stacks' },
   },
 ];
 </script>

@@ -27,7 +27,7 @@ export class Timefrag implements ITimefrag {
         })
       );
       this._id = timefrag.id || ulid();
-      this._name = timefrag.name || 'New_timer';
+      this._name = timefrag.name || 'New';
       this._color = timefrag.color || '000000';
       this._duration = timefrag.duration || 1;
       this._count = timefrag.count || 0;

@@ -1,7 +1,5 @@
 <template>
-  <q-page>
-    <div>UserData: {{ allData }}</div>
-  </q-page>
+  <div>UserData: {{ allData }}</div>
 </template>
 
 <script setup lang="ts">
