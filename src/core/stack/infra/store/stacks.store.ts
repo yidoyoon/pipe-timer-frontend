@@ -7,8 +7,9 @@ import { ITimefrag } from 'src/core/timefrag/domain/timefrag';
 export interface StacksState {
   stacks: Record<string, IStacks>;
   stacksIds: string[];
-  builds: ITimefrag[];
-  isLoading: boolean;
+  fragsInStack: ITimefrag[];
+  isLoadingStacks: boolean;
+  isEditingStacks: boolean
 }
 
 export const useStacksStore = defineStore('StacksStore', {
@@ -16,8 +17,9 @@ export const useStacksStore = defineStore('StacksStore', {
     return {
       stacks: {},
       stacksIds: [],
-      builds: [],
-      isLoading: false,
+      fragsInStack: [],
+      isLoadingStacks: false,
+      isEditingStacks: false,
     };
   },
   persist: {
@@ -46,7 +48,7 @@ export const useStacksStore = defineStore('StacksStore', {
 
     isEditingOverallStacks(): boolean {
       let filtered;
-      if (!this.isLoading) {
+      if (!this.isLoadingStacks) {
         filtered = this.listStacks.find((obj) => {
           return obj._isEditing;
         });
@@ -56,18 +58,18 @@ export const useStacksStore = defineStore('StacksStore', {
     },
 
     canSaveStacks(): boolean {
-      return !(this.isLoading || this.isEditingOverallStacks);
+      return !(this.isLoadingStacks || this.isEditingOverallStacks);
     },
   },
 
   actions: {
     async fetchAll() {
       if (this.loadedStacks) return;
-      this.isLoading = true;
+      this.isLoadingStacks = true;
       // TODO: 에러 처리 필요
       const res = await api.get('stacks/fetch');
       const stacks = res.data;
-      this.isLoading = false;
+      this.isLoadingStacks = false;
 
       this.stacksIds = stacks.map((stack: IStacks) => {
         this.stacks[stack._id] = stack;
@@ -108,10 +110,6 @@ export const useStacksStore = defineStore('StacksStore', {
 
     reset() {
       this.$reset();
-    },
-
-    getFrag(frag: ITimefrag) {
-      this.builds.push(frag);
     },
   },
 });
