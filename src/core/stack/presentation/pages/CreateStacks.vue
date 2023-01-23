@@ -1,15 +1,9 @@
 <template>
-  stacks: {{ stacks }} <br />
-  listStacks: {{ listStacks }}
-  <br />
-  canSave: {{ canSaveStacks }} <br />
-  isLoading: {{ isLoadingFrags }}
-
-  <div class="row justify-end q-pb-sm">
+  <div class="row justify-end">
     <q-btn
       label="Create stack"
       color="primary"
-      @click="prompt = true"
+      @click="createStacksButton"
       style="position: relative; top: 0"
       icon-right="add"
     />
@@ -25,6 +19,7 @@
             v-model="stackName"
             autofocus
             @keyup.enter.prevent="addTimeStacks"
+            @keyup.esc.prevent="prompt = false"
           />
         </q-card-section>
 
@@ -36,7 +31,7 @@
     </q-dialog>
   </div>
 
-  <div class="row">
+  <div class="row q-pb-lg">
     <div v-for="s in listStacks" :key="s">
       <StacksCore
         :stacks="s"
@@ -52,6 +47,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import { useQuasar } from 'quasar';
 import { Stacks } from 'src/core/stack/domain/stacks.model';
 import { useStacksStore } from 'src/core/stack/infra/store/stacks.store';
 import StackButtons from 'src/core/stack/presentation/components/StackButtons.vue';
@@ -67,16 +63,31 @@ const timefragStoreRefs = storeToRefs(timefragStore);
 timefragStore.fetchAll();
 stacksStore.fetchAll();
 
-const { listStacks, stacks, canSaveStacks, isLoading } = stacksStoreRefs;
-const { listFrags, timefrags, canSaveFrags, isLoadingFrags } =
-  timefragStoreRefs;
+const $q = useQuasar();
+
+const {
+  listStacks,
+  isEditingStacks,
+} = stacksStoreRefs;
 
 const prompt = ref(false);
-const stackName = ref('NewStack');
+const stackName = ref('');
+
+const createStacksButton = () => {
+  if (isEditingStacks.value) {
+    $q.notify({
+      message: '현재 설정 중인 스택이 있습니다.',
+      color: 'negative',
+    });
+    return;
+  }
+  prompt.value = true;
+};
 
 const addTimeStacks = () => {
-  prompt.value = false;
   stacksStore.addStack(new Stacks({ name: stackName.value }));
+  isEditingStacks.value = true;
+  prompt.value = false;
 };
 const upsertTimeStacks = (stacks: Stacks) => {
   stacksStore.edit(stacks);
