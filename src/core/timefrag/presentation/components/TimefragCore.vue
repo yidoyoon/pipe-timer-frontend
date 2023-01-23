@@ -174,5 +174,14 @@ const cancel = () => {
   update();
 };
 
-const toStack = () => {};
+const toStack = () => {
+  timefragStore.toStack({
+    _id: props.timefrag._id,
+    _name: _name.value,
+    _duration: _duration.value,
+    _count: _count.value,
+    _color: _color.value,
+    _isEditing: _isEditing.value,
+  });
+};
 </script>
