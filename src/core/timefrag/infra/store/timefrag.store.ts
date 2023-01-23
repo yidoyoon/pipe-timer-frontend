@@ -1,5 +1,6 @@
 import { api } from 'boot/axios';
 import { defineStore } from 'pinia';
+import { useStacksStore } from 'src/core/stack/infra/store/stacks.store';
 import { ITimefrag } from 'src/core/timefrag/domain/timefrag';
 import { LocalStorage } from 'quasar';
 
@@ -8,6 +9,8 @@ export interface TimefragState {
   timefragIds: string[];
   isLoadingFrags: boolean;
 }
+
+const stacksStore = useStacksStore();
 
 export const useTimefragStore = defineStore('timefragStore', {
   state: (): TimefragState => {
@@ -110,6 +113,14 @@ export const useTimefragStore = defineStore('timefragStore', {
 
     reset() {
       this.$reset();
+    },
+
+    toStack(timefrag: ITimefrag) {
+      try {
+        stacksStore.fragsInStack.push(timefrag);
+      } catch (err) {
+        console.log(err);
+      }
     },
   },
 });
