@@ -143,5 +143,10 @@ const navLinks = [
     value: 'create-stacks',
     to: { name: 'create-stacks' },
   },
+  {
+    label: 'Build Timer',
+    value: 'build-timer',
+    to: { name: 'build-timer' },
+  },
 ];
 </script>

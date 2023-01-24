@@ -60,6 +60,15 @@ const routes: RouteRecordRaw[] = [
           middleware: [requireAuth],
         },
       },
+      {
+        path: 'build',
+        component: () =>
+          import('../core/builder/presentation/pages/TimerBuilder.vue'),
+        name: 'build-timer',
+        meta: {
+          middleware: [requireAuth],
+        },
+      },
     ],
   },
   {
