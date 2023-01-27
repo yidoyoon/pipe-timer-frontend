@@ -1,17 +1,20 @@
 import { plainToClass } from 'class-transformer';
+import { ITimer } from 'src/core/timer/domain/timer.model';
 import { ulid } from 'ulid';
 
-export interface IStacks {
-  readonly _id: string;
+export interface IStack {
+  _id: string;
   _name: string;
   _count: number;
+  _data: ITimer[];
   _isEditing: boolean;
 }
 
-export class Stacks implements IStacks {
-  readonly _id: string;
+export class Stacks implements IStack {
+  _id: string;
   _name: string;
   _count: number;
+  _data: ITimer[];
   _isEditing: boolean;
 
   constructor(stacks: Partial<Stacks>) {
@@ -25,6 +28,7 @@ export class Stacks implements IStacks {
       this._id = stacks.id || ulid();
       this._name = stacks.name || 'Stack';
       this._count = stacks.count || 0;
+      this._data = stacks._data || [];
       this._isEditing = stacks.isEditing || false;
     }
   }
@@ -47,6 +51,14 @@ export class Stacks implements IStacks {
 
   set count(newCount: number) {
     this._count = newCount;
+  }
+
+  get frags(): ITimer[] {
+    return this._data;
+  }
+
+  set frags(newFrags: ITimer[]) {
+    this._data = newFrags;
   }
 
   get isEditing(): Readonly<boolean> {
