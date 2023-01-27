@@ -1,15 +1,11 @@
 <!--TODO: Font 컬러 설정 추가, 입력값 필터링 추가-->
 <template>
   <q-card
-    class="my-card text-white cursor-pointer"
+    class="my-card text-white cursor-pointer no-shadow"
     style="background: black"
     @click="toStack"
     v-ripple
   >
-    <q-inner-loading :showing="isLoadingFrags" style="z-index: 1">
-      <q-spinner size="50px" color="primary" />
-    </q-inner-loading>
-
     <!--    // TODO: 수정 표시가 아닌, 더블 클릭으로 수정하도록 변경-->
     <q-card-section>
       <div class="row justify-between">
@@ -70,73 +66,79 @@
           </template>
         </div>
       </div>
-      <q-input
-        v-model="_duration"
-        :readonly="!_isEditing"
-        dense
-        :borderless="!_isEditing"
-        :input-style="{ color: 'white' }"
-      />
-      <q-input
-        v-model="_color"
-        :readonly="!_isEditing"
-        dense
-        :borderless="!_isEditing"
-        :input-style="{ color: 'white' }"
-      />
-      <q-input
-        v-model="_count"
-        readonly
-        dense
-        borderless
-        :input-style="{ color: 'white' }"
-      />
+      <div>
+        Duration: {{ _duration }} <br />
+        Color: {{ _color }} <br />
+        Count: {{ _count }}
+      </div>
+
+      <!--      <q-input-->
+      <!--        v-model="_duration"-->
+      <!--        :readonly="!_isEditing"-->
+      <!--        dense-->
+      <!--        :borderless="!_isEditing"-->
+      <!--        :input-style="{ color: 'white' }"-->
+      <!--      />-->
+      <!--      <q-input-->
+      <!--        v-model="_color"-->
+      <!--        :readonly="!_isEditing"-->
+      <!--        dense-->
+      <!--        :borderless="!_isEditing"-->
+      <!--        :input-style="{ color: 'white' }"-->
+      <!--      />-->
+      <!--      <q-input-->
+      <!--        v-model="_count"-->
+      <!--        readonly-->
+      <!--        dense-->
+      <!--        borderless-->
+      <!--        :input-style="{ color: 'white' }"-->
+      <!--      />-->
     </q-card-section>
   </q-card>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useStacksStore } from 'src/core/stack/infra/store/stacks.store';
-import { ITimefrag } from 'src/core/timefrag/domain/timefrag';
-import { useTimefragStore } from 'src/core/timefrag/infra/store/timefrag.store';
+import { useStackStore } from 'src/core/stack/infra/store/stack.store.ts';
+import { ITimer } from 'src/core/timer/domain/timer.model';
+import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 
-const timefragStore = useTimefragStore();
-const stacksStore = useStacksStore();
+const timerStore = useTimerStore();
+const stacksStore = useStackStore();
 
-const { isLoadingFrags } = storeToRefs(timefragStore);
+const { isLoadingTimer } = storeToRefs(timerStore);
 
 const $q = useQuasar();
 
-const props = defineProps<{ timefrag: ITimefrag }>();
+const props = defineProps<{ timer: ITimer }>();
 const emit = defineEmits<{
-  (e: 'upsert', data: ITimefrag): void;
+  (e: 'upsert', data: ITimer): void;
   (e: 'remove', id: string): void;
 }>();
 
-const _name = ref(props.timefrag._name);
-const _duration = ref(props.timefrag._duration);
-const _count = ref(props.timefrag._count);
-const _color = ref(props.timefrag._color);
-const _isEditing = ref(props.timefrag._isEditing);
+const _name = ref(props.timer._name);
+const _duration = ref(props.timer._duration);
+const _count = ref(props.timer._count);
+const _color = ref(props.timer._color);
+const _isEditing = ref(props.timer._isEditing);
 
 // TODO: 아래 코드처럼 emit 사용하여 데이터 전송하지않고 컴포넌트에서 처리하도록 다른 함수들 수정
 const update = () => {
   const newFrag = {
-    ...props.timefrag,
+    ...props.timer,
     _name: _name.value,
     _duration: _duration.value,
     _color: _color.value,
     _isEditing: !_isEditing.value,
   };
-  timefragStore.edit(newFrag);
+  timerStore.edit(newFrag);
 };
 
 const upsert = () => {
   emit('upsert', {
-    _id: props.timefrag._id,
+    _id: props.timer._id,
     _name: _name.value,
     _duration: _duration.value,
     _count: _count.value,
@@ -157,8 +159,8 @@ const remove = () => {
         label: '확인',
         color: 'negative',
         handler: () => {
-          isLoadingFrags.value = false;
-          emit('remove', props.timefrag._id);
+          isLoadingTimer.value = false;
+          emit('remove', props.timer._id);
         },
       },
       { label: '취소', color: 'white' },
@@ -167,16 +169,16 @@ const remove = () => {
 };
 
 const cancel = () => {
-  _name.value = props.timefrag._name;
-  _duration.value = props.timefrag._duration;
-  _color.value = props.timefrag._color;
+  _name.value = props.timer._name;
+  _duration.value = props.timer._duration;
+  _color.value = props.timer._color;
 
   update();
 };
 
 const toStack = () => {
-  timefragStore.toStack({
-    _id: props.timefrag._id,
+  timerStore.toStack({
+    _id: props.timer._id,
     _name: _name.value,
     _duration: _duration.value,
     _count: _count.value,

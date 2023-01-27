@@ -62,7 +62,9 @@
 </template>
 
 <script setup lang="ts">
-import { logoutUserFn } from 'src/core/users/infra/http/user.api';
+import { storeToRefs }   from 'pinia';
+import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
+import { logoutUserFn }  from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { useQuasar } from 'quasar';
 import { computed } from 'vue';
@@ -71,7 +73,7 @@ import { useMutation } from '@tanstack/vue-query';
 
 const userStore = useUserStore();
 const userStoreRefs = storeToRefs(userStore);
-const fragStore = useTimefragStore();
+const fragStore = useTimerStore();
 
 let isLoggedIn = computed(() => {
   return userStore.user;
@@ -135,13 +137,18 @@ const navLinks = [
   {
     // icon: 'icon-mat-settings-bk',
     label: 'Create Timer',
-    value: 'create-timefrag',
-    to: { name: 'create-timefrag' },
+    value: 'create-timer',
+    to: { name: 'create-timer' },
   },
   {
     label: 'Create Stacks',
     value: 'create-stacks',
     to: { name: 'create-stacks' },
+  },
+  {
+    label: 'editor',
+    value: 'editor',
+    to: { name: 'editor' },
   },
 ];
 </script>

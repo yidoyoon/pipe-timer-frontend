@@ -1,23 +1,23 @@
 import { api } from 'boot/axios';
 import { defineStore } from 'pinia';
 import { LocalStorage } from 'quasar';
-import { IStacks } from 'src/core/stack/domain/stacks.model';
-import { ITimefrag } from 'src/core/timefrag/domain/timefrag';
+import { IStack } from 'src/core/stack/domain/stack.model';
+import { ITimer } from 'src/core/timer/domain/timer.model';
 
 export interface StacksState {
-  stacks: Record<string, IStacks>;
+  stacks: Record<string, IStack>;
   stacksIds: string[];
-  fragsInStack: ITimefrag[];
+  timersInStack: ITimer[];
   isLoadingStacks: boolean;
-  isEditingStacks: boolean
+  isEditingStacks: boolean;
 }
 
-export const useStacksStore = defineStore('StacksStore', {
+export const useStackStore = defineStore('StackStore', {
   state: (): StacksState => {
     return {
       stacks: {},
       stacksIds: [],
-      fragsInStack: [],
+      timersInStack: [],
       isLoadingStacks: false,
       isEditingStacks: false,
     };
@@ -38,8 +38,16 @@ export const useStacksStore = defineStore('StacksStore', {
   },
 
   getters: {
-    listStacks(): IStacks[] {
+    listStacks(): IStack[] {
       return this.stacksIds.map((i) => this.stacks[i]);
+    },
+
+    listStacksData(): ITimer[] {
+      const result = [] as ITimer[];
+      this.stacksIds.forEach((e) => {
+        result.push(...this.stacks[e]._data);
+      });
+      return result;
     },
 
     loadedStacks(): boolean {
@@ -57,8 +65,17 @@ export const useStacksStore = defineStore('StacksStore', {
       return filtered !== undefined;
     },
 
-    canSaveStacks(): boolean {
+    canSaveStack(): boolean {
       return !(this.isLoadingStacks || this.isEditingOverallStacks);
+    },
+
+    // TODO: Number를 시간단위로 변경
+    getTotalDuration(): number {
+      let total = 0;
+      this.timersInStack.forEach((e) => {
+        total += e._duration;
+      });
+      return total;
     },
   },
 
@@ -69,21 +86,37 @@ export const useStacksStore = defineStore('StacksStore', {
       // TODO: 에러 처리 필요
       const res = await api.get('stacks/fetch');
       const stacks = res.data;
+
+      // const a = new TimerModel({ name: 'a' });
+      //
+      // const stack1 = {} as IStacks;
+      // stack1._id = 'A';
+      // stack1._count = 0;
+      // stack1._name = 'ACCC';
+      // stack1._isEditing = false;
+      // stack1._data = [a];
+      //
+      // const stack2 = {} as IStacks;
+      // stack2._id = 'B';
+      // stack2._count = 0;
+      // stack2._name = 'B';
+      // stack2._isEditing = false;
+      // stack2._data = [new TimerModel({ _name: 'a' })];
+
+      // const stacks: IStacks[] = [{ ...stack1 }, { ...stack2 }];
+
       this.isLoadingStacks = false;
 
-      this.stacksIds = stacks.map((stack: IStacks) => {
+      this.stacksIds = stacks.map((stack: IStack) => {
         this.stacks[stack._id] = stack;
         return stack._id;
       });
       this.setInitialState();
     },
 
-    addStack(newStacks: IStacks) {
-      this.stacks[newStacks._id] = newStacks;
-      this.stacksIds.push(newStacks._id);
-    },
 
-    edit(newStacks: IStacks) {
+
+    edit(newStacks: IStack) {
       const tradStack = this.stacks[newStacks._id];
 
       if (!!tradStack) {
@@ -100,11 +133,11 @@ export const useStacksStore = defineStore('StacksStore', {
       }
     },
 
-    setInitialState() {
+    setInitialState(): void {
       LocalStorage.set('stacks', JSON.stringify(this.$state));
     },
 
-    getInitialState(): StacksState | null {
+    getInitState(): StacksState | null {
       return LocalStorage.getItem('stacks');
     },
 

@@ -43,19 +43,28 @@ const routes: RouteRecordRaw[] = [
         name: 'signup',
       },
       {
-        path: 'create-timefrag',
+        path: 'create-timer',
         component: () =>
-          import('../core/timefrag/presentation/pages/CreateTimefrag.vue'),
-        name: 'create-timefrag',
+          import('../core/timer/presentation/TimerMain.vue'),
+        name: 'create-timer',
         meta: {
           middleware: [requireAuth],
         },
       },
       {
-        path: 'create-stacks',
+        path: 'create-stack',
         component: () =>
-          import('../core/stack/presentation/pages/CreateStacks.vue'),
-        name: 'create-stacks',
+          import('../core/builder/presentation/BuilderMain.vue'),
+        name: 'create-stack',
+        meta: {
+          middleware: [requireAuth],
+        },
+      },
+      {
+        path: 'editor',
+        component: () =>
+          import('../core/common/presentation/page/EditorMain.vue'),
+        name: 'editor',
         meta: {
           middleware: [requireAuth],
         },
