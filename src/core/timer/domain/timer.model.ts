@@ -1,7 +1,7 @@
 import { plainToClass } from 'class-transformer';
 import { ulid } from 'ulid';
 
-export interface ITimefrag {
+export interface ITimer {
   readonly _id: string;
   _name: string;
   _color: string;
@@ -10,7 +10,7 @@ export interface ITimefrag {
   _isEditing: boolean;
 }
 
-export class Timefrag implements ITimefrag {
+export class Timer implements ITimer {
   readonly _id: string;
   _name: string;
   _color: string;
@@ -18,11 +18,11 @@ export class Timefrag implements ITimefrag {
   _count: number;
   _isEditing: boolean;
 
-  constructor(timefrag: Partial<Timefrag>) {
+  constructor(timefrag: Partial<Timer>) {
     if (timefrag) {
       Object.assign(
         this,
-        plainToClass(Timefrag, timefrag, {
+        plainToClass(Timer, timefrag, {
           excludeExtraneousValues: false,
         })
       );
