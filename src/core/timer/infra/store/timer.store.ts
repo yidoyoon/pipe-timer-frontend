@@ -1,6 +1,6 @@
 import { api } from 'boot/axios';
 import { defineStore } from 'pinia';
-import { useStackStore } from 'src/core/stack/infra/store/stack.store.ts';
+import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
 import { ITimer } from 'src/core/timer/domain/timer.model';
 import { LocalStorage } from 'quasar';
 
@@ -10,7 +10,7 @@ export interface TimerState {
   isLoadingTimer: boolean;
 }
 
-const stacksStore = useStackStore();
+const builderStore = useBuilderStore();
 
 export const useTimerStore = defineStore('timerStore', {
   state: (): TimerState => {
@@ -36,8 +36,16 @@ export const useTimerStore = defineStore('timerStore', {
   },
 
   getters: {
-    listTimers(): ITimer[] {
+    listTimersMap(): ITimer[] {
       return this.timerIds.map((i) => this.timers[i]);
+    },
+
+    listTimers(): ITimer[] {
+      const result = [] as ITimer[];
+      this.timerIds.forEach((e) => {
+        result.push(this.timers[e]);
+      });
+      return result;
     },
 
     loadedTimers(): boolean {
@@ -47,7 +55,7 @@ export const useTimerStore = defineStore('timerStore', {
     isEditingTimers(): boolean {
       let filtered;
       if (!this.isLoadingTimer) {
-        filtered = this.listTimers.find((obj) => {
+        filtered = this.listTimersMap.find((obj) => {
           return obj._isEditing;
         });
       }
@@ -60,6 +68,7 @@ export const useTimerStore = defineStore('timerStore', {
     },
   },
 
+  // TODO: URL frag에서 timer로 변경
   actions: {
     async fetchAll() {
       if (this.loadedTimers) return;
@@ -98,21 +107,33 @@ export const useTimerStore = defineStore('timerStore', {
       }
     },
 
+    updateList(newTimers: ITimer[]) {
+      // update timers map
+      const updatedTimers = {} as Record<string, ITimer>;
+      newTimers.forEach((timer) => {
+        updatedTimers[timer._id] = timer;
+      });
+      this.timers = updatedTimers;
+
+      // update timer ids
+      this.timerIds = newTimers.map((timer) => timer._id);
+    },
+
     setInitialState() {
-      LocalStorage.set('frags', JSON.stringify(this.$state));
+      LocalStorage.set('timers', JSON.stringify(this.$state));
     },
 
     getInitState(): TimerState | null {
-      return LocalStorage.getItem('frags');
+      return LocalStorage.getItem('timers');
     },
 
     reset() {
       this.$reset();
     },
 
-    toStack(timefrag: ITimer) {
+    toBuilder(timer: ITimer) {
       try {
-        stacksStore.timersInStack.push(timefrag);
+        builderStore.stackInBuilder._data.push(timer);
       } catch (err) {
         console.log(err);
       }
