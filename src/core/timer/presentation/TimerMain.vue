@@ -1,19 +1,14 @@
 <template>
-  <!--  <div class="row justify-end q-pb-sm">-->
-  <!--    <q-btn dense icon="add" round color="positive" @click="addTimefrag" />-->
-  <!--  </div>-->
-  <div class="row q-py-lg justify-center full-height">
-    <div v-for="timer in listTimers" :key="timer">
+  <q-scroll-area class="full-height">
+    <div class="row q-pa-lg full-height">
       <CreateTimer
-        :timer="timer"
+        :timers="listTimers"
         @upsert="upsertTimer"
         @remove="removeTimer"
+        class="col-12"
       />
     </div>
-  </div>
-  <!--    <q-footer>-->
-  <!--      <save-timer />-->
-  <!--    </q-footer>-->
+  </q-scroll-area>
 </template>
 
 <script setup lang="ts">
@@ -22,19 +17,17 @@ import { storeToRefs } from 'pinia';
 import { Timer } from 'src/core/timer/domain/timer.model';
 import CreateTimer from 'src/core/timer/presentation/components/CreateTimer.vue';
 
-const timefragStore = useTimerStore();
-const timefragStoreRefs = storeToRefs(timefragStore);
+const timerStore = useTimerStore();
+const timefragStoreRefs = storeToRefs(timerStore);
 
-timefragStore.fetchAll();
+timerStore.fetchAll();
 
 const { listTimers } = timefragStoreRefs;
-const addTimefrag = () => {
-  timefragStore.add(new Timer({}));
-};
+
 const upsertTimer = (timer: Timer) => {
-  timefragStore.edit(timer);
+  timerStore.edit(timer);
 };
 const removeTimer = (id: string) => {
-  timefragStore.remove(id);
+  timerStore.remove(id);
 };
 </script>
