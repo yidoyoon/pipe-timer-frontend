@@ -18,20 +18,20 @@ export class Timer implements ITimer {
   _count: number;
   _isEditing: boolean;
 
-  constructor(timefrag: Partial<Timer>) {
-    if (timefrag) {
+  constructor(timer: Partial<Timer>) {
+    if (timer) {
       Object.assign(
         this,
-        plainToClass(Timer, timefrag, {
+        plainToClass(Timer, timer, {
           excludeExtraneousValues: false,
         })
       );
-      this._id = timefrag.id || ulid();
-      this._name = timefrag.name || 'New';
-      this._color = timefrag.color || '000000';
-      this._duration = timefrag.duration || 1;
-      this._count = timefrag.count || 0;
-      this._isEditing = timefrag.isEditing || false;
+      this._id = timer.id || ulid();
+      this._name = timer.name || 'New';
+      this._color = timer.color || '000000';
+      this._duration = timer.duration || 1;
+      this._count = timer.count || 0;
+      this._isEditing = timer.isEditing || false;
     }
   }
 
