@@ -10,18 +10,18 @@ export interface IStack {
   _isEditing: boolean;
 }
 
-export class Stacks implements IStack {
+export class Stack implements IStack {
   _id: string;
   _name: string;
   _count: number;
   _data: ITimer[];
   _isEditing: boolean;
 
-  constructor(stacks: Partial<Stacks>) {
+  constructor(stacks: Partial<Stack>) {
     if (stacks) {
       Object.assign(
         this,
-        plainToClass(Stacks, stacks, {
+        plainToClass(Stack, stacks, {
           excludeExtraneousValues: false,
         })
       );
