@@ -7,7 +7,6 @@ import { ITimer } from 'src/core/timer/domain/timer.model';
 export interface StacksState {
   stacks: Record<string, IStack>;
   stacksIds: string[];
-  timersInStack: ITimer[];
   isLoadingStacks: boolean;
   isEditingStacks: boolean;
 }
@@ -17,7 +16,6 @@ export const useStackStore = defineStore('StackStore', {
     return {
       stacks: {},
       stacksIds: [],
-      timersInStack: [],
       isLoadingStacks: false,
       isEditingStacks: false,
     };
@@ -69,14 +67,7 @@ export const useStackStore = defineStore('StackStore', {
       return !(this.isLoadingStacks || this.isEditingOverallStacks);
     },
 
-    // TODO: Number를 시간단위로 변경
-    getTotalDuration(): number {
-      let total = 0;
-      this.timersInStack.forEach((e) => {
-        total += e._duration;
-      });
-      return total;
-    },
+
   },
 
   actions: {
