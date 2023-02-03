@@ -1,4 +1,5 @@
 <template>
+  {{ builderStore.getBuilder }}
   <q-item class="fit flat no-shadow cursor-pointer">
     <q-item-section class="row" :style="activeBuilder">
       <div
@@ -7,7 +8,7 @@
         style="position: absolute; top: 1rem"
       >
         <b>
-          Name: {{ props.stack._name }} <br />
+          Name: {{ props.stack.name }} <br />
           Total duration: {{ getTotalDur }}
         </b>
       </div>
@@ -19,11 +20,20 @@
       </div>
 
       <draggable
-        v-if="props.stack._data !== undefined"
+        v-if="props.stack.stacksToFrag !== undefined"
         :list="rBuilder"
-        item-key="_id"
-        :group="{ name: 'timers' }"
-        class="q-pa-none row no-wrap justify-start"
+        v-bind="dragOptions"
+        :component-data="{
+          tag: 'ul',
+          type: 'transition-group',
+          name: !drag ? 'flip-list' : null,
+        }"
+        class="q-pa-none row no-wrap justify-start builder-group"
+        @start="drag = true"
+        @end="drag = false"
+        item-key="order fragId"
+        :removeOnSpill="true"
+        :onSpill="removeDraggedItem"
       >
         <template #item="{ element, index }">
           <div>
@@ -41,18 +51,30 @@
                 class="inner-my-card text-white cursor-pointer flat justify-between"
                 style="background: black; display: inline-block"
               >
-                <q-card-section>
-                  <div>Name: {{ element._name }}</div>
+                <!--                TODO: 아래 카드섹션 데이터 일치시키기-->
+                <q-card-section v-if="'frag' in element">
+                  <div>Name: {{ element.frag.name }}</div>
                   <br />
                   <div>
-                    Duration: {{ element._duration }}<br />
-                    Count: {{ element._count }}
+                    Duration: {{ element.frag.duration }}
+                    <br />
+                    Order: {{ element.frag.order }}
+                  </div>
+                </q-card-section>
+
+                <q-card-section v-else>
+                  <div>Name: {{ element.name }}</div>
+                  <br />
+                  <div>
+                    Duration: {{ element.duration }}
+                    <br />
+                    Order: {{ element.order }}
                   </div>
                 </q-card-section>
               </q-card>
               <div class="row items-center">
                 <q-icon
-                  v-if="!!props.stack && index !== props.stack._data.length - 1"
+                  v-if="arrowDrawer(index)"
                   name="arrow_right"
                   style="font-size: 4rem; color: grey"
                 ></q-icon>
@@ -67,44 +89,46 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useQuasar } from 'quasar';
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
-import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
 import { IStack } from 'src/core/stack/domain/stack.model';
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import draggable from 'vuedraggable';
-
-const $q = useQuasar();
 
 const builderStore = useBuilderStore();
 const { getTotalDur, isEditBuilder } = storeToRefs(builderStore);
-const selectorStore = useSelectorStore();
 
 const props = defineProps<{ stack: IStack }>();
 const rBuilder = computed(() => {
-  return reactive(props.stack._data);
+  return reactive(props.stack.stacksToFrag);
 });
 
-// const emit = defineEmits<{
-//   (e: 'upsert', data: IStack): void;
-//   (e: 'remove', id: string): void;
-// }>();
+const drag = ref(false);
 
-// Stack properties
-// const stackName = ref(props.stack._name);
-// const count = ref(props.stack._count);
-// const isEditing = ref(props.stack._isEditing);
-// const stackData = ref(props.stack._data);
+const arrowDrawer = (index: number) => {
+  return !!props.stack && index !== props.stack.stacksToFrag.length - 1;
+};
+
+const removeDraggedItem = (e: any) => {
+  builderStore.stackInBuilder.stacksToFrag.splice(e.oldIndex, 1);
+};
 
 const activeBuilder = {
   minHeight: '14rem',
-  // position: 'absolute',
-  // top: '0px',
-  // bottom: '0px',
+};
+
+const dragOptions = {
+  animation: 200,
+  group: { name: 'timers' },
+  disabled: false,
+  ghostClass: 'ghost',
 };
 </script>
 
 <style lang="scss" scoped>
+.flip-list-move {
+  transition: transform 0.5s;
+}
+
 .inner-my-card {
   width: 15rem;
 }
