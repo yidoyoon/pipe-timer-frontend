@@ -1,7 +1,7 @@
 <template>
   <q-scroll-area class="full-height">
-    <div class="row q-pa-lg full-height">
-      <CreateTimer
+    <div class="row q-pa-sm full-height">
+      <TimerCore
         :timers="listTimers"
         @upsert="upsertTimer"
         @remove="removeTimer"
@@ -15,7 +15,7 @@
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
 import { storeToRefs } from 'pinia';
 import { Timer } from 'src/core/timer/domain/timer.model';
-import CreateTimer from 'src/core/timer/presentation/components/CreateTimer.vue';
+import TimerCore from 'src/core/timer/presentation/components/TimerCore.vue';
 
 const timerStore = useTimerStore();
 const timefragStoreRefs = storeToRefs(timerStore);
