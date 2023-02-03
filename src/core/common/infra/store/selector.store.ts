@@ -5,6 +5,7 @@ export interface IEditNow {
   onBuilder: boolean;
   onTimer: boolean;
   editNow: string;
+  removeStack: boolean;
 }
 
 export const useSelectorStore = defineStore('SelectorStore', {
@@ -14,6 +15,7 @@ export const useSelectorStore = defineStore('SelectorStore', {
       onBuilder: false,
       onTimer: false,
       editNow: '',
+      removeStack: false,
     };
   },
 
@@ -30,9 +32,6 @@ export const useSelectorStore = defineStore('SelectorStore', {
     //   }
     //   return null;
     // },
-    editNow(): string {
-      return this.editNow;
-    }
   },
 
   actions: {
