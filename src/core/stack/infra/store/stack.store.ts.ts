@@ -43,7 +43,7 @@ export const useStackStore = defineStore('StackStore', {
     listStacksData(): ITimer[] {
       const result = [] as ITimer[];
       this.stacksIds.forEach((e) => {
-        result.push(...this.stacks[e]._data);
+        result.push(...this.stacks[e].stacksToFrag);
       });
       return result;
     },
@@ -56,7 +56,7 @@ export const useStackStore = defineStore('StackStore', {
       let filtered;
       if (!this.isLoadingStacks) {
         filtered = this.listStacks.find((obj) => {
-          return obj._isEditing;
+          return obj.isEditing;
         });
       }
 
@@ -66,52 +66,30 @@ export const useStackStore = defineStore('StackStore', {
     canSaveStack(): boolean {
       return !(this.isLoadingStacks || this.isEditingOverallStacks);
     },
-
-
   },
 
   actions: {
     async fetchAll() {
-      if (this.loadedStacks) return;
       this.isLoadingStacks = true;
       // TODO: 에러 처리 필요
       const res = await api.get('stacks/fetch');
-      const stacks = res.data;
-
-      // const a = new TimerModel({ name: 'a' });
-      //
-      // const stack1 = {} as IStacks;
-      // stack1._id = 'A';
-      // stack1._count = 0;
-      // stack1._name = 'ACCC';
-      // stack1._isEditing = false;
-      // stack1._data = [a];
-      //
-      // const stack2 = {} as IStacks;
-      // stack2._id = 'B';
-      // stack2._count = 0;
-      // stack2._name = 'B';
-      // stack2._isEditing = false;
-      // stack2._data = [new TimerModel({ _name: 'a' })];
-
-      // const stacks: IStacks[] = [{ ...stack1 }, { ...stack2 }];
+      const stacks = res.data as IStack[];
 
       this.isLoadingStacks = false;
 
       this.stacksIds = stacks.map((stack: IStack) => {
-        this.stacks[stack._id] = stack;
-        return stack._id;
+        stack.stacksToFrag.sort((a, b) => a.order - b.order)
+        this.stacks[stack.id] = stack;
+        return stack.id;
       });
       this.setInitialState();
     },
 
-
-
     edit(newStacks: IStack) {
-      const tradStack = this.stacks[newStacks._id];
+      const tradStack = this.stacks[newStacks.id];
 
       if (!!tradStack) {
-        this.stacks[newStacks._id] = newStacks;
+        this.stacks[newStacks.id] = newStacks;
       }
     },
 

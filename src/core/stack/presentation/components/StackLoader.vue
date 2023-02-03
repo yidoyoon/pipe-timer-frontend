@@ -1,37 +1,46 @@
 <template>
-  <q-card class="no-shadow my-card flat" style="background: transparent">
+  <q-card
+    class="no-shadow my-card flat"
+    style="background: transparent"
+    @dblclick="toBuilderHandler(props.stack)"
+  >
     <div class="text-subtitle1 text-black q-px-md">
-      <!--      Stack name: {{ _name }} | Total duration: 객체 데이터 자체에서 가져오도록 수정<br>-->
-      <!--      listStackData : {{listStacksData}}-->
-      <!--      StacksId: {{stacksIds}}-->
-      this: {{ [props.stacks] }}
+      <!--      {{ stack.stacksToFrag }}-->
+      <b>Name: {{ stack.name }}</b>
+      <q-btn
+        v-if="!!removeStack"
+        round
+        color="negative"
+        icon="delete"
+        size="xs"
+        class="q-ml-xs"
+        @click="remove"
+      />
     </div>
-    <q-card-section>
+    <q-card-section class="q-py-none">
       <div
+        v-if="props.stack.stacksToFrag !== undefined"
         class="row justify-between no-wrap"
         style="height: 7rem; white-space: nowrap"
       >
         <div
-          v-for="(s, idx) in props.stacks._data"
-          :key="s"
+          v-for="(t, idx) in props.stack.stacksToFrag"
+          :key="t.frag.fragId"
           class="q-pa-none row no-wrap"
         >
           <q-card
             class="inner-my-card text-white flat"
             style="background: black; display: inline-block; width: 12vw"
           >
-            <q-card-section class="q-img-container">
-              <div>Name: {{ s._name }}</div>
+            <q-card-section v-show="'frag' in t" class="q-img-container">
+              <div>Name: {{ t['frag']['name'] }}</div>
               <br />
-              <div>
-                Duration: {{ s._duration }}<br />
-                Count: {{ s._count }}
-              </div>
+              <div>Duration: {{ t['frag']['duration'] }}<br /></div>
             </q-card-section>
           </q-card>
           <div class="row items-center">
             <q-icon
-              v-if="idx !== props.stacks._data.length - 1"
+              v-if="idx !== props.stack.stacksToFrag.length - 1"
               name="arrow_right"
               style="font-size: 4rem; color: grey"
             ></q-icon>
@@ -40,45 +49,83 @@
       </div>
     </q-card-section>
   </q-card>
+
+  <!--  toBuilder prompt-->
+  <q-dialog
+    v-model="toBuilderWarnPrompt"
+    persistent
+    @keyup.enter="toBuilder(props.stack)"
+    @keyup.esc.prevent="toBuilderWarnPrompt = false"
+  >
+    <q-card style="min-width: 350px">
+      <q-card-section>
+        <div class="text-h6">
+          <q-icon name="warning"></q-icon>
+          Warning
+        </div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <div>
+          현재 빌더에 작업 중인 스택이 있습니다. 저장하지 않은 작업 내용은
+          삭제됩니다. 계속하시겠습니까?
+        </div>
+      </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn
+          flat
+          label="Confirm"
+          color="red"
+          v-close-popup
+          @click="toBuilder(props.stack)"
+        />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup lang="ts">
-import { storeToRefs }   from 'pinia';
-import { IStack }        from 'src/core/stack/domain/stack.model';
+import { storeToRefs } from 'pinia';
+import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
+import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
+import { IStack } from 'src/core/stack/domain/stack.model';
 import { useStackStore } from 'src/core/stack/infra/store/stack.store.ts';
-import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
-import { ref } from 'vue';
 import { useQuasar } from 'quasar';
+import { ref } from 'vue';
 
-const timefragStore = useTimerStore();
 const stacksStore = useStackStore();
+const builderStore = useBuilderStore();
+const selectorStore = useSelectorStore();
 
 const { isLoadingStacks } = storeToRefs(stacksStore);
+const { removeStack } = storeToRefs(selectorStore);
 
 const $q = useQuasar();
 
-const props = defineProps<{ stacks: IStack }>();
+const toBuilderPrompt = ref(false);
+const toBuilderWarnPrompt = ref(false);
+
+const props = defineProps<{ stack: IStack }>();
 const emit = defineEmits<{
   (e: 'remove', id: string): void;
 }>();
 
-const _name = ref(props.stacks._name);
-const _count = ref(props.stacks._count);
-const _isEditing = ref(props.stacks._isEditing);
-
 const remove = () => {
   $q.notify({
     progress: true,
-    message: '해당 스택을 삭제할까요?',
-    color: 'indigo-5',
+    message: '해당 스택 삭제합니다. 계속 하시겠습니까?',
+    color: 'negative',
     multiLine: true,
+    icon: 'warning',
     actions: [
       {
         label: '확인',
-        color: 'negative',
+        color: 'white',
         handler: () => {
           isLoadingStacks.value = false;
-          emit('remove', props.stacks._id);
+          emit('remove', props.stack.id);
         },
       },
       { label: '취소', color: 'white' },
@@ -86,6 +133,20 @@ const remove = () => {
   });
 };
 
-// 클릭한 스택이 수정을 위해 빌더로 이동
-const toBuilder = () => {};
+const toBuilderHandler = (stack: IStack) => {
+  if ('stacksToFrag' in builderStore.stackInBuilder) {
+    toBuilderWarnPrompt.value = true;
+  } else {
+    $q.notify({
+      message: '스택이 빌더로 이동하였습니다',
+    });
+    toBuilder(stack);
+  }
+};
+
+const toBuilder = (stack: IStack) => {
+  builderStore.$reset();
+  builderStore.stackInBuilder = stack;
+  toBuilderPrompt.value = false;
+};
 </script>
