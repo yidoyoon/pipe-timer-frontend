@@ -1,133 +1,134 @@
 <template>
-  <!--  TODO: Frag, Stack 둘다 Q-card에서 Q-table과 virtual-scroll로 바꾸어 구현-->
-  <!--  <q-virtual-scroll-->
-  <!--    style="max-height: 300px;"-->
-  <!--    :items="heavyList"-->
-  <!--    separator-->
-  <!--    v-slot="{ item, index }"-->
-  <!--  >-->
-  <q-card class="fit flat no-shadow my-card cursor-pointer">
-    <!--    <q-inner-loading :showing="isLoadingStacks" style="z-index: 1">-->
-    <!--      <q-spinner size="50px" color="primary" />-->
-    <!--    </q-inner-loading>-->
-
-    <q-card-section class="row" style="height: 29.5vh">
-      <div class="text-h6">
-        Stack name: {{ stackName }} | Total duration: {{ getTotalDuration }}
-      </div>
-      <q-space class="flex-break"></q-space>
-      <!--      Inner Stack Frags -->
+  {{ builderStore.getBuilder }}
+  <q-item class="fit flat no-shadow cursor-pointer">
+    <q-item-section class="row" :style="activeBuilder">
       <div
-        class="row no-wrap flat justify-between"
-        style="height: 7rem; white-space: nowrap"
+        v-if="isEditBuilder"
+        class="text-subtitle1"
+        style="position: absolute; top: 1rem"
       >
-        <div
-          v-for="(f, idx) in timersInStack"
-          :key="f"
-          class="q-pa-none row no-wrap justify-around"
-        >
-          <q-card
-            class="inner-my-card text-white cursor-pointer flat justify-between"
-            style="background: black; display: inline-block"
-          >
-            <q-card-section class="q-img-container">
-              <div>Name: {{ f._name }}</div>
-              <br />
-              <div>
-                Duration: {{ f._duration }}<br />
-                Count: {{ f._count }}
-              </div>
-            </q-card-section>
-          </q-card>
-          <div class="row items-center">
-            <q-icon
-              v-if="idx !== timersInStack.length - 1"
-              name="arrow_right"
-              style="font-size: 4rem; color: grey"
-            ></q-icon>
-          </div>
-        </div>
+        <b>
+          Name: {{ props.stack.name }} <br />
+          Total duration: {{ getTotalDur }}
+        </b>
       </div>
-    </q-card-section>
-  </q-card>
+      <div v-else class="text-h5 bold">
+        <b>
+          스택 리스트에서 스택을 선택하거나 'CREATE STACK' 을 눌러 새로운 스택을
+          생성하세요.
+        </b>
+      </div>
+
+      <draggable
+        v-if="props.stack.stacksToFrag !== undefined"
+        :list="rBuilder"
+        v-bind="dragOptions"
+        :component-data="{
+          tag: 'ul',
+          type: 'transition-group',
+          name: !drag ? 'flip-list' : null,
+        }"
+        class="q-pa-none row no-wrap justify-start builder-group"
+        @start="drag = true"
+        @end="drag = false"
+        item-key="order fragId"
+        :removeOnSpill="true"
+        :onSpill="removeDraggedItem"
+      >
+        <template #item="{ element, index }">
+          <div>
+            <!--      Inner Builder-->
+            <div
+              class="row no-wrap flat justify-between"
+              style="
+                height: 7rem;
+                white-space: nowrap;
+                position: relative;
+                bottom: -2rem;
+              "
+            >
+              <q-card
+                class="inner-my-card text-white cursor-pointer flat justify-between"
+                style="background: black; display: inline-block"
+              >
+                <!--                TODO: 아래 카드섹션 데이터 일치시키기-->
+                <q-card-section v-if="'frag' in element">
+                  <div>Name: {{ element.frag.name }}</div>
+                  <br />
+                  <div>
+                    Duration: {{ element.frag.duration }}
+                    <br />
+                    Order: {{ element.frag.order }}
+                  </div>
+                </q-card-section>
+
+                <q-card-section v-else>
+                  <div>Name: {{ element.name }}</div>
+                  <br />
+                  <div>
+                    Duration: {{ element.duration }}
+                    <br />
+                    Order: {{ element.order }}
+                  </div>
+                </q-card-section>
+              </q-card>
+              <div class="row items-center">
+                <q-icon
+                  v-if="arrowDrawer(index)"
+                  name="arrow_right"
+                  style="font-size: 4rem; color: grey"
+                ></q-icon>
+              </div>
+            </div>
+          </div>
+        </template>
+      </draggable>
+    </q-item-section>
+  </q-item>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useQuasar }     from 'quasar';
-import { IStack }        from 'src/core/stack/domain/stack.model';
-import { useStackStore } from 'src/core/stack/infra/store/stack.store.ts';
-import { ref } from 'vue';
+import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
+import { IStack } from 'src/core/stack/domain/stack.model';
+import { computed, reactive, ref } from 'vue';
+import draggable from 'vuedraggable';
 
-const $q = useQuasar();
+const builderStore = useBuilderStore();
+const { getTotalDur, isEditBuilder } = storeToRefs(builderStore);
 
-const stackStore = useStackStore();
-const { isLoadingStacks, timersInStack, getTotalDuration, listStacks } =
-  storeToRefs(stackStore);
+const props = defineProps<{ stack: IStack }>();
+const rBuilder = computed(() => {
+  return reactive(props.stack.stacksToFrag);
+});
 
-const props = defineProps<{ stacks: IStack }>();
-const emit = defineEmits<{
-  (e: 'upsert', data: IStack): void;
-  (e: 'remove', id: string): void;
-}>();
+const drag = ref(false);
 
-// Stack properties
-const stackName = ref(props.stacks._name);
-const count = ref(props.stacks._count);
-const isEditing = ref(props.stacks._isEditing);
-const stackData = ref(props.stacks._data);
-
-const totalDuration = ref(0);
-
-const update = () => {
-  const newFrag = {
-    ...props.stacks,
-    _name: stackName.value,
-    _data: stackData.value,
-    _isEditing: !isEditing.value,
-  };
-  stackStore.edit(newFrag);
+const arrowDrawer = (index: number) => {
+  return !!props.stack && index !== props.stack.stacksToFrag.length - 1;
 };
 
-const upsert = () => {
-  emit('upsert', {
-    _id: props.stacks._id,
-    _name: stackName.value,
-    _count: count.value,
-    _data: stackData.value,
-    _isEditing: isEditing.value,
-  });
-  update();
+const removeDraggedItem = (e: any) => {
+  builderStore.stackInBuilder.stacksToFrag.splice(e.oldIndex, 1);
 };
 
-const remove = () => {
-  $q.notify({
-    progress: true,
-    message: '해당 스택을 삭제할까요?',
-    color: 'indigo-5',
-    multiLine: true,
-    actions: [
-      {
-        label: '확인',
-        color: 'negative',
-        handler: () => {
-          isLoadingStacks.value = false;
-          emit('remove', props.stacks._id);
-        },
-      },
-      { label: '취소', color: 'white' },
-    ],
-  });
+const activeBuilder = {
+  minHeight: '14rem',
 };
 
-const cancel = () => {
-  stackName.value = props.stacks._name;
-
-  update();
+const dragOptions = {
+  animation: 200,
+  group: { name: 'timers' },
+  disabled: false,
+  ghostClass: 'ghost',
 };
 </script>
 
 <style lang="scss" scoped>
+.flip-list-move {
+  transition: transform 0.5s;
+}
+
 .inner-my-card {
   width: 15rem;
 }

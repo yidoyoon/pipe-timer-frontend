@@ -11,7 +11,8 @@
   </div>
 
   <!--  Navigation-->
-  <div class="col-xs-12 col-sm-3 col-md-6">
+  <!--  <div class="col-xs-12 col-sm-3 col-md-6">-->
+  <div>
     <q-btn
       v-for="(link, index) in navLinks"
       :key="index"
@@ -23,37 +24,20 @@
   </div>
 
   <!--  Login-->
-  <div class="col-xs-12 col-sm-0 col-md-1">
+  <!--  <div class="col-xs-12 col-sm-0 col-md-1">-->
+  <div>
     <q-btn
       outline
       class="q-ml-sm"
-      v-if="!isLoggedIn"
+      v-if="!user"
       label="LOGIN"
       :to="{ name: 'login' }"
     />
 
-    <!--    &lt;!&ndash;  Signup&ndash;&gt;-->
-    <!--    <q-btn-->
-    <!--      class="q-ml-lg"-->
-    <!--      v-if="!isLoggedIn"-->
-    <!--      color="accent"-->
-    <!--      label="SIGN UP"-->
-    <!--      :to="{ name: 'signup' }"-->
-    <!--    />-->
-
-    <!--  Profile-->
-    <!--    <q-btn-->
-    <!--      v-if="isLoggedIn"-->
-    <!--      flat-->
-    <!--      style="color: white"-->
-    <!--      label="PROFILE"-->
-    <!--      :to="{ name: 'profile' }"-->
-    <!--    />-->
-
     <!--  Logout-->
     <q-btn
       class="q-ml-sm"
-      v-if="isLoggedIn"
+      v-if="user"
       outline
       label="LOGOUT"
       @click="handleLogout"
@@ -67,7 +51,6 @@ import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
 import { logoutUserFn }  from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { useQuasar } from 'quasar';
-import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMutation } from '@tanstack/vue-query';
 
@@ -75,9 +58,7 @@ const userStore = useUserStore();
 const userStoreRefs = storeToRefs(userStore);
 const fragStore = useTimerStore();
 
-let isLoggedIn = computed(() => {
-  return userStore.user;
-});
+const { user } = userStoreRefs;
 
 const $q = useQuasar();
 const router = useRouter();
@@ -135,7 +116,6 @@ const navLinks = [
     to: { name: 'settings' },
   },
   {
-    // icon: 'icon-mat-settings-bk',
     label: 'Create Timer',
     value: 'create-timer',
     to: { name: 'create-timer' },

@@ -1,14 +1,45 @@
 <template>
-  <div class="q-pa-md q-gutter-sm row justify-between">
-    <q-btn
-      label="Create stack"
-      color="green"
-      @click="createStacksBtn"
-      style="position: relative; top: 0"
-      icon-right="add"
-    />
+  <div class="q-ma-sm row justify-between">
+    <!--    Buttons-->
+    <div>
+      <q-btn
+        label="Save stack"
+        color="cyan-6"
+        @click="saveStackBtn"
+        style="position: relative; top: 0"
+        icon="table_rows"
+        class="q-mr-sm"
+      />
 
-    <q-dialog v-model="caution" persistent>
+      <q-btn
+        label="Edit stack name"
+        color="green-6"
+        @click="editStackBtn"
+        style="position: relative; top: 0"
+        icon="edit"
+        class="q-mr-sm"
+      />
+    </div>
+
+    <div>
+      <q-btn
+        @click="cancelBtn"
+        color="white"
+        text-color="black"
+        label="cancel"
+      />
+    </div>
+
+    <!--    CreateStack dialog-->
+    <q-dialog
+      v-model="builderWarn"
+      persistent
+      @keyup.enter="
+        builderWarn = false;
+        builderPrompt = true;
+      "
+      @keyup.esc.prevent="builderWarn = false"
+    >
       <q-card style="min-width: 350px">
         <q-card-section>
           <div class="text-h6">
@@ -31,110 +62,196 @@
             label="Confirm"
             color="red"
             v-close-popup
-            @click="prompt = true"
+            @click="builderPrompt = true"
           />
         </q-card-actions>
       </q-card>
     </q-dialog>
-
-    <q-dialog v-model="prompt" persistent>
-      <q-card style="min-width: 350px">
-        <q-card-section>
-          <div class="text-h6">Stack name</div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          <q-input
-            dense
-            v-model="stackName"
-            autofocus
-            @keyup.enter.prevent="addTimeStacks"
-            @keyup.esc.prevent="prompt = false"
-          />
-        </q-card-section>
-
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn
-            flat
-            label="Confirm"
-            color="green"
-            v-close-popup
-            @click="addTimeStacks"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <q-btn @click="resetButton" color="negative" label="Reset" />
-    <div>
-      <q-btn
-        @click="saveEdit"
-        color="blue"
-        label="Save"
-        :disable="!canSaveTimers"
-        class="q-mx-md"
-      />
-      <q-btn
-        @click="cancelEdit"
-        color="white"
-        text-color="black"
-        label="cancel"
-      />
-    </div>
-    <!--    <q-tooltip v-if="!!fragsInStack" class="text-body2">-->
-    <!--      진행중인 설정이 남아있거나, 데이터 로딩이 완료되지 않았습니다.-->
-    <!--    </q-tooltip>-->
   </div>
+
+  <!--  Edit stack prompt-->
+  <q-dialog v-model="editStackPrompt" persistent>
+    <q-card style="min-width: 350px">
+      <q-card-section>
+        <div class="text-h6">Input new stack name</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <q-input
+          dense
+          v-model="stackName"
+          autofocus
+          @keyup.enter.prevent="editStack"
+          @keyup.esc.prevent="editStackPrompt = false"
+        />
+      </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn
+          flat
+          label="Confirm"
+          color="green"
+          v-close-popup
+          @click="editStack"
+        />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
+  <!--  Builder prompt-->
+  <q-dialog v-model="builderPrompt" persistent>
+    <q-card style="min-width: 350px">
+      <q-card-section>
+        <div class="text-h6">Stack name</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <q-input
+          dense
+          v-model="stackName"
+          autofocus
+          @keyup.enter.prevent="saveStack"
+          @keyup.esc.prevent="builderPrompt = false"
+        />
+      </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn
+          flat
+          label="Confirm"
+          color="green"
+          v-close-popup
+          @click="saveStack"
+        />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
+  <!--  Cancel Prompt-->
+  <q-dialog
+    v-model="cancelBtnPrompt"
+    persistent
+    @keyup.enter="cancelBtnPrompt = false"
+    @keyup.esc.prevent="builderWarn = false"
+  >
+    <q-card style="min-width: 350px">
+      <q-card-section>
+        <div class="text-h6">
+          <q-icon name="warning"></q-icon>
+          Warning
+        </div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <div>
+          현재 작업 중인 스택이 있습니다. 취소할 경우, 해당 스택은 제거됩니다.
+          계속하시겠습니까?
+        </div>
+      </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn
+          flat
+          label="Confirm"
+          color="red"
+          v-close-popup
+          @click="resetBuilder"
+        />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup lang="ts">
-import { storeToRefs }   from 'pinia';
-import { useQuasar }    from 'quasar';
-import {IStack, Stacks} from 'src/core/stack/domain/stack.model';
-import {useStackStore}  from 'src/core/stack/infra/store/stack.store.ts';
+import { storeToRefs } from 'pinia';
+import { useQuasar } from 'quasar';
+import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
+import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
+import { IStack, Stack } from 'src/core/stack/domain/stack.model';
+import { useStackStore } from 'src/core/stack/infra/store/stack.store.ts';
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
-import { ref }           from 'vue';
+import { isEmptyObj } from 'src/util/is-empty';
+import { ref } from 'vue';
 
-const stacksStore = useStackStore();
-const stacksStoreRefs = storeToRefs(stacksStore);
-const timefragStore = useTimerStore();
-const timefragStoreRefs = storeToRefs(timefragStore);
+const stackStore = useStackStore();
+const stackStoreRefs = storeToRefs(stackStore);
+const timerStore = useTimerStore();
+const builderStore = useBuilderStore();
+const builderStoreRefs = storeToRefs(builderStore);
+const selectorStore = useSelectorStore();
+const { editNow } = storeToRefs(selectorStore);
 
-timefragStore.fetchAll();
-stacksStore.fetchAll();
+timerStore.fetchAll();
+stackStore.fetchAll();
 
 const $q = useQuasar();
 
-const { listStacks, isEditingStacks, timersInStack } = stacksStoreRefs;
 
-const prompt = ref(false);
-const caution = ref(false);
+const builderPrompt = ref(false);
+const builderWarn = ref(false);
+const editStackPrompt = ref(false);
+const cancelBtnPrompt = ref(false);
+
 const stackName = ref('');
-const stack = ref({} as IStack);
 
-const createStacksBtn = () => {
-  if (isEditingStacks.value) {
-    caution.value = true;
+const editStackBtn = () => {
+  editStackPrompt.value = true;
+};
+
+const editStack = () => {
+  builderStore.stackInBuilder.name = stackName.value;
+  editStackPrompt.value = false;
+};
+
+const saveStackBtn = () => {
+  const stack = builderStore.stackInBuilder;
+  if (stack.stacksToFrag.length === 0) {
+    $q.notify({
+      color: 'yellow-6',
+      icon: 'warning',
+      textColor: 'black',
+      message:
+        '스택이 비어있습니다. 우측 타이머 영역에서 스택을 끌어와 추가해주세요.',
+    });
   } else {
-    prompt.value = true;
+    saveStack(stack);
+    resetBuilder();
+    editNow.value = '';
   }
 };
 
-const addTimeStacks = () => {
-  emptyBuilder();
-  stacksStore.addStack(new Stacks({ name: stackName.value }));
-  isEditingStacks.value = true;
+const saveStack = async(stack: IStack) => {
+  await builderStore.saveStack(stack);
+  await stackStore.fetchAll();
+  editNow.value = '';
 };
 
-const emptyBuilder = () => {
-  stacksStore.emptyBuilder();
+const createStacksBtn = () => {
+  if (isEmptyObj(builderStore.getBuilder)) {
+    builderPrompt.value = true;
+  } else {
+    builderWarn.value = true;
+  }
 };
 
-const upsertTimeStacks = (stacks: Stacks) => {
-  stacksStore.edit(stacks);
+const createStack = () => {
+  builderStore.createStack(stackName.value);
+  builderPrompt.value = false;
+  editNow.value = 'builder';
 };
-const removeStacks = (id: string) => {
-  stacksStore.remove(id);
+
+const cancelBtn = () => {
+  cancelBtnPrompt.value = true;
+};
+
+const resetBuilder = () => {
+  builderStore.$reset();
+  cancelBtnPrompt.value = false;
+  editNow.value = '';
 };
 </script>
+
+<style scoped lang="scss"></style>
