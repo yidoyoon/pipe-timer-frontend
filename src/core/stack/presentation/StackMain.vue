@@ -5,11 +5,12 @@
     :content-active-style="contentActiveStyle"
     style="height: 50vh"
   >
-    <div class="row">
-      <div v-for="stacks in listStacks" :key="stacks">
-        <StackLoader :stacks="stacks" @remove="removeStacks" />
-        <q-space style="height: 1rem"></q-space>
-      </div>
+    <div
+      v-for="stack in listStacks"
+      :key="stack"
+      class="row justify-between"
+    >
+      <StackLoader :stack="stack" @remove="removeStacks" />
     </div>
   </q-scroll-area>
 </template>
