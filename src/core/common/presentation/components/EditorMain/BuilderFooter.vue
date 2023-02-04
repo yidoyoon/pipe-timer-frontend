@@ -171,7 +171,7 @@ import { useQuasar } from 'quasar';
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
 import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
 import { IStack, Stack } from 'src/core/stack/domain/stack.model';
-import { useStackStore } from 'src/core/stack/infra/store/stack.store.ts';
+import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
 import { isEmptyObj } from 'src/util/is-empty';
 import { ref } from 'vue';

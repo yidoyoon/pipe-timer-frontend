@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 import { useQuasar }   from 'quasar';
-import {useStackStore} from 'src/core/stack/infra/store/stack.store.ts';
+import {useStackStore} from 'src/core/stack/infra/store/stack.store';
 
 const $q = useQuasar();
 const stackStore = useStackStore();

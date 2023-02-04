@@ -91,7 +91,7 @@ import { storeToRefs } from 'pinia';
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
 import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
 import { IStack } from 'src/core/stack/domain/stack.model';
-import { useStackStore } from 'src/core/stack/infra/store/stack.store.ts';
+import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import { useQuasar } from 'quasar';
 import { ref } from 'vue';
 

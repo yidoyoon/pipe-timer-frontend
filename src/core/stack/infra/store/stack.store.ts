@@ -2,7 +2,7 @@ import { api } from 'boot/axios';
 import { defineStore } from 'pinia';
 import { LocalStorage } from 'quasar';
 import { IStack } from 'src/core/stack/domain/stack.model';
-import { ITimer } from 'src/core/timer/domain/timer.model';
+import { IStacksToFrag } from 'src/core/timer/domain/timer.model';
 
 export interface StacksState {
   stacks: Record<string, IStack>;
@@ -40,8 +40,8 @@ export const useStackStore = defineStore('StackStore', {
       return this.stacksIds.map((i) => this.stacks[i]);
     },
 
-    listStacksData(): ITimer[] {
-      const result = [] as ITimer[];
+    listStacksData(): IStacksToFrag[] {
+      const result = [] as IStacksToFrag[];
       this.stacksIds.forEach((e) => {
         result.push(...this.stacks[e].stacksToFrag);
       });
@@ -78,7 +78,7 @@ export const useStackStore = defineStore('StackStore', {
       this.isLoadingStacks = false;
 
       this.stacksIds = stacks.map((stack: IStack) => {
-        stack.stacksToFrag.sort((a, b) => a.order - b.order)
+        stack.stacksToFrag.sort((a, b) => a.order - b.order);
         this.stacks[stack.id] = stack;
         return stack.id;
       });
