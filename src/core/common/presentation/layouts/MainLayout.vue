@@ -10,12 +10,12 @@
     <!-- Main content -->
     <q-page-container>
       <q-page>
-          <router-view />
+        <router-view />
       </q-page>
     </q-page-container>
   </q-layout>
 </template>
 
 <script setup lang="ts">
-import NavigationBar from 'src/core/common/presentation/layouts/NavigationBar.vue';
+import NavigationBar from 'src/core/common/presentation/components/NavigationBar.vue';
 </script>

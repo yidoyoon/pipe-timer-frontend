@@ -46,9 +46,9 @@
 </template>
 
 <script setup lang="ts">
-import { storeToRefs }   from 'pinia';
+import { storeToRefs } from 'pinia';
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
-import { logoutUserFn }  from 'src/core/users/infra/http/user.api';
+import { logoutUserFn } from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
@@ -104,29 +104,12 @@ const navLinks = [
     to: { name: 'guide' },
   },
   {
-    icon: 'icon-mat-assessment-bk',
-    label: 'Dashboard',
-    value: 'dashboard',
-    to: { name: 'dashboard' },
+    label: 'Pomodoro',
+    value: 'pomodoro',
+    to: { name: 'pomodoro' },
   },
   {
-    icon: 'icon-mat-settings-bk',
-    label: 'Settings',
-    value: 'settings',
-    to: { name: 'settings' },
-  },
-  {
-    label: 'Create Timer',
-    value: 'create-timer',
-    to: { name: 'create-timer' },
-  },
-  {
-    label: 'Create Stacks',
-    value: 'create-stacks',
-    to: { name: 'create-stacks' },
-  },
-  {
-    label: 'editor',
+    label: 'Editor',
     value: 'editor',
     to: { name: 'editor' },
   },
