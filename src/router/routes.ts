@@ -19,20 +19,6 @@ const routes: RouteRecordRaw[] = [
         name: 'guide',
       },
       {
-        path: 'dashboard',
-        component: () =>
-          import('../core/dashboard/presentation/HistoryDashboard.vue'),
-        name: 'dashboard',
-        meta: {
-          middleware: [requireAuth],
-        },
-      },
-      {
-        path: 'settings',
-        component: () => import('../core/setting/presentation/AppSettings.vue'),
-        name: 'settings',
-      },
-      {
         path: 'login',
         component: () => import('../core/users/presentation/UserLogin.vue'),
         name: 'login',
@@ -43,31 +29,13 @@ const routes: RouteRecordRaw[] = [
         name: 'signup',
       },
       {
-        path: 'create-timer',
-        component: () =>
-          import('../core/timer/presentation/TimerMain.vue'),
-        name: 'create-timer',
-        meta: {
-          middleware: [requireAuth],
-        },
-      },
-      {
-        path: 'create-stack',
-        component: () =>
-          import('../core/builder/presentation/BuilderMain.vue'),
-        name: 'create-stack',
-        meta: {
-          middleware: [requireAuth],
-        },
-      },
-      {
         path: 'editor',
         component: () =>
           import('../core/common/presentation/page/EditorMain.vue'),
         name: 'editor',
-        meta: {
-          middleware: [requireAuth],
-        },
+        // meta: {
+        //   middleware: [requireAuth],
+        // },
       },
     ],
   },
@@ -79,6 +47,19 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import('../core/users/presentation/UserSignupVerify.vue'),
         name: 'verify-email',
+      },
+    ],
+  },
+  // TODO: Slot 활용하여 컴포넌트 재사용률 높이기(https://router.vuejs.org/guide/essentials/named-views.html#nested-named-views)
+  {
+    path: '/pomodoro',
+    component: () =>
+      import('../core/common/presentation/layouts/PomoLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('../core/pomodoro/presentation/PomodoroMain.vue'),
+        name: 'pomodoro',
       },
     ],
   },

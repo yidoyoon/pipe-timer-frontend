@@ -31,8 +31,8 @@ import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
 import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
-import { useStackStore } from 'src/core/stack/infra/store/stack.store.ts';
-import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
+import { useStackStore }    from 'src/core/stack/infra/store/stack.store';
+import { useTimerStore }    from 'src/core/timer/infra/store/timer.store';
 const stackStore = useStackStore();
 
 const stackStoreRefs = storeToRefs(stackStore);

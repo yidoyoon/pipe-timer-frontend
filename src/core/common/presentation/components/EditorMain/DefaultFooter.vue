@@ -76,7 +76,7 @@
     </q-dialog>
   </div>
 
-  <!--  Timer prompt-->
+  <!--  Create timer dialog-->
   <q-dialog v-model="timerPrompt" persistent>
     <q-card style="min-width: 350px">
       <q-card-section>
@@ -85,8 +85,17 @@
 
       <q-card-section class="q-pt-none">
         <q-input
-          dense
+          label="Timer name"
           v-model="timerName"
+          dense
+          autofocus
+          @keyup.enter.prevent="createTimer"
+          @keyup.esc.prevent="timerPrompt = false"
+        />
+        <q-input
+          label="Timer duration"
+          v-model="duration"
+          dense
           autofocus
           @keyup.enter.prevent="createTimer"
           @keyup.esc.prevent="timerPrompt = false"
@@ -143,7 +152,7 @@ import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
 import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
-import { useStackStore } from 'src/core/stack/infra/store/stack.store.ts';
+import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import { Timer } from 'src/core/timer/domain/timer.model';
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
 import { isEmptyObj } from 'src/util/is-empty';
@@ -170,13 +179,16 @@ const timerPrompt = ref(false);
 
 const stackName = ref('');
 const timerName = ref('');
+const duration = ref(0);
 
 const createTimerBtn = () => {
   timerPrompt.value = true;
 };
 
 const createTimer = () => {
-  timerStore.add(new Timer({ name: timerName.value }));
+  timerStore.add(
+    new Timer({ name: timerName.value, duration: duration.value })
+  );
   timerPrompt.value = false;
 };
 

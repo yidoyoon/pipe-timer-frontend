@@ -2,7 +2,11 @@
   <q-card
     class="no-shadow my-card flat"
     style="background: transparent"
-    @dblclick="toBuilderHandler(props.stack)"
+    @dblclick="
+      importFrom === 'EditorMain'
+        ? toBuilderHandler(props.stack)
+        : toPomodoro(props.stack)
+    "
   >
     <div class="text-subtitle1 text-black q-px-md">
       <!--      {{ stack.stacksToFrag }}-->
@@ -21,10 +25,10 @@
       <div
         v-if="props.stack.stacksToFrag !== undefined"
         class="row justify-between no-wrap"
-        style="height: 7rem; white-space: nowrap"
+        style="height: 5rem; white-space: nowrap"
       >
         <div
-          v-for="(t, idx) in props.stack.stacksToFrag"
+          v-for="(t, index) in props.stack.stacksToFrag"
           :key="t.frag.fragId"
           class="q-pa-none row no-wrap"
         >
@@ -34,13 +38,12 @@
           >
             <q-card-section v-show="'frag' in t" class="q-img-container">
               <div>Name: {{ t['frag']['name'] }}</div>
-              <br />
               <div>Duration: {{ t['frag']['duration'] }}<br /></div>
             </q-card-section>
           </q-card>
           <div class="row items-center">
             <q-icon
-              v-if="idx !== props.stack.stacksToFrag.length - 1"
+              v-if="arrowDrawer(index)"
               name="arrow_right"
               style="font-size: 4rem; color: grey"
             ></q-icon>
@@ -90,17 +93,19 @@
 import { storeToRefs } from 'pinia';
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
 import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
+import { usePomodoroStore } from 'src/core/pomodoro/infra/store/pomodoro.store';
 import { IStack } from 'src/core/stack/domain/stack.model';
-import { useStackStore } from 'src/core/stack/infra/store/stack.store.ts';
+import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import { useQuasar } from 'quasar';
 import { ref } from 'vue';
 
 const stacksStore = useStackStore();
 const builderStore = useBuilderStore();
 const selectorStore = useSelectorStore();
+const pomodoroStore = usePomodoroStore();
 
 const { isLoadingStacks } = storeToRefs(stacksStore);
-const { removeStack } = storeToRefs(selectorStore);
+const { removeStack, importFrom } = storeToRefs(selectorStore);
 
 const $q = useQuasar();
 
@@ -137,9 +142,6 @@ const toBuilderHandler = (stack: IStack) => {
   if ('stacksToFrag' in builderStore.stackInBuilder) {
     toBuilderWarnPrompt.value = true;
   } else {
-    $q.notify({
-      message: '스택이 빌더로 이동하였습니다',
-    });
     toBuilder(stack);
   }
 };
@@ -148,5 +150,15 @@ const toBuilder = (stack: IStack) => {
   builderStore.$reset();
   builderStore.stackInBuilder = stack;
   toBuilderPrompt.value = false;
+};
+
+const arrowDrawer = (index: number) => {
+  return !!props.stack && index !== props.stack.stacksToFrag.length - 1;
+};
+
+// Pomodoro related
+const toPomodoro = (stack: IStack) => {
+  pomodoroStore.stack = { ...stack };
+  pomodoroStore.mode = 'stack';
 };
 </script>

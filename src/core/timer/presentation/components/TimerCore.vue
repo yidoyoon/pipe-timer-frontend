@@ -23,8 +23,6 @@
           <q-card-section>
             Name: {{ element.name }} <br />
             Duration: {{ element.duration }} <br />
-            Color: {{ element.color }} <br />
-            Count: {{ element.count }}
           </q-card-section>
         </q-card>
 
@@ -34,11 +32,20 @@
               <div class="text-h6">Stack name</div>
             </q-card-section>
 
+<!--            TODO: Input 값 검증 수행-->
             <q-card-section class="q-pt-none" style="width: 20rem">
               <q-input
                 label="Timer name"
                 dense
                 v-model="name"
+                autofocus
+                @keyup.enter.prevent="update(element)"
+                @keyup.esc.prevent="cancel(index)"
+              />
+              <q-input
+                label="Duration"
+                dense
+                v-model="duration"
                 autofocus
                 @keyup.enter.prevent="update(element)"
                 @keyup.esc.prevent="cancel(index)"
