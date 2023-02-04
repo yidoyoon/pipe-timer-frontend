@@ -48,6 +48,8 @@ const { editNow } = storeToRefs(selectorStore);
 
 const { isEditBuilder, stackInBuilder } = storeToRefs(useBuilderStore());
 
+selectorStore.importFrom = 'EditorMain';
+
 const selectStack = () => {
   selectorStore.selectStack();
   editNow.value = 'stack';
