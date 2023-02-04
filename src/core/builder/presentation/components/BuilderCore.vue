@@ -1,5 +1,4 @@
 <template>
-  {{ builderStore.getBuilder }}
   <q-item class="fit flat no-shadow cursor-pointer">
     <q-item-section class="row" :style="activeBuilder">
       <div
@@ -51,18 +50,7 @@
                 class="inner-my-card text-white cursor-pointer flat justify-between"
                 style="background: black; display: inline-block"
               >
-                <!--                TODO: 아래 카드섹션 데이터 일치시키기-->
-                <q-card-section v-if="'frag' in element">
-                  <div>Name: {{ element.frag.name }}</div>
-                  <br />
-                  <div>
-                    Duration: {{ element.frag.duration }}
-                    <br />
-                    Order: {{ element.frag.order }}
-                  </div>
-                </q-card-section>
-
-                <q-card-section v-else>
+                <q-card-section>
                   <div>Name: {{ element.name }}</div>
                   <br />
                   <div>

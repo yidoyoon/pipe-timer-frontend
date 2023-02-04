@@ -5,11 +5,7 @@
     :content-active-style="contentActiveStyle"
     style="height: 50vh"
   >
-    <div
-      v-for="stack in listStacks"
-      :key="stack"
-      class="row justify-between"
-    >
+    <div v-for="stack in listStacks" :key="stack" class="row justify-between">
       <StackLoader :stack="stack" @remove="removeStacks" />
     </div>
   </q-scroll-area>
@@ -23,6 +19,8 @@ import { useStackStore }    from 'src/core/stack/infra/store/stack.store';
 import StackLoader          from 'src/core/stack/presentation/components/StackLoader.vue';
 
 const stackStore = useStackStore();
+const selectorStore = useSelectorStore();
+
 const stacksStoreRefs = storeToRefs(stackStore);
 
 stackStore.fetchAll();
