@@ -1,18 +1,19 @@
 <template>
   <div class="fit row wrap justify-between q-pa-md">
-    <div class="col-9 q-pa-sm">
-      <StackMain class="area"></StackMain>
-      <q-space style="height: 1rem"></q-space>
+    <div class="col-10 q-pa-sm">
       <BuilderMain
         class="area"
         @click="selectBuilder"
         :style="isEditBuilder ? active : {}"
       ></BuilderMain>
+      <q-space style="height: 1rem"></q-space>
+      <StackMain class="area"></StackMain>
     </div>
-    <div class="col-3 q-pa-sm">
+    <div class="col-2 q-pa-sm">
       <TimerMain class="area" @click="selectTimer"></TimerMain>
     </div>
   </div>
+
   <q-footer>
     <div v-if="editNow === ''">
       <DefaultFooter></DefaultFooter>
