@@ -27,4 +27,9 @@ const { isEditBuilder, stackInBuilder } = storeToRefs(useBuilderStore());
 
 </script>
 
-<style scoped lang="scss"> </style>
+<style scoped lang="scss">
+.area {
+  border: solid;
+  color: black;
+}
+</style>
