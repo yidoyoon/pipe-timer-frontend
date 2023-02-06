@@ -51,12 +51,12 @@
                 style="background: black; display: inline-block"
               >
                 <q-card-section>
-                  <div>Name: {{ element.name }}</div>
+                  <div>Name: {{ element.frag.name }}</div>
                   <br />
                   <div>
-                    Duration: {{ element.duration }}
+                    Duration: {{ element.frag.duration }}
                     <br />
-                    Order: {{ element.order }}
+                    Order: {{ element.frag.order }}
                   </div>
                 </q-card-section>
               </q-card>
