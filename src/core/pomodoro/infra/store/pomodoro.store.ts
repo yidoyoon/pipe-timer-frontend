@@ -41,9 +41,9 @@ export const usePomodoroStore = defineStore('PomodoroStore', {
     // TODO: 비동기 타이머 기능 추가(다수의 타이머를 개별적으로 실행시킴)
     getTotalDuration(): number {
       let total = 0;
-      if (this.mode === 'stack') {
+      if (this.mode === 'stack' && 'stacksToFrag' in this.stack) {
         this.stack.stacksToFrag.forEach((e) => {
-          total += e.frag.duration as number;
+          total += e.frag.duration;
         });
       } else {
         total = this.timer.duration;
@@ -54,7 +54,7 @@ export const usePomodoroStore = defineStore('PomodoroStore', {
     getCurrentDuration(): number {
       const round = this.round;
       let res = 0;
-      if (this.mode === 'stack') {
+      if (this.mode === 'stack' && 'stacksToFrag' in this.stack) {
         res = this.stack.stacksToFrag[round].frag.duration;
       } else {
         res = this.timer.duration;
