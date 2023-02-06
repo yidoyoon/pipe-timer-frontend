@@ -6,9 +6,10 @@ import { ITimer } from 'src/core/timer/domain/timer.model';
 export interface PomodoroState {
   timer: ITimer;
   stack: IStack;
-  mode: string;
+  mode: string; // 'stack', 'timer', ''
+  amount: number;
   round: number;
-  state: string;
+  state: string; // 'start', 'pause', 'stop', ''
 }
 
 export const usePomodoroStore = defineStore('PomodoroStore', {
@@ -17,8 +18,9 @@ export const usePomodoroStore = defineStore('PomodoroStore', {
       timer: {} as ITimer,
       stack: {} as IStack,
       mode: '',
+      amount: 0,
       round: 0,
-      state: 'idle',
+      state: '',
     };
   },
   persist: {
