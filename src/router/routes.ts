@@ -58,7 +58,8 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        component: () => import('../core/pomodoro/presentation/PomodoroMain.vue'),
+        component: () =>
+          import('../core/pomodoro/presentation/PomodoroMain.vue'),
         name: 'pomodoro',
       },
     ],

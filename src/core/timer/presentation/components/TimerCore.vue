@@ -18,7 +18,9 @@
           class="my-card text-white cursor-pointer no-shadow q-ma-sm"
           style="background: black"
           v-ripple
-          @dblclick="editCard(index)"
+          @dblclick="
+            importFrom === 'editor' ? editCard(index) : toPomodoro(element)
+          "
         >
           <q-card-section>
             Name: {{ element.name }} <br />
@@ -32,7 +34,7 @@
               <div class="text-h6">Stack name</div>
             </q-card-section>
 
-<!--            TODO: Input 값 검증 수행-->
+            <!--            TODO: Input 값 검증 수행-->
             <q-card-section class="q-pt-none" style="width: 20rem">
               <q-input
                 label="Timer name"
@@ -71,22 +73,20 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
-import {
-  IStacksToFrag,
-  ITimer,
-  Timer,
-} from 'src/core/timer/domain/timer.model';
+import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
+import { usePomodoroStore } from 'src/core/pomodoro/infra/store/pomodoro.store';
+import { IStacksToFrag, ITimer } from 'src/core/timer/domain/timer.model';
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
-import { ulid } from 'ulid';
 import { computed, reactive, ref, watch } from 'vue';
 import { useQuasar } from 'quasar';
 import draggable from 'vuedraggable';
 
 const timerStore = useTimerStore();
-const builderStore = useBuilderStore();
+const selectorStore = useSelectorStore();
+const pomodoroStore = usePomodoroStore();
 
-const { isLoadingTimer } = storeToRefs(useTimerStore());
+const { isLoadingTimer } = storeToRefs(timerStore);
+const { importFrom } = storeToRefs(selectorStore);
 
 const $q = useQuasar();
 
@@ -195,6 +195,21 @@ const computeInitIdx = (e: any) => {
   // setIdx(e);
 
   drag.value = false;
+};
+
+// Pomodoro related
+const toPomodoro = (timer: ITimer) => {
+  // Session storage for saving initial state of stack, timer
+  try {
+    $q.sessionStorage.set('timer-data', timer);
+    pomodoroStore.timer = {} as ITimer;
+    pomodoroStore.timer = { ...timer };
+    pomodoroStore.mode = 'timer';
+    pomodoroStore.state = 'pause';
+    pomodoroStore.round = 0;
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 const dragOptions = {

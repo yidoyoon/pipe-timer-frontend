@@ -10,7 +10,7 @@
   >
     <div class="text-subtitle1 text-black q-px-md">
       <!--      {{ stack.stacksToFrag }}-->
-      <b>Name: {{ stack.name }}</b>
+      <b>Name: {{ props.stack.name }}</b>
       <q-btn
         v-if="!!removeStack"
         round
@@ -29,16 +29,16 @@
       >
         <div
           v-for="(t, index) in props.stack.stacksToFrag"
-          :key="t.frag.fragId"
+          :key="t.frag"
           class="q-pa-none row no-wrap"
         >
           <q-card
             class="inner-my-card text-white flat"
             style="background: black; display: inline-block; width: 12vw"
           >
-            <q-card-section v-show="'frag' in t" class="q-img-container">
-              <div>Name: {{ t['frag']['name'] }}</div>
-              <div>Duration: {{ t['frag']['duration'] }}<br /></div>
+            <q-card-section v-if="'frag' in t" class="q-img-container">
+              <div>Name: {{ t.frag.name }}</div>
+              <div>Duration: {{ t.frag.duration }}<br /></div>
             </q-card-section>
           </q-card>
           <div class="row items-center">
@@ -106,6 +106,7 @@ const pomodoroStore = usePomodoroStore();
 
 const { isLoadingStacks } = storeToRefs(stacksStore);
 const { removeStack, importFrom } = storeToRefs(selectorStore);
+const { stack, mode } = storeToRefs(pomodoroStore);
 
 const $q = useQuasar();
 
@@ -158,7 +159,15 @@ const arrowDrawer = (index: number) => {
 
 // Pomodoro related
 const toPomodoro = (stack: IStack) => {
-  pomodoroStore.stack = { ...stack };
-  pomodoroStore.mode = 'stack';
+  // Session storage for saving initial state of stack, timer
+  try {
+    $q.sessionStorage.set('pomodoro-data', stack);
+    pomodoroStore.stack = { ...stack };
+    pomodoroStore.mode = 'stack';
+    pomodoroStore.state = 'pause';
+    pomodoroStore.round = 0;
+  } catch (e) {
+    console.log(e);
+  }
 };
 </script>

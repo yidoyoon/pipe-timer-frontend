@@ -10,6 +10,7 @@
 
 const { configure } = require('quasar/wrappers');
 const path = require('path');
+const fs = require('fs');
 
 module.exports = configure(function (ctx) {
   console.log(ctx);
@@ -90,8 +91,17 @@ module.exports = configure(function (ctx) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
-      https: false,
+      host: 'localhost',
+      port: 0,
+      https: {
+        key: fs.readFileSync(path.resolve(__dirname, './local-key.pem')),
+        cert: fs.readFileSync(path.resolve(__dirname, './local-cert.pem')),
+      },
       open: false, // opens browser window automatically
+      hmr: {
+        host: 'localhost',
+        port: 0,
+      },
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
@@ -151,7 +161,7 @@ module.exports = configure(function (ctx) {
 
     // https://v2.quasar.dev/quasar-cli-vite/developing-pwa/configuring-pwa
     pwa: {
-      workboxMode: 'generateSW', // or 'injectManifest'
+      workboxMode: 'injectManifest', // or 'injectManifest'
       injectPwaMetaTags: true,
       swFilename: 'sw.js',
       manifestFilename: 'manifest.json',
