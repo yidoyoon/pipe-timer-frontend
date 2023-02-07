@@ -233,89 +233,6 @@ const elapse = () => {
   }
 };
 
-// // TODO: 이전 알림 남아있을 때, 새로운 알림이 가려지는 현상 해결하기
-// function endRoundNotif(timerInfo: string) {
-//   if (Notification.permission === 'granted') {
-//     navigator.serviceWorker.ready.then((registration) => {
-//       registration
-//         .showNotification('Round ends notification', {
-//           body: `타이머가 종료됐습니다.\n다음 타이머를 실행하시겠습니까?\n${timerInfo}`,
-//           actions: [
-//             {
-//               title: 'Confirm',
-//               action: 'confirm',
-//             },
-//             {
-//               title: 'Cancel',
-//               action: 'close',
-//             },
-//           ],
-//         })
-//         // .then((e: any) => {
-//         //   console.log(e)
-//         //   switch (e.action) {
-//         //     case 'confirm':
-//         //       started = setInterval(elapse, 1000);
-//         //       break;
-//         //     case 'close':
-//         //       e.notification.close();
-//         //       break;
-//         //   }
-//         // });
-//     });
-//   }
-// }
-
-const notifyRoundEnd = () => {
-  let name = '';
-  let duration = 0;
-  if (pomodoroStore.mode === 'stack') {
-    const timer = pomodoroStore.stack.stacksToFrag[round.value].frag;
-    name = timer.name;
-    duration = timer.duration;
-  } else {
-    const timer = pomodoroStore.timer;
-    name = timer.name;
-    duration = timer.duration;
-  }
-  const nextTimerInfo = `타이머 이름: ${name}\t시간: ${duration}`;
-  if (!!autoStart.value) {
-    new Notification(
-      `타이머가 종료됐습니다.\n다음 타이머를 실행합니다.\n${nextTimerInfo}`
-    );
-    started = setInterval(elapse, 1000);
-  } else {
-    // endRoundNotif(nextTimerInfo);
-  }
-};
-
-const timeEnd = () => {
-  if (
-    pomodoroStore.mode === 'stack' &&
-    +round.value >= +pomodoroStore.stack.stacksToFrag.length
-  ) {
-    if (endless.value) {
-      round.value = 0;
-    } else {
-      clearInterval(started);
-      pomodoroStore.state = '';
-      pomodoroStore.round = 0;
-      $q.notify({ message: '타이머를 종료합니다', color: 'green' });
-    }
-  } else if (pomodoroStore.mode === 'timer' && +round.value >= 1) {
-    if (endless.value) {
-      round.value = 0;
-    } else {
-      clearInterval(started);
-      pomodoroStore.state = '';
-      pomodoroStore.mode = '';
-      pomodoroStore.round = 0;
-      $q.notify({ message: '타이머를 종료합니다', color: 'green' });
-    }
-  }
-  loadSession();
-};
-
 const pause = () => {
   // TODO: 시간 정보 출력 부분이 깜빡이는 트랜지션 추가
   if (pomodoroStore.state === 'pause') return;
@@ -377,6 +294,103 @@ watch([notification, autoStart, Notification.permission], () => {
         notifOptions
       );
     }
+  }
+});
+
+const timeEnd = () => {
+  if (
+    pomodoroStore.mode === 'stack' &&
+    +round.value >= +pomodoroStore.stack.stacksToFrag.length
+  ) {
+    if (endless.value) {
+      round.value = 0;
+    } else {
+      clearInterval(started);
+      pomodoroStore.state = '';
+      pomodoroStore.round = 0;
+      $q.notify({ message: '타이머를 종료합니다', color: 'green' });
+    }
+  } else if (pomodoroStore.mode === 'timer' && +round.value >= 1) {
+    if (endless.value) {
+      round.value = 0;
+    } else {
+      clearInterval(started);
+      pomodoroStore.state = '';
+      pomodoroStore.round = 0;
+      $q.notify({ message: '타이머를 종료합니다', color: 'green' });
+    }
+  }
+  loadSession();
+};
+
+function endRoundPush(timerInfo: string) {
+  pomodoroStore.state = 'pause';
+  if (Notification.permission === 'granted') {
+    navigator.serviceWorker.ready.then((registration) => {
+      registration.showNotification('Round ends notification', {
+        ...notifOptions,
+        requireInteraction: false,
+        body: `다음 타이머를 실행하시겠습니까?\n${timerInfo}`,
+        actions: [
+          {
+            title: 'Confirm',
+            action: 'confirm',
+          },
+          {
+            title: 'Cancel',
+            action: 'close',
+          },
+        ],
+      });
+    });
+  }
+}
+
+const notifyRoundEnd = () => {
+  let name = '';
+  let duration = 0;
+  const nextRound = round.value + 1;
+
+  if (pomodoroStore.mode === 'stack') {
+    const timer = pomodoroStore.stack.stacksToFrag[nextRound].frag;
+    name = timer.name;
+    duration = timer.duration;
+  } else {
+    const id = pomodoroStore.timer.fragId;
+    const timer = timerStore.timers[id];
+    name = timer.name;
+    duration = timer.duration;
+  }
+
+  let nextTimerInfo = `타이머 이름: ${name}\t시간: ${duration}`;
+
+  if (!!autoStart.value) {
+    new Notification(
+      `다음 타이머를 실행합니다.\n${nextTimerInfo}`,
+      notifOptions
+    );
+    started = setInterval(elapse, 1000);
+  } else {
+    if (
+      !(
+        pomodoroStore.mode === 'stack' &&
+        round.value > pomodoroStore.stack.stacksToFrag.length
+      )
+    ) {
+      endRoundPush(nextTimerInfo);
+    } else {
+      new Notification('모든 타이머를 실행했습니다.');
+    }
+  }
+};
+
+onMounted(() => {
+  if (navigator.serviceWorker) {
+    navigator.serviceWorker.addEventListener('message', (e) => {
+      if (e.data === 'confirm') {
+        started = setInterval(elapse, 1000);
+      }
+    });
   }
 });
 
