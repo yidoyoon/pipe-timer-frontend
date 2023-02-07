@@ -5,11 +5,11 @@
     <!--    amount: {{ currDuration }} <br />-->
     <!--    action: {{ pomodoroStore.state }} <br />-->
     <!--    mode: {{ pomodoroStore.mode }} <br />-->
-    <!--    timer: {{ pomodoroStore.timer }}<br />-->
+<!--        timer: {{ pomodoroStore.timer }}<br />-->
     <!--    stack: {{ pomodoroStore.stack }}-->
     <!--    {{ otherValue }}-->
     <div class="row justify-start">
-      현재 알림 설정: {{ permission === 'granted' ? 'On' : 'False' }}
+      현재 알림 설정: {{ permission === 'granted' ? 'On' : 'Off' }}
     </div>
     <q-space class="flex-break"></q-space>
 
@@ -62,7 +62,7 @@
     <q-space class="flex-break"></q-space>
     <q-card class="no-shadow my-card flat" style="background: transparent">
       <q-card-section class="q-py-none">
-        <!--        If stack-->
+<!--        Stack-->
         <div
           v-if="pomodoroStore.mode === 'stack'"
           class="row justify-between no-wrap"
@@ -92,6 +92,7 @@
           </div>
         </div>
 
+<!--        Timer-->
         <div
           v-else-if="pomodoroStore.mode === 'timer'"
           class="row justify-between no-wrap"
@@ -125,7 +126,7 @@ import { IStack } from 'src/core/stack/domain/stack.model';
 import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import { ITimer } from 'src/core/timer/domain/timer.model';
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
-import { computed, nextTick, ref, watch, watchEffect } from 'vue';
+import { computed, nextTick, onMounted, ref, watch, watchEffect } from 'vue';
 
 const $q = useQuasar();
 
@@ -139,6 +140,11 @@ const { permission } = Notification;
 const stackStore = useStackStore();
 const timerStore = useTimerStore();
 
+const notifOptions: NotificationOptions = {
+  tag: 'round',
+  requireInteraction: false,
+};
+
 let started: string | number | NodeJS.Timeout | undefined;
 
 // TODO: Pinia에 state로 저장
@@ -146,17 +152,17 @@ const endless = ref(false);
 const autoStart = ref(false);
 const notification = ref(false);
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker
-    .register('./sw.js')
-    .then(function (registration) {
-      console.log('Service worker successfully registered.');
-      return registration;
-    })
-    .catch(function (err) {
-      console.error('Unable to register service worker.', err);
-    });
-}
+// if ('serviceWorker' in navigator) {
+//   navigator.serviceWorker
+//     .register('./sw.js')
+//     .then(function (registration) {
+//       console.log('Service worker successfully registered.');
+//       return registration;
+//     })
+//     .catch(function (err) {
+//       console.error('Unable to register service worker.', err);
+//     });
+// }
 
 const currDuration = computed(() => {
   if (pomodoroStore.mode === 'stack') {
@@ -183,7 +189,7 @@ const arrowDrawer = (index: number) => {
 
 const start = () => {
   if (pomodoroStore.state === 'start') return;
-  if ('stacksToFrag' in pomodoroStore.stack || 'id' in pomodoroStore.timer) {
+  if ('stacksToFrag' in pomodoroStore.stack || 'fragId' in pomodoroStore.timer) {
     started = setInterval(elapse, 1000);
     pomodoroStore.state = 'start';
   } else {
@@ -354,19 +360,21 @@ watch([notification, autoStart, Notification.permission], () => {
     setNotification();
     if (Notification.permission === 'granted') {
       new Notification(
-        '알림 설정을 활성화 했습니다.\n타이머 종료 시, 데스크톱 알림을 전송합니다.'
+        '알림 설정을 활성화합니다.\n타이머 종료 시, 데스크톱 알림을 전송합니다.',
+        notifOptions
       );
     }
   } else {
     $q.notify({
-      message: '알림 설정이 비활성화 합니다.',
+      message: '알림 설정을 비활성화합니다.',
       color: 'grey',
     });
   }
   if (Notification.permission === 'granted') {
     if (autoStart.value === true) {
       new Notification(
-        'Auto start를 활성화 했습니다.\n타이머 종료 시, 다음 라운드를 자동으로 실행합니다.'
+        '자동 시작 기능을 활성화합니다.\n라운드 종료 시, 다음 라운드를 자동으로 실행합니다.',
+        notifOptions
       );
     }
   }
