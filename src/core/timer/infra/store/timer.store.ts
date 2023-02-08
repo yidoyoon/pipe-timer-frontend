@@ -93,11 +93,7 @@ export const useTimerStore = defineStore('timerStore', {
     },
 
     edit(newTimer: ITimer) {
-      const trad = this.timers[newTimer.fragId];
-
-      if (!!trad) {
-        this.timers[newTimer.fragId] = newTimer;
-      }
+      this.timers[newTimer.fragId] = newTimer;
     },
 
     remove(timerId: string) {
