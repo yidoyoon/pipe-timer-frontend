@@ -29,14 +29,15 @@
       >
         <div
           v-for="(t, index) in props.stack.stacksToFrag"
-          :key="t.frag"
+          :key="t.frag.fragId"
           class="q-pa-none row no-wrap"
         >
           <q-card
             class="inner-my-card text-white flat"
-            style="background: black; display: inline-block; width: 12vw"
+            style="display: inline-block; width: 12vw"
+            :style="colorExtractor(t.frag)"
           >
-            <q-card-section v-if="'frag' in t" class="q-img-container">
+            <q-card-section class="q-img-container">
               <div>Name: {{ t.frag.name }}</div>
               <div>Duration: {{ t.frag.duration }}<br /></div>
             </q-card-section>
@@ -97,6 +98,7 @@ import { usePomodoroStore } from 'src/core/pomodoro/infra/store/pomodoro.store';
 import { IStack } from 'src/core/stack/domain/stack.model';
 import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import { useQuasar } from 'quasar';
+import { ITimer } from 'src/core/timer/domain/timer.model';
 import { ref } from 'vue';
 
 const stacksStore = useStackStore();
@@ -106,7 +108,6 @@ const pomodoroStore = usePomodoroStore();
 
 const { isLoadingStacks } = storeToRefs(stacksStore);
 const { removeStack, importFrom } = storeToRefs(selectorStore);
-const { stack, mode } = storeToRefs(pomodoroStore);
 
 const $q = useQuasar();
 
@@ -155,6 +156,12 @@ const toBuilder = (stack: IStack) => {
 
 const arrowDrawer = (index: number) => {
   return !!props.stack && index !== props.stack.stacksToFrag.length - 1;
+};
+
+const colorExtractor = (timer: ITimer) => {
+  return {
+    background: timer.color,
+  };
 };
 
 // Pomodoro related

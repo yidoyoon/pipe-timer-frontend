@@ -5,7 +5,7 @@
     <!--    amount: {{ currDuration }} <br />-->
     <!--    action: {{ pomodoroStore.state }} <br />-->
     <!--    mode: {{ pomodoroStore.mode }} <br />-->
-<!--        timer: {{ pomodoroStore.timer }}<br />-->
+    <!--        timer: {{ pomodoroStore.timer }}<br />-->
     <!--    stack: {{ pomodoroStore.stack }}-->
     <!--    {{ otherValue }}-->
     <div class="row justify-start">
@@ -62,7 +62,7 @@
     <q-space class="flex-break"></q-space>
     <q-card class="no-shadow my-card flat" style="background: transparent">
       <q-card-section class="q-py-none">
-<!--        Stack-->
+        <!--        Stack-->
         <div
           v-if="pomodoroStore.mode === 'stack'"
           class="row justify-between no-wrap"
@@ -75,11 +75,12 @@
           >
             <q-card
               class="inner-my-card text-white flat"
-              :style="index === round ? highlightBorder : notCurrent"
+              style="background: black; width: 12vw"
+              :style="index === round ? highlightBorder(t.frag) : notCurrent(t.frag)"
             >
               <q-card-section v-show="'frag' in t" class="q-img-container">
-                <div>Name: {{ t['frag']['name'] }}</div>
-                <div>Duration: {{ t['frag']['duration'] }}<br /></div>
+                <div>Name: {{ t.frag.name }}</div>
+                <div>Duration: {{ t.frag.duration }}<br /></div>
               </q-card-section>
             </q-card>
             <div class="row items-center">
@@ -92,7 +93,7 @@
           </div>
         </div>
 
-<!--        Timer-->
+        <!--        Timer-->
         <div
           v-else-if="pomodoroStore.mode === 'timer'"
           class="row justify-between no-wrap"
@@ -189,7 +190,10 @@ const arrowDrawer = (index: number) => {
 
 const start = () => {
   if (pomodoroStore.state === 'start') return;
-  if ('stacksToFrag' in pomodoroStore.stack || 'fragId' in pomodoroStore.timer) {
+  if (
+    'stacksToFrag' in pomodoroStore.stack ||
+    'fragId' in pomodoroStore.timer
+  ) {
     started = setInterval(elapse, 1000);
     pomodoroStore.state = 'start';
   } else {
@@ -394,16 +398,24 @@ onMounted(() => {
   }
 });
 
-const highlightBorder = {
-  background: 'black',
-  width: '12vw',
-  border: 'solid red 0.3rem',
+const highlightBorder = (timer: ITimer) => {
+  return {
+    border: 'solid red 0.3rem',
+    ...colorExtractor(timer),
+  };
 };
 
-const notCurrent = {
-  background: 'black',
-  width: '12vw',
-  border: 'solid black 0.3rem',
+const notCurrent = (timer: ITimer) => {
+  return {
+    border: 'solid transparent 0.3rem',
+    ...colorExtractor(timer),
+  };
+};
+
+const colorExtractor = (timer: ITimer) => {
+  return {
+    background: timer.color,
+  };
 };
 </script>
 

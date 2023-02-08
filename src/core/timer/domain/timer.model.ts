@@ -36,7 +36,7 @@ export class Timer implements ITimer {
       );
       this.fragId = timer.fragId || ulid();
       this.name = timer.name || 'New';
-      this.color = timer.color || '000000';
+      this.color = timer.color || '#000000ff';
       this.duration = timer.duration || 0;
       this.count = timer.count || 0;
       this.order = timer.order || 86400;
