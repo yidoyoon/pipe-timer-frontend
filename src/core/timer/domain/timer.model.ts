@@ -2,7 +2,7 @@ import { plainToClass } from 'class-transformer';
 import { ulid } from 'ulid';
 
 export interface ITimer {
-  readonly fragId: string;
+  fragId: string;
   name: string;
   color: string;
   duration: number; // dayjs
@@ -18,7 +18,7 @@ export interface IStacksToFrag {
 }
 
 export class Timer implements ITimer {
-  readonly fragId: string;
+  fragId: string;
   name: string;
   color: string;
   duration: number; // dayjs

@@ -14,12 +14,15 @@
   >
     <template #item="{ element, index }">
       <div>
+        {{ element }}
         <q-card
           class="my-card text-white cursor-pointer no-shadow q-ma-sm"
           style="background: black"
           v-ripple
           @dblclick="
-            importFrom === 'editor' ? editCard(index) : toPomodoro(element)
+            importFrom === 'EditorMain'
+              ? editTimer(element)
+              : toPomodoro(element)
           "
         >
           <q-card-section>
@@ -31,7 +34,7 @@
         <q-dialog v-model="editPrompt" persistent>
           <q-card style="min-width: 350px">
             <q-card-section>
-              <div class="text-h6">Stack name</div>
+              <div class="text-h6">Edit timer</div>
             </q-card-section>
 
             <!--            TODO: Input 값 검증 수행-->
@@ -40,18 +43,23 @@
                 label="Timer name"
                 dense
                 v-model="name"
-                autofocus
-                @keyup.enter.prevent="update(element)"
+                @keyup.enter.prevent="update"
                 @keyup.esc.prevent="cancel(index)"
               />
               <q-input
                 label="Duration"
                 dense
                 v-model="duration"
-                autofocus
-                @keyup.enter.prevent="update(element)"
+                @keyup.enter.prevent="update"
                 @keyup.esc.prevent="cancel(index)"
               />
+              <!--              <q-input-->
+              <!--                label="Duration"-->
+              <!--                dense-->
+              <!--                v-model="duration"-->
+              <!--                @keyup.enter.prevent="update(element)"-->
+              <!--                @keyup.esc.prevent="cancel(index)"-->
+              <!--              />-->
             </q-card-section>
 
             <q-card-actions align="right" class="text-primary">
@@ -61,7 +69,7 @@
                 label="Confirm"
                 color="green"
                 v-close-popup
-                @click="update(element)"
+                @click="update"
               />
             </q-card-actions>
           </q-card>
@@ -77,7 +85,7 @@ import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
 import { usePomodoroStore } from 'src/core/pomodoro/infra/store/pomodoro.store';
 import { IStacksToFrag, ITimer } from 'src/core/timer/domain/timer.model';
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
-import { computed, reactive, ref, watch } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { useQuasar } from 'quasar';
 import draggable from 'vuedraggable';
 
@@ -87,22 +95,16 @@ const pomodoroStore = usePomodoroStore();
 
 const { isLoadingTimer } = storeToRefs(timerStore);
 const { importFrom } = storeToRefs(selectorStore);
+const { listTimers } = storeToRefs(timerStore);
 
 const $q = useQuasar();
 
 const props = defineProps<{ timers: ITimer[] }>();
-const rTimers = computed(() => {
-  return reactive(props.timers);
-});
+
 const drag = ref(false);
 
-// TODO: rTimers에 null 값 추가되는 원인 파악, 방지방안 구현
-watch(rTimers, () => {
-  if (rTimers.value[0] === null) {
-    delete rTimers.value[0];
-  }
-});
 
+const fragId = ref('');
 const name = ref('');
 const duration = ref(0);
 const color = ref('');
@@ -111,25 +113,18 @@ const isEditing = ref(false);
 
 const futureIdx = ref(0);
 
+// TODO: rTimers에 null 값 추가되는 원인 파악, 방지방안 구현
+let rTimers = reactive(listTimers);
+
+watch([rTimers, pomodoroStore.timer, fragId], () => {
+  rTimers = reactive(listTimers);
+});
+
 const emit = defineEmits<{
   (e: 'remove', id: string): void;
 }>();
 
 const editPrompt = ref(false);
-
-const update = (element: ITimer) => {
-  const newTimer = {
-    ...element,
-    name: name.value,
-    duration: duration.value,
-    color: color.value,
-    order: order.value,
-    isEditing: !isEditing.value,
-  };
-  editPrompt.value = false;
-  element.isEditing = false;
-  timerStore.edit(newTimer);
-};
 
 const remove = (index: number) => {
   $q.notify({
@@ -179,9 +174,32 @@ const timerWrapper = (e: any) => {
 
 let backupTimer = {} as ITimer;
 
-const editCard = (index: number) => {
+const update = () => {
+  const newTimer = {} as ITimer;
+
+  newTimer.fragId = fragId.value;
+  newTimer.name = name.value;
+  newTimer.duration = duration.value;
+  newTimer.color = color.value;
+  newTimer.order = order.value;
+  newTimer.isEditing = isEditing.value;
+
+  timerStore.edit(newTimer);
+
+  editPrompt.value = false;
+};
+
+const editTimer = (timer: ITimer) => {
   editPrompt.value = true;
-  backupTimer = props.timers[index];
+
+  fragId.value = timer.fragId;
+  name.value = timer.name;
+  duration.value = timer.duration;
+  color.value = timer.color;
+  order.value = timer.order;
+  isEditing.value = timer.isEditing;
+
+  // backupTimer = props.timers[index];
 };
 
 // TODO: 드래그와 동시에 order 계산하도록 구현
