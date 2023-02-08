@@ -97,12 +97,12 @@ const handleLogout = () => {
 };
 
 const navLinks = [
-  {
-    icon: 'icon-mat-menu_book-bk',
-    label: 'Guide',
-    value: 'guide',
-    to: { name: 'guide' },
-  },
+  // {
+  //   icon: 'icon-mat-menu_book-bk',
+  //   label: 'Guide',
+  //   value: 'guide',
+  //   to: { name: 'guide' },
+  // },
   {
     label: 'Pomodoro',
     value: 'pomodoro',
