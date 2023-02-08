@@ -41,6 +41,7 @@ api.interceptors.response.use(
       return await refreshAccessTokenFn().catch(() => {
         Notify.create({
           color: 'negative',
+          html: true,
           message: userMsg.INVALID_TOKEN,
           icon: 'error',
         });
