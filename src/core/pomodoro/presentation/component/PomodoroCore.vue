@@ -1,16 +1,8 @@
 <template>
+  <div class="row justify-start">
+    현재 알림 설정: {{ permission === 'granted' ? 'On' : 'Off' }}
+  </div>
   <div class="row dense justify-center" style="height: 35vh">
-    <!--    Total Duration: {{ getTotalDuration }} <br />-->
-    <!--    Round: {{ round }} <br />-->
-    <!--    amount: {{ currDuration }} <br />-->
-    <!--    action: {{ pomodoroStore.state }} <br />-->
-    <!--    mode: {{ pomodoroStore.mode }} <br />-->
-    <!--        timer: {{ pomodoroStore.timer }}<br />-->
-    <!--    stack: {{ pomodoroStore.stack }}-->
-    <!--    {{ otherValue }}-->
-    <div class="row justify-start">
-      현재 알림 설정: {{ permission === 'granted' ? 'On' : 'Off' }}
-    </div>
     <q-space class="flex-break"></q-space>
 
     <div id="clock">
@@ -76,7 +68,9 @@
             <q-card
               class="inner-my-card text-white flat"
               style="background: black; width: 12vw"
-              :style="index === round ? highlightBorder(t.frag) : notCurrent(t.frag)"
+              :style="
+                index === round ? highlightBorder(t.frag) : notCurrent(t.frag)
+              "
             >
               <q-card-section v-show="'frag' in t" class="q-img-container">
                 <div>Name: {{ t.frag.name }}</div>
