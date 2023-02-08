@@ -28,7 +28,7 @@
     </div>
 
     <div>
-      <q-btn @click="saveEdit" color="blue" label="Save" class="q-mx-sm" />
+      <q-btn @click="saveEdit" color="blue" label="Save Timers" class="q-mx-sm" />
       <q-btn
         @click="cancelEdit"
         color="white"
@@ -100,6 +100,25 @@
           @keyup.enter.prevent="createTimer"
           @keyup.esc.prevent="timerPrompt = false"
         />
+        <q-input
+          filled
+          v-model="color"
+          :rules="['anyColor']"
+          hint="타이머 구분에 사용될 색상을 선택합니다."
+          class="my-input"
+        >
+          <template v-slot:append>
+            <q-icon name="colorize" class="cursor-pointer">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-color v-model="color" no-header-tabs format-model="hexa" />
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
@@ -180,6 +199,7 @@ const timerPrompt = ref(false);
 const stackName = ref('');
 const timerName = ref('');
 const duration = ref(0);
+const color = ref('#000000ff');
 
 const createTimerBtn = () => {
   timerPrompt.value = true;
@@ -187,7 +207,11 @@ const createTimerBtn = () => {
 
 const createTimer = () => {
   timerStore.add(
-    new Timer({ name: timerName.value, duration: duration.value })
+    new Timer({
+      name: timerName.value,
+      duration: duration.value,
+      color: color.value,
+    })
   );
   timerPrompt.value = false;
 };
@@ -248,7 +272,7 @@ const cancelEdit = () => {
 
 // TODO: 최종 저장 전, 인증 정보를 확인하고 진행
 const saveTimersBtn = () => {
-  const res = api.post('frag/commit', stackStore.listStacks);
+  const res = api.post('frag/save', timerStore.listTimers);
   if (!res) {
     $q.notify({
       message: '저장이 완료되지 않았습니다. 인터넷 연결 상태를 확인해주세요',

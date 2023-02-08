@@ -49,6 +49,7 @@
               <q-card
                 class="inner-my-card text-white cursor-pointer flat justify-between"
                 style="background: black; display: inline-block"
+                :style="colorExtractor(element.frag)"
               >
                 <q-card-section>
                   <div>Name: {{ element.frag.name }}</div>
@@ -79,6 +80,7 @@
 import { storeToRefs } from 'pinia';
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
 import { IStack } from 'src/core/stack/domain/stack.model';
+import { ITimer } from 'src/core/timer/domain/timer.model';
 import { computed, reactive, ref } from 'vue';
 import draggable from 'vuedraggable';
 
@@ -109,6 +111,12 @@ const dragOptions = {
   group: { name: 'timers' },
   disabled: false,
   ghostClass: 'ghost',
+};
+
+const colorExtractor = (timer: ITimer) => {
+  return {
+    background: timer.color,
+  };
 };
 </script>
 

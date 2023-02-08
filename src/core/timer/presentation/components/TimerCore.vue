@@ -14,10 +14,9 @@
   >
     <template #item="{ element, index }">
       <div>
-        {{ element }}
         <q-card
           class="my-card text-white cursor-pointer no-shadow q-ma-sm"
-          style="background: black"
+          :style="colorExtractor(element)"
           v-ripple
           @dblclick="
             importFrom === 'EditorMain'
@@ -53,13 +52,29 @@
                 @keyup.enter.prevent="update"
                 @keyup.esc.prevent="cancel(index)"
               />
-              <!--              <q-input-->
-              <!--                label="Duration"-->
-              <!--                dense-->
-              <!--                v-model="duration"-->
-              <!--                @keyup.enter.prevent="update(element)"-->
-              <!--                @keyup.esc.prevent="cancel(index)"-->
-              <!--              />-->
+              <q-input
+                filled
+                v-model="color"
+                :rules="['anyColor']"
+                hint="타이머 구분에 사용될 색상을 선택합니다."
+                class="my-input"
+              >
+                <template v-slot:append>
+                  <q-icon name="colorize" class="cursor-pointer">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-color
+                        v-model="color"
+                        no-header-tabs
+                        format-model="hexa"
+                      />
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
             </q-card-section>
 
             <q-card-actions align="right" class="text-primary">
@@ -103,11 +118,10 @@ const props = defineProps<{ timers: ITimer[] }>();
 
 const drag = ref(false);
 
-
 const fragId = ref('');
 const name = ref('');
 const duration = ref(0);
-const color = ref('');
+const color = ref('#000000ff');
 const order = ref(-2);
 const isEditing = ref(false);
 
@@ -230,6 +244,12 @@ const toPomodoro = (timer: ITimer) => {
   }
 };
 
+const colorExtractor = (timer: ITimer) => {
+  return {
+    background: timer.color,
+  };
+};
+
 const dragOptions = {
   animation: 200,
   group: { name: 'timers', pull: 'clone', put: false },
@@ -237,5 +257,10 @@ const dragOptions = {
   ghostClass: 'ghost',
 };
 </script>
+
+<style lang="sass" scoped>
+.my-input
+  max-width: 250px
+</style>
 
 <!--TODO: Font 컬러 설정 추가, 입력값 필터링 추가-->
