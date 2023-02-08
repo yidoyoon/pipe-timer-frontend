@@ -84,7 +84,7 @@ export const useTimerStore = defineStore('timerStore', {
         this.timers[timer.fragId] = timer;
         return timer.fragId;
       });
-      this.setInitialState();
+      // this.setInitialState();
     },
 
     add(newTimer: ITimer) {
@@ -154,7 +154,7 @@ export const useTimerStore = defineStore('timerStore', {
         // });
         selectorStore.editNow = '';
       }
-      this.setInitialState();
+      // this.setInitialState();
     },
   },
 });

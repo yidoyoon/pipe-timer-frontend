@@ -82,7 +82,7 @@ export const useStackStore = defineStore('StackStore', {
         this.stacks[stack.id] = stack;
         return stack.id;
       });
-      this.setInitialState();
+      // this.setInitialState();
     },
 
     edit(newStacks: IStack) {
