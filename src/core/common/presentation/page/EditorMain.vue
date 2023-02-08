@@ -1,16 +1,16 @@
 <template>
-  <div class="fit row wrap justify-between q-pa-md">
-    <div class="col-6 q-pa-sm">
+  <div class="fit row wrap justify-between q-pa-md" @click="selectNone">
+    <div class="col-10 q-pa-sm">
       <BuilderMain
         class="area"
-        @click="selectBuilder"
+        @click.stop="selectBuilder"
         :style="isEditBuilder ? active : {}"
       ></BuilderMain>
       <q-space style="height: 1rem"></q-space>
-      <StackMain class="area"></StackMain>
+      <StackMain class="area" @click.stop="selectStack"></StackMain>
     </div>
-    <div class="col-6 q-pa-sm">
-      <TimerMain class="area" @click="selectTimer"></TimerMain>
+    <div class="col-2 q-pa-sm">
+      <TimerMain class="area" @click.stop="selectTimer"></TimerMain>
     </div>
   </div>
 
@@ -61,6 +61,10 @@ const selectBuilder = () => {
 const selectTimer = () => {
   selectorStore.selectTimer();
   editNow.value = 'timer';
+};
+
+const selectNone = () => {
+  editNow.value = '';
 };
 
 const active = {
