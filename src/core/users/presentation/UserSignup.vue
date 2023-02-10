@@ -11,20 +11,23 @@
     >
       <q-input
         filled
-        v-model="name"
-        label="User name"
-        :hint="!nameError ? '' : '유저네임을 설정해주세요.'"
-        :error-message="nameError"
-        :error="!!nameError"
+        v-model="email"
+        label="Email"
+        hint="로그인에 사용될 이메일 입니다."
         debounce="500"
+        disable
       />
       <q-input
         filled
-        v-model="email"
-        label="Email"
-        :hint="!emailError ? '' : '로그인에 사용될 이메일을 입력해주세요.'"
-        :error-message="emailError"
-        :error="!!emailError"
+        v-model="name"
+        label="User name"
+        :hint="
+          !nameError
+            ? '유저네임을 설정해주세요. 추후 변경할 수 있도록 구현할 예정입니다.'
+            : ''
+        "
+        :error-message="nameError"
+        :error="!!nameError"
         debounce="500"
       />
       <q-input
@@ -32,7 +35,7 @@
         filled
         label="Password"
         :type="isPwd ? 'password' : 'text'"
-        hint="8 - 128자까지 설정할 수 있습니다."
+        hint="8 - 32자까지 설정할 수 있습니다."
         :error-message="passwordError"
         :error="!!passwordError"
         debounce="500"
@@ -66,9 +69,10 @@
 
 <script setup lang="ts">
 import { CHECK_EMPTY, userMsg, userVar } from 'src/core/users/domain/userConst';
+import { useUserStore } from 'src/core/users/infra/store/user.store';
 import * as zod from 'zod';
 import { ISignupInput } from 'src/type-defs/userTypes';
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { toFormValidator } from '@vee-validate/zod';
 import { useField, useForm } from 'vee-validate';
 import { useMutation } from '@tanstack/vue-query';
@@ -79,6 +83,8 @@ import { signUpUserFn } from 'src/core/users/infra/http/user.api';
 const $q = useQuasar();
 const router = useRouter();
 const isPwd = ref(true);
+const userStore = useUserStore();
+const { verifiedEmail } = userStore;
 
 const registerSchema = toFormValidator(
   zod
@@ -86,10 +92,6 @@ const registerSchema = toFormValidator(
       name: zod
         .string()
         .min(userVar.USER_NAME_MIN_LEN, userMsg.BELOW_MIN_USER_NAME),
-      email: zod
-        .string()
-        .min(CHECK_EMPTY, userMsg.EMPTY_USER_EMAIL)
-        .email(userMsg.INVALID_USER_EMAIL),
       password: zod
         .string()
         .min(CHECK_EMPTY, userMsg.EMPTY_USER_PASSWORD)
@@ -109,8 +111,10 @@ const { handleSubmit, resetForm } = useForm({
   validationSchema: registerSchema,
 });
 
+const email = computed(() => {
+  return userStore.verifiedEmail;
+});
 const { value: name, errorMessage: nameError } = useField('name');
-const { value: email, errorMessage: emailError } = useField('email');
 const { value: password, errorMessage: passwordError } = useField('password');
 const { value: passwordConfirm, errorMessage: passwordConfirmError } =
   useField('passwordConfirm');
@@ -119,10 +123,10 @@ const { isLoading, mutate } = useMutation(
   (credentials: ISignupInput) => signUpUserFn(credentials),
   {
     onError: (error) => {
-      const errorMsg = (<any>error).response.data.error;
-      const responseMsg = (<any>error).response.data.message;
+      const errorMsg = (error as any).response.data.error;
+      const responseMsg = (error as any).response.data.message;
 
-      if ((<any>error).response === undefined) {
+      if ((error as any).response === undefined) {
         $q.notify({
           type: 'negative',
           message: '서버 점검중입니다.',
@@ -146,23 +150,33 @@ const { isLoading, mutate } = useMutation(
       }
     },
     onSuccess: (data, variables) => {
-      router.push({ name: 'index' });
       $q.notify({
         type: 'positive',
         message: variables.email + userMsg.SEND_USER_SIGNUP_VERIFICATION_EMAIL,
-        icon: 'warning',
       });
+      router.push({ name: 'pomodoro' });
+      userStore.verifiedEmail = null;
     },
   }
 );
 
 const onSubmit = handleSubmit((values) => {
-  mutate({
-    userName: values.name,
-    email: values.email,
-    password: values.password,
-    passwordConfirm: values.passwordConfirm,
-  });
-  resetForm();
+  if (!!email.value) {
+    mutate({
+      email: email.value,
+      userName: values.name,
+      password: values.password,
+      passwordConfirm: values.passwordConfirm,
+    });
+    resetForm();
+  } else {
+    $q.notify({
+      type: 'negative',
+      color: 'negative',
+      message:
+        '이메일 칸이 비어있습니다. 이메일 인증 절차부터 다시 진행해주세요.',
+      icon: 'warning',
+    });
+  }
 });
 </script>

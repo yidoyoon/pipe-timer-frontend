@@ -1,6 +1,8 @@
 import { userMsg } from 'src/core/users/domain/userConst';
+import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { Router } from 'src/router';
 import {
+  ICheckEmailInput,
   IErrorResponse,
   IGeneralResponse,
   ILoginInput,
@@ -67,6 +69,11 @@ api.interceptors.response.use(
     return Promise.reject(err);
   }
 );
+
+export const checkEmailFn = async (email: ICheckEmailInput) => {
+  const response = await api.post('auth/check-email', email);
+  return response.data;
+};
 
 export const signUpUserFn = async (user: ISignupInput) => {
   const response = await api.post('auth/register', user);

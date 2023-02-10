@@ -14,15 +14,15 @@ const routes: RouteRecordRaw[] = [
           import('../core/pomodoro/presentation/PomodoroMain.vue'),
         name: 'pomodoro',
       },
-      // {
-      //   path: 'guide',
-      //   component: () => import('../core/guide/presentation/AppGuide.vue'),
-      //   name: 'guide',
-      // },
       {
         path: 'login',
         component: () => import('../core/users/presentation/UserLogin.vue'),
         name: 'login',
+      },
+      {
+        path: 'check-email',
+        component: () => import('../core/users/presentation/UserCheckEmail.vue'),
+        name: 'check-email',
       },
       {
         path: 'signup',
@@ -38,6 +38,11 @@ const routes: RouteRecordRaw[] = [
         //   middleware: [requireAuth],
         // },
       },
+      // {
+      //   path: 'guide',
+      //   component: () => import('../core/guide/presentation/AppGuide.vue'),
+      //   name: 'guide',
+      // },
     ],
   },
   {
