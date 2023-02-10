@@ -1,6 +1,8 @@
 import { userMsg } from 'src/core/users/domain/userConst';
+import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { Router } from 'src/router';
 import {
+  ICheckEmailInput,
   IErrorResponse,
   IGeneralResponse,
   ILoginInput,
@@ -30,17 +32,11 @@ api.interceptors.response.use(
     // const originalRequest = error.config;
     const errMsg = err.response.data.message as string;
 
-    if (errMsg === 'Already verified email') {
-      await Router.push({ name: 'login' });
-      Notify.create({
-        color: 'positive',
-        message: userMsg.ALREADY_VERIFIED_EMAIL,
-        icon: 'verified',
-      });
-    } else if (errMsg === 'Unauthorized') {
+    if (errMsg === 'Unauthorized') {
       return await refreshAccessTokenFn().catch(() => {
         Notify.create({
           color: 'negative',
+          html: true,
           message: userMsg.INVALID_TOKEN,
           icon: 'error',
         });
@@ -56,16 +52,15 @@ api.interceptors.response.use(
         color: 'negative',
         message: userMsg.UNAUTHORIZED_PASSWORD,
       });
-    } else if (errMsg === 'Invalid email verification code') {
-      Notify.create({
-        color: 'negative',
-        message: userMsg.INVALID_EMAIL_VERIFICATION_CODE,
-        icon: 'error',
-      });
     }
     return Promise.reject(err);
   }
 );
+
+export const checkEmailFn = async (email: ICheckEmailInput) => {
+  const response = await api.post('auth/check-email', email);
+  return response.data;
+};
 
 export const signUpUserFn = async (user: ISignupInput) => {
   const response = await api.post('auth/register', user);
@@ -79,7 +74,7 @@ export const loginUserFn = async (user: ILoginInput) => {
 
 // TODO: 이메일 인증 시, 로그인까지 진행하도록 구현
 export const verifyEmailFn = async (signupVerifyToken: string) => {
-  const response = await api.post(
+  const response = await api.get(
     `user/verify-email?signupVerifyToken=${signupVerifyToken}`
   );
   return response.data ? response.data : response;

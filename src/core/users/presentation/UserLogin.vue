@@ -44,7 +44,7 @@
       </div>
       <div class="text-body2">
         계정이 없다면 회원가입 해주세요.
-        <a href="/signup">회원가입</a>
+        <a href="/check-email">회원가입</a>
       </div>
     </q-form>
   </div>
@@ -122,7 +122,7 @@ const { isLoading, mutate } = useMutation(
         type: 'positive',
         message: userMsg.SUCCESS_USER_LOGIN,
       });
-      router.push({ name: 'index' });
+      router.push('/');
     },
   }
 );

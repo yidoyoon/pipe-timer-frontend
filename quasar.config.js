@@ -120,6 +120,14 @@ module.exports = configure(function (ctx) {
 
       // Quasar plugins
       plugins: ['Notify', 'Cookies', 'SessionStorage'],
+      config: {
+        notify: {
+          position: 'top-right',
+          timeout: 3000,
+          textColor: 'white',
+          actions: [{ icon: 'close', color: 'white' }]
+        },
+      },
     },
 
     // animations: 'all', // --- includes all animations

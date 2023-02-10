@@ -21,8 +21,12 @@ export interface ILoginInput {
 }
 
 export interface ISignupInput {
-  userName: string;
   email: string;
+  userName: string;
   password: string
   passwordConfirm: string;
+}
+
+export interface ICheckEmailInput {
+  email: string;
 }

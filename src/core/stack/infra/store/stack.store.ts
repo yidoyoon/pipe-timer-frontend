@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import { LocalStorage } from 'quasar';
 import { IStack } from 'src/core/stack/domain/stack.model';
 import { IStacksToFrag } from 'src/core/timer/domain/timer.model';
+import { useUserStore } from 'src/core/users/infra/store/user.store';
 
 export interface StacksState {
   stacks: Record<string, IStack>;
@@ -10,6 +11,9 @@ export interface StacksState {
   isLoadingStacks: boolean;
   isEditingStacks: boolean;
 }
+
+const userStore = useUserStore();
+const { user } = userStore;
 
 export const useStackStore = defineStore('StackStore', {
   state: (): StacksState => {
@@ -70,19 +74,20 @@ export const useStackStore = defineStore('StackStore', {
 
   actions: {
     async fetchAll() {
-      this.isLoadingStacks = true;
-      // TODO: 에러 처리 필요
-      const res = await api.get('stacks/fetch');
-      const stacks = res.data as IStack[];
+      if (!!user) {
+        this.isLoadingStacks = true;
+        // TODO: 에러 처리 필요
+        const res = await api.get('stacks/fetch');
+        const stacks = res.data as IStack[];
 
-      this.isLoadingStacks = false;
+        this.isLoadingStacks = false;
 
-      this.stacksIds = stacks.map((stack: IStack) => {
-        stack.stacksToFrag.sort((a, b) => a.order - b.order);
-        this.stacks[stack.id] = stack;
-        return stack.id;
-      });
-      this.setInitialState();
+        this.stacksIds = stacks.map((stack: IStack) => {
+          stack.stacksToFrag.sort((a, b) => a.order - b.order);
+          this.stacks[stack.id] = stack;
+          return stack.id;
+        });
+      }
     },
 
     edit(newStacks: IStack) {

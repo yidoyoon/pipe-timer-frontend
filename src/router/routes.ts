@@ -2,26 +2,27 @@ import requireAuth from 'src/router/middleware/requireAuth';
 import { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
+  // TODO: Slot 활용하여 컴포넌트 재사용률 높이기(https://router.vuejs.org/guide/essentials/named-views.html#nested-named-views)
   {
     path: '/',
     component: () =>
-      import('../core/common/presentation/layouts/MainLayout.vue'),
+      import('../core/common/presentation/layouts/PomoLayout.vue'),
     children: [
       {
         path: '',
         component: () =>
-          import('../core/common/presentation/page/IndexPage.vue'),
-        name: 'index',
-      },
-      {
-        path: 'guide',
-        component: () => import('../core/guide/presentation/AppGuide.vue'),
-        name: 'guide',
+          import('../core/pomodoro/presentation/PomodoroMain.vue'),
+        name: 'pomodoro',
       },
       {
         path: 'login',
         component: () => import('../core/users/presentation/UserLogin.vue'),
         name: 'login',
+      },
+      {
+        path: 'check-email',
+        component: () => import('../core/users/presentation/UserCheckEmail.vue'),
+        name: 'check-email',
       },
       {
         path: 'signup',
@@ -37,6 +38,11 @@ const routes: RouteRecordRaw[] = [
         //   middleware: [requireAuth],
         // },
       },
+      // {
+      //   path: 'guide',
+      //   component: () => import('../core/guide/presentation/AppGuide.vue'),
+      //   name: 'guide',
+      // },
     ],
   },
   {
@@ -50,20 +56,7 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-  // TODO: Slot 활용하여 컴포넌트 재사용률 높이기(https://router.vuejs.org/guide/essentials/named-views.html#nested-named-views)
-  {
-    path: '/pomodoro',
-    component: () =>
-      import('../core/common/presentation/layouts/PomoLayout.vue'),
-    children: [
-      {
-        path: '',
-        component: () =>
-          import('../core/pomodoro/presentation/PomodoroMain.vue'),
-        name: 'pomodoro',
-      },
-    ],
-  },
+
   // Always leave this as last one,
   // but you can also remove it
   {

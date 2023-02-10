@@ -4,6 +4,7 @@ import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
 import { ITimer } from 'src/core/timer/domain/timer.model';
 import { LocalStorage } from 'quasar';
 import { Notify } from 'quasar';
+import { useUserStore } from 'src/core/users/infra/store/user.store';
 
 export interface TimerState {
   timers: Record<string, ITimer>;
@@ -12,6 +13,8 @@ export interface TimerState {
 }
 
 const selectorStore = useSelectorStore();
+const userStore = useUserStore();
+const { user } = userStore;
 
 export const useTimerStore = defineStore('timerStore', {
   state: (): TimerState => {
@@ -72,19 +75,20 @@ export const useTimerStore = defineStore('timerStore', {
   // TODO: URL frag에서 timer로 변경
   actions: {
     async fetchAll() {
-      if (this.loadedTimers) return;
-      this.isLoadingTimer = true;
-      // TODO: 에러 처리 필요
-      const res = await api.get('frag/fetch');
+      if (!!user) {
+        if (this.loadedTimers) return;
+        this.isLoadingTimer = true;
+        // TODO: 에러 처리 필요
+        const res = await api.get('frag/fetch');
 
-      const timers = res.data;
-      this.isLoadingTimer = false;
+        const timers = res.data;
+        this.isLoadingTimer = false;
 
-      this.timerIds = timers.map((timer: ITimer) => {
-        this.timers[timer.fragId] = timer;
-        return timer.fragId;
-      });
-      this.setInitialState();
+        this.timerIds = timers.map((timer: ITimer) => {
+          this.timers[timer.fragId] = timer;
+          return timer.fragId;
+        });
+      }
     },
 
     add(newTimer: ITimer) {
@@ -154,7 +158,7 @@ export const useTimerStore = defineStore('timerStore', {
         // });
         selectorStore.editNow = '';
       }
-      this.setInitialState();
+      // this.setInitialState();
     },
   },
 });

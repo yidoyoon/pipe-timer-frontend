@@ -4,8 +4,8 @@ import { LocalStorage } from 'quasar';
 import { IStack, Stack } from 'src/core/stack/domain/stack.model';
 import { IStacksToFrag } from 'src/core/timer/domain/timer.model';
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
-import { isEmptyObj } from 'src/util/is-empty';
 import { Notify } from 'quasar';
+import { isEmptyObj } from 'src/util/is-empty-object.util';
 
 export interface BuilderState {
   stackInBuilder: IStack;
@@ -33,7 +33,6 @@ export const useBuilderStore = defineStore('BuilderStore', {
   },
 
   getters: {
-    // TODO: Number를 시간단위로 변경
     getTotalDur(): number {
       let total = 0;
       if ('stackToFrag' in this.stackInBuilder) {
@@ -56,12 +55,6 @@ export const useBuilderStore = defineStore('BuilderStore', {
   },
 
   actions: {
-    // sortBuilder() {
-    //   this.stackInBuilder.stacksToFrag = this.stackInBuilder.stacksToFrag.sort(
-    //     (a, b) => a.order - b.order
-    //   );
-    // },
-
     orderStack() {
       if (this.stackInBuilder.stacksToFrag !== undefined) {
         return this.stackInBuilder.stacksToFrag.map((timer, index) => {

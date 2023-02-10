@@ -4,7 +4,7 @@ export const userVar = {
   USER_NAME_MIN_LEN: 3,
   USER_NAME_MAX_LEN: 39,
   PASSWORD_MIN_LEN: 8,
-  PASSWORD_MAX_LEN: 64,
+  PASSWORD_MAX_LEN: 32,
   USER_EMAIL_MAX_LEN: 320,
 };
 
@@ -22,11 +22,11 @@ export const userMsg = {
   ERROR_USER_LOGOUT: '로그아웃 중 문제가 발생했습니다.',
 
   // Authorization
-  INVALID_TOKEN: '인증 정보가 만료됐습니다. 다시 로그인해주세요.',
+  INVALID_TOKEN: '로그인 정보가 없어 타이머와 스택을 불러올 수 없습니다.<br>타이머와 스택 정보를 저장하시려면 로그인 후 이용해주세요.',
 
   // Signup
   INVALID_USER_EMAIL: '유효하지 않은 이메일 형식입니다.',
-  BELOW_MIN_USER_NAME: `유저네임을 ${userVar.USER_NAME_MIN_LEN}자 이상으로 설정해주세요`,
+  BELOW_MIN_USER_NAME: `유저네임을 ${userVar.USER_NAME_MIN_LEN}글자 이상으로 설정해주세요`,
   BELOW_MIN_USER_PASSWORD: `비밀번호를 ${userVar.PASSWORD_MIN_LEN}자 이상으로 설정해주세요.`,
   ABOVE_MAX_USER_PASSWORD: `비밀번호를 ${userVar.PASSWORD_MAX_LEN}자 미만으로 설정해주세요.`,
   EMPTY_CONFIRM_PASSWORD: '비밀번호를 한번 더 입력해주세요.',

@@ -1,44 +1,28 @@
 <template>
-  <div class="row q-pa-md justify-between">
+  <div class="row q-ma-sm justify-between">
     <div>
-      <q-btn @click="toBuilderBtn" color="negative" label="Remove" />
-    </div>
-    <div>
-      <q-btn outline @click="toBuilderBtn" label="Move to Builder" />
       <q-btn
-        outline
-        @click="toBuilderBtn"
-        label="Rename Stack"
-        class="q-mx-md"
+        @click="removeStack = !removeStack"
+        color="negative"
+        label="remove stack"
       />
     </div>
     <div>
-      <q-btn
-        @click="saveEdit"
-        color="blue"
-        label="Save Stack"
-        :disable="!canSaveTimers"
-        class="q-mx-md"
-      />
-      <q-btn
-        @click="cancelEdit"
-        color="white"
-        text-color="black"
-        label="cancel"
-      />
+      <q-btn @click="cancel" color="white" text-color="black" label="cancel" />
     </div>
-    <q-tooltip v-if="!canSaveTimers" class="text-body2">
-      진행중인 설정이 남아있거나, 데이터 로딩이 완료되지 않았습니다.
-    </q-tooltip>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useQuasar }   from 'quasar';
-import {useStackStore} from 'src/core/stack/infra/store/stack.store';
+import { storeToRefs } from 'pinia';
+import { useQuasar } from 'quasar';
+import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
+import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 
-const $q = useQuasar();
-const stackStore = useStackStore();
+const selectorStore = useSelectorStore();
+const { removeStack } = storeToRefs(selectorStore);
 
-const toBuilderBtn = () => {};
+const cancel = () => {
+  selectorStore.editNow = '';
+};
 </script>

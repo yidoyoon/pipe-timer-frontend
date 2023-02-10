@@ -18,13 +18,6 @@
         icon="timer"
         class="q-mr-sm"
       />
-      <q-btn
-        label="Remove stack"
-        color="negative"
-        @click="removeStack = !removeStack"
-        class="q-mr-sm"
-      />
-      <q-btn label="reset" color="negative" @click="resetStores" />
     </div>
 
     <div>
@@ -184,7 +177,7 @@ const timerStore = useTimerStore();
 const builderStore = useBuilderStore();
 const selectorStore = useSelectorStore();
 
-const { editNow, removeStack } = storeToRefs(selectorStore);
+const { editNow } = storeToRefs(selectorStore);
 // const { canSaveTimers } = timerStoreRefs;
 
 timerStore.fetchAll();
