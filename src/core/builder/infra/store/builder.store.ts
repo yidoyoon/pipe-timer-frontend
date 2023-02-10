@@ -4,8 +4,8 @@ import { LocalStorage } from 'quasar';
 import { IStack, Stack } from 'src/core/stack/domain/stack.model';
 import { IStacksToFrag } from 'src/core/timer/domain/timer.model';
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
-import { isEmptyObj } from 'src/util/is-empty';
 import { Notify } from 'quasar';
+import { isEmptyObj } from 'src/util/is-empty-object.util';
 
 export interface BuilderState {
   stackInBuilder: IStack;
