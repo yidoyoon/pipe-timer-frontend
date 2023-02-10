@@ -170,17 +170,15 @@ import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
 import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
-import { IStack, Stack } from 'src/core/stack/domain/stack.model';
+import { IStack } from 'src/core/stack/domain/stack.model';
 import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
-import { isEmptyObj } from 'src/util/is-empty';
+import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { ref } from 'vue';
 
 const stackStore = useStackStore();
-const stackStoreRefs = storeToRefs(stackStore);
 const timerStore = useTimerStore();
 const builderStore = useBuilderStore();
-const builderStoreRefs = storeToRefs(builderStore);
 const selectorStore = useSelectorStore();
 const { editNow } = storeToRefs(selectorStore);
 
@@ -188,7 +186,6 @@ timerStore.fetchAll();
 stackStore.fetchAll();
 
 const $q = useQuasar();
-
 
 const builderPrompt = ref(false);
 const builderWarn = ref(false);
@@ -223,7 +220,7 @@ const saveStackBtn = () => {
   }
 };
 
-const saveStack = async(stack: IStack) => {
+const saveStack = async (stack: IStack) => {
   await builderStore.saveStack(stack);
   await stackStore.fetchAll();
   editNow.value = '';
