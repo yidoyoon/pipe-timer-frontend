@@ -32,14 +32,7 @@ api.interceptors.response.use(
     // const originalRequest = error.config;
     const errMsg = err.response.data.message as string;
 
-    if (errMsg === 'Already verified email') {
-      await Router.push({ name: 'login' });
-      Notify.create({
-        color: 'positive',
-        message: userMsg.ALREADY_VERIFIED_EMAIL,
-        icon: 'verified',
-      });
-    } else if (errMsg === 'Unauthorized') {
+    if (errMsg === 'Unauthorized') {
       return await refreshAccessTokenFn().catch(() => {
         Notify.create({
           color: 'negative',
@@ -58,12 +51,6 @@ api.interceptors.response.use(
       Notify.create({
         color: 'negative',
         message: userMsg.UNAUTHORIZED_PASSWORD,
-      });
-    } else if (errMsg === 'Invalid email verification code') {
-      Notify.create({
-        color: 'negative',
-        message: userMsg.INVALID_EMAIL_VERIFICATION_CODE,
-        icon: 'error',
       });
     }
     return Promise.reject(err);
