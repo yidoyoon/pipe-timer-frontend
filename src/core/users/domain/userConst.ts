@@ -4,7 +4,7 @@ export const userVar = {
   USER_NAME_MIN_LEN: 3,
   USER_NAME_MAX_LEN: 39,
   PASSWORD_MIN_LEN: 8,
-  PASSWORD_MAX_LEN: 64,
+  PASSWORD_MAX_LEN: 32,
   USER_EMAIL_MAX_LEN: 320,
 };
 
@@ -26,7 +26,7 @@ export const userMsg = {
 
   // Signup
   INVALID_USER_EMAIL: '유효하지 않은 이메일 형식입니다.',
-  BELOW_MIN_USER_NAME: `유저네임을 ${userVar.USER_NAME_MIN_LEN}자 이상으로 설정해주세요`,
+  BELOW_MIN_USER_NAME: `유저네임을 ${userVar.USER_NAME_MIN_LEN}글자 이상으로 설정해주세요`,
   BELOW_MIN_USER_PASSWORD: `비밀번호를 ${userVar.PASSWORD_MIN_LEN}자 이상으로 설정해주세요.`,
   ABOVE_MAX_USER_PASSWORD: `비밀번호를 ${userVar.PASSWORD_MAX_LEN}자 미만으로 설정해주세요.`,
   EMPTY_CONFIRM_PASSWORD: '비밀번호를 한번 더 입력해주세요.',
