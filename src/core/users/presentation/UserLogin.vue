@@ -112,8 +112,8 @@ const { isLoading, mutate } = useMutation(
       //   icon: 'warning',
       // });
     },
-    onSuccess: (data) => {
-      const user = Object.assign({}, data.userPayload);
+    onSuccess: (response) => {
+      const user = response.passport.user;
 
       userStore.setUser(user);
       queryClient.refetchQueries(['user']);
