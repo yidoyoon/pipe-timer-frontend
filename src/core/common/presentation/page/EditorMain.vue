@@ -18,7 +18,7 @@
     <div v-if="editNow === ''">
       <DefaultFooter></DefaultFooter>
     </div>
-    <div v-else-if="isEditBuilder ? editNow === 'builder' : (editNow = '')">
+    <div v-else-if="isEditBuilder ? editNow === 'builder' : {}">
       <BuilderFooter></BuilderFooter>
     </div>
     <div v-else-if="editNow === 'stack'">
