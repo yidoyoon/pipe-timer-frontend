@@ -21,7 +21,12 @@
     </div>
 
     <div>
-      <q-btn @click="saveEdit" color="blue" label="Save Timers" class="q-mx-sm" />
+      <q-btn
+        @click="saveTimersBtn"
+        color="blue"
+        label="Save Timers"
+        class="q-mx-sm"
+      />
       <q-btn
         @click="cancelEdit"
         color="white"
@@ -78,26 +83,38 @@
 
       <q-card-section class="q-pt-none">
         <q-input
-          label="Timer name"
+          label="Name"
           v-model="timerName"
+          hint="타이머의 이름을 입력해주세요."
           dense
           autofocus
           @keyup.enter.prevent="createTimer"
           @keyup.esc.prevent="timerPrompt = false"
+          :rules="[
+            (val) => val.length >= 1 || '최소 1 글자 이상으로 설정해주세요.',
+          ]"
         />
+        <!--        TODO: 시간 입력기 개선-->
         <q-input
-          label="Timer duration"
+          label="Duration"
           v-model="duration"
           dense
           autofocus
+          hint="설정할 시간을 초 단위로 입력해주세요."
           @keyup.enter.prevent="createTimer"
           @keyup.esc.prevent="timerPrompt = false"
+          :rules="[
+            (val) =>
+              val.length >= 1 ||
+              val.length <= 86400 ||
+              '1초 - 86400초(24 시간) 사이로 입력해주세요',
+          ]"
         />
         <q-input
           filled
           v-model="color"
           :rules="['anyColor']"
-          hint="타이머 구분에 사용될 색상을 선택합니다."
+          hint="타이머 구분에 사용할 색상을 선택합니다."
           class="my-input"
         >
           <template v-slot:append>
@@ -167,7 +184,8 @@ import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
 import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import { Timer } from 'src/core/timer/domain/timer.model';
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
-import { isEmptyObj } from 'src/util/is-empty';
+import { useUserStore } from 'src/core/users/infra/store/user.store';
+import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { ref } from 'vue';
 
 const stackStore = useStackStore();
@@ -176,8 +194,10 @@ const stackStoreRefs = storeToRefs(stackStore);
 const timerStore = useTimerStore();
 const builderStore = useBuilderStore();
 const selectorStore = useSelectorStore();
+const userStore = useUserStore();
 
 const { editNow } = storeToRefs(selectorStore);
+const { user } = userStore;
 // const { canSaveTimers } = timerStoreRefs;
 
 timerStore.fetchAll();
@@ -263,36 +283,35 @@ const cancelEdit = () => {
   });
 };
 
-// TODO: 최종 저장 전, 인증 정보를 확인하고 진행
-const saveTimersBtn = () => {
-  const res = api.post('frag/save', timerStore.listTimers);
-  if (!res) {
-    $q.notify({
-      message: '저장이 완료되지 않았습니다. 인터넷 연결 상태를 확인해주세요',
-      color: 'negative',
-    });
-  } else {
-    $q.notify({
-      message: '저장을 완료했습니다.',
-      color: 'positive',
-    });
-    stackStore.fetchAll();
+const saveTimers = () => {
+  if (!!user) {
+    const res = api.post('frag/save', timerStore.listTimers);
+    if (!res) {
+      $q.notify({
+        message: '저장이 완료되지 않았습니다. 인터넷 연결 상태를 확인해주세요',
+        color: 'negative',
+      });
+    } else {
+      $q.notify({
+        message: '저장을 완료했습니다.',
+        color: 'positive',
+      });
+      timerStore.fetchAll();
+    }
   }
-  stackStore.setInitialState();
 };
 
-// TODO: 저장을 성공하면 Initial state 갱신
-const saveEdit = () => {
+const saveTimersBtn = () => {
   $q.notify({
     progress: true,
-    message: '수정 완료된 사항들을 저장합니다. 계속 하시겠습니까?',
-    color: 'indigo-5',
+    message: '타이머를 저장합니다. 계속 하시겠습니까?',
+    color: 'navy',
     multiLine: true,
     actions: [
       {
         label: '확인',
-        color: 'negative',
-        handler: saveTimersBtn,
+        color: 'white',
+        handler: saveTimers,
       },
       { label: '취소', color: 'white' },
     ],
