@@ -38,9 +38,9 @@
       </q-input>
 
       <div class="row">
-        <q-btn label="LOGIN" type="submit" color="primary" />
-        <div class="q-space"></div>
-        <q-btn label="CANCEL" to="/" color="primary" flat class="q-ml-sm" />
+        <q-btn label="login" type="submit" color="primary" />
+        <q-space />
+        <q-btn label="cancel" to="/" flat class="q-ml-sm" />
       </div>
       <div class="text-body2">
         계정이 없다면 회원가입 해주세요.
@@ -118,10 +118,6 @@ const { isLoading, mutate } = useMutation(
       userStore.setUser(user);
       queryClient.refetchQueries(['user']);
 
-      $q.notify({
-        type: 'positive',
-        message: userMsg.SUCCESS_USER_LOGIN,
-      });
       router.push('/');
     },
   }
