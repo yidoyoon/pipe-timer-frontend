@@ -1,6 +1,4 @@
 import { userMsg } from 'src/core/users/domain/userConst';
-import { useUserStore } from 'src/core/users/infra/store/user.store';
-import { Router } from 'src/router';
 import {
   ICheckEmailInput,
   IErrorResponse,

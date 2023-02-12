@@ -13,8 +13,8 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useStackStore }    from 'src/core/stack/infra/store/stack.store';
-import StackLoader          from 'src/core/stack/presentation/components/StackLoader.vue';
+import { useStackStore } from 'src/core/stack/infra/store/stack.store';
+import StackLoader from 'src/core/stack/presentation/components/StackLoader.vue';
 
 const stackStore = useStackStore();
 
