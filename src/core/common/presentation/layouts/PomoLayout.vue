@@ -1,12 +1,12 @@
 <template>
   <q-layout view="lHr lpR lFr">
     <!--    Invisible header-->
-    <ButtonHeader @change-drawer="(e) => (rightDrawer = e)"/>
+    <ButtonHeader @change-drawer="(e) => (rightDrawer = e)" />
 
     <!--    Left splitter-->
     <q-splitter
       v-model="splitterModel"
-      style="height: 100vh;"
+      style="height: 100vh"
       :limits="[10, 10]"
     >
       <template v-slot:before>
@@ -50,8 +50,29 @@
     </q-splitter>
 
     <!--    RightDrawer-->
-    <RightDrawer v-if="!!user" :rightDrawerOpen="rightDrawer" />
+    <RightDrawer v-if="!!user" :rightDrawerOpen="rightDrawerOpen" />
 
+    <!--    Right drawer button-->
+    <q-page-sticky
+      v-if="!!user"
+      position="right"
+      :offset="[20, 5]"
+      class="z-top"
+    >
+      <q-btn
+        @click="toggleRightDrawer"
+        :icon="
+          rightDrawerOpen
+            ? 'keyboard_double_arrow_right'
+            : 'keyboard_double_arrow_left'
+        "
+        flat
+        color="black"
+        round
+      />
+    </q-page-sticky>
+
+<!--    Open StackList-->
     <q-page-sticky
       v-if="!!user"
       position="bottom"
@@ -59,7 +80,7 @@
       style="left: 120px; bottom: 0.5rem"
     >
       <q-btn
-        @click="toggleRightDrawer"
+        @click="toggleStackList"
         icon="keyboard_double_arrow_up"
         color="black"
         flat
@@ -78,8 +99,11 @@ import RightDrawer from 'src/core/common/presentation/components/RightDrawer.vue
 
 const { user } = storeToRefs(useUserStore());
 
-const rightDrawer = ref(true);
-
 const splitterModel = ref(10);
 const tab = ref('');
+const rightDrawerOpen = ref(true);
+
+const toggleRightDrawer = () => {
+  rightDrawerOpen.value = !rightDrawerOpen.value;
+};
 </script>

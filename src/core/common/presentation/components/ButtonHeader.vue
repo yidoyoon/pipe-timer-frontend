@@ -6,25 +6,6 @@
       <q-btn v-else @click="logoutUser" label="logout" outline color="black" />
     </q-page-sticky>
 
-    <!--    Right drawer button-->
-    <q-page-sticky
-      v-if="!!user"
-      position="right"
-      :offset="[20, 5]"
-      class="z-top"
-    >
-      <q-btn
-        @click="toggleRightDrawer"
-        :icon="
-          rightDrawerOpen
-            ? 'keyboard_double_arrow_right'
-            : 'keyboard_double_arrow_left'
-        "
-        flat
-        color="black"
-        round
-      />
-    </q-page-sticky>
   </q-header>
 </template>
 
@@ -45,24 +26,6 @@ const userStore = useUserStore();
 const userStoreRefs = storeToRefs(userStore);
 const fragStore = useTimerStore();
 const { user } = userStoreRefs;
-
-const rightDrawerOpen = ref(true);
-
-const emit = defineEmits<{
-  (e: 'changeDrawer', rightDrawerOpen: boolean): void;
-}>();
-
-const toggleRightDrawer = () => {
-  rightDrawerOpen.value = !rightDrawerOpen.value;
-  emit('changeDrawer', rightDrawerOpen.value);
-};
-
-const arrowDirection = function () {
-  if (rightDrawerOpen.value) {
-    return 'keyboard_double_arrow_right';
-  }
-  return 'keyboard_double_arrow_left';
-};
 
 const { mutate: logoutUser } = useMutation(() => logoutUserFn(), {
   onSuccess: () => {
