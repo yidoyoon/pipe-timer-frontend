@@ -81,7 +81,8 @@ const active = {
 
 <style scoped lang="scss">
 .area {
-  border: solid;
-  color: black;
+  background-color: #f2f2f2;
+  border-radius: 30px;
+  border: solid transparent;
 }
 </style>
