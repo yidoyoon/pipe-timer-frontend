@@ -23,7 +23,7 @@
         v-model="password"
         label="Password"
         :type="isPwd ? 'password' : 'text'"
-        placeholder="8 - 128 characters"
+        placeholder="8 - 32 characters"
         :error-message="passwordError"
         :error="!!passwordError"
         debounce="500"
