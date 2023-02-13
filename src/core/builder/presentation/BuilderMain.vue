@@ -1,7 +1,7 @@
 <template>
-  <q-scroll-area style="height: 30vh">
-    <div class="row">
-      <BuilderCore :stack="newStack" />
+  <q-scroll-area style="height: 20vh">
+    <div class="row justify-between">
+      <BuilderCore :stack="newStack" style="height: 30vh" />
     </div>
   </q-scroll-area>
 </template>
