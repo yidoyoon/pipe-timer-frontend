@@ -5,14 +5,12 @@
       <q-btn v-if="!user" to="/login" label="login" outline color="black" />
       <q-btn v-else @click="logoutUser" label="logout" outline color="black" />
     </q-page-sticky>
-
   </q-header>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
-import { ref } from 'vue';
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
 import { logoutUserFn } from 'src/core/users/infra/http/user.api';
 import { useQuasar } from 'quasar';

@@ -1,10 +1,7 @@
 <template>
   <q-scroll-area class="full-height">
     <div class="row q-pa-sm full-height">
-      <TimerCore
-        :timers="listTimers"
-        class="col-12"
-      />
+      <TimerCore :timers="listTimers" class="col-12" />
     </div>
   </q-scroll-area>
 </template>
