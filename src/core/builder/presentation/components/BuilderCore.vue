@@ -1,20 +1,24 @@
 <template>
-  <q-item class="fit flat no-shadow cursor-pointer">
-    <q-item-section class="row" :style="activeBuilder">
+  <q-item class="row fit justify-between q-pa-none q-ma-none">
+    <q-item-section class="row justify-between">
+      <div style="color: black">
+      </div>
       <div
         v-if="isEditBuilder"
         class="text-subtitle1"
-        style="position: absolute; top: 1rem"
+        style="position: absolute; width: 100%"
       >
-        <b>
-          Name: {{ props.stack.name }} <br />
-          Total duration: {{ getTotalDur }}
-        </b>
+        <div
+          class="row justify-between"
+          style="background-color: #007777; color: white"
+        >
+          <div class="q-mx-md">{{ props.stack.name }}</div>
+          <div class="q-mx-md">Total duration - {{ timeFormatter }}</div>
+        </div>
       </div>
-      <div v-else class="text-h5 bold">
-        <b>
-          스택 리스트에서 스택을 선택하거나 'CREATE STACK' 을 눌러 새로운 스택을
-          생성하세요.
+      <div v-else class="text-h6 bold">
+        <b class="q-ml-sm">
+          우측의 타이머 리스트에서 타이머를 끌어와 주세요.
         </b>
       </div>
 
@@ -27,7 +31,7 @@
           type: 'transition-group',
           name: !drag ? 'flip-list' : null,
         }"
-        class="q-pa-none row no-wrap justify-start builder-group"
+        class="q-my-lg q-mx-md row no-wrap builder-group"
         @start="drag = true"
         @end="drag = false"
         item-key="order fragId"
@@ -40,7 +44,7 @@
             <div
               class="row no-wrap flat justify-between"
               style="
-                height: 7rem;
+                height: 5rem;
                 white-space: nowrap;
                 position: relative;
                 bottom: -2rem;
@@ -53,19 +57,14 @@
               >
                 <q-card-section>
                   <div>Name: {{ element.frag.name }}</div>
-                  <br />
-                  <div>
-                    Duration: {{ element.frag.duration }}
-                    <br />
-                    Order: {{ element.frag.order }}
-                  </div>
+                  <div>Duration: {{ element.frag.duration }}</div>
                 </q-card-section>
               </q-card>
               <div class="row items-center">
                 <q-icon
                   v-if="arrowDrawer(index)"
                   name="arrow_right"
-                  style="font-size: 4rem; color: grey"
+                  style="font-size: 4rem; color: dimgrey"
                 ></q-icon>
               </div>
             </div>
@@ -77,6 +76,7 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from 'dayjs';
 import { storeToRefs } from 'pinia';
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
 import { IStack } from 'src/core/stack/domain/stack.model';
@@ -102,6 +102,13 @@ const removeDraggedItem = (e: any) => {
   builderStore.stackInBuilder.stacksToFrag.splice(e.oldIndex, 1);
 };
 
+const timeFormatter = computed(() => {
+  const formatted = dayjs
+    .duration(getTotalDur.value, 'seconds')
+    .format('HH:mm:ss');
+  return formatted;
+});
+
 const activeBuilder = {
   minHeight: '14rem',
 };
@@ -126,7 +133,7 @@ const colorExtractor = (timer: ITimer) => {
 }
 
 .inner-my-card {
-  width: 15rem;
+  width: 10rem;
 }
 
 .q-img-container {
