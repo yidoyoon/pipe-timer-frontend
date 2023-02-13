@@ -35,11 +35,9 @@ export const useBuilderStore = defineStore('BuilderStore', {
   getters: {
     getTotalDur(): number {
       let total = 0;
-      if ('stackToFrag' in this.stackInBuilder) {
-        this.stackInBuilder.stacksToFrag.forEach((e) => {
-          total += e.frag.duration as number;
-        });
-      }
+      this.stackInBuilder.stacksToFrag.forEach((e) => {
+        total += e.frag.duration;
+      });
       return total;
     },
     getBuilder(): IStack {
