@@ -4,7 +4,6 @@
     show-if-above
     side="right"
     borderd
-    elevated="false"
     :width="205"
     :breakpoint="400"
   >
@@ -193,9 +192,7 @@ const timerStore = useTimerStore();
 const userStore = useUserStore();
 const { listTimers } = timerStore;
 const stackStore = useStackStore();
-const builderStore = useBuilderStore();
 const selectorStore = useSelectorStore();
-const { editNow } = storeToRefs(selectorStore);
 const { user } = userStore;
 
 const rightDrawerOpen = ref(props.rightDrawerOpen);
@@ -206,11 +203,8 @@ stackStore.fetchAll();
 
 const $q = useQuasar();
 
-const builderPrompt = ref(false);
-const builderWarn = ref(false);
 const timerPrompt = ref(false);
 
-const stackName = ref('');
 const timerName = ref('');
 const duration = ref(0);
 const color = ref('#000000ff');
