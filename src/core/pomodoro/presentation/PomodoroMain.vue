@@ -34,6 +34,7 @@
   >
     <q-card style="width: 70vw; max-width: 70vw; height: 45vh">
       <q-bar
+        class="q-mb-md"
         style="
           background-color: transparent;
           border-bottom: solid 0.1rem #002222;
