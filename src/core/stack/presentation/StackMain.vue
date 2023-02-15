@@ -19,10 +19,11 @@
       </div>
     </div>
     <div
-      v-if="isEmptyObj(stackInBuilder) && selectorStore.editNow !== 'builder'"
+      v-if="stackStore.listStacks.length === 0"
       class="text-h6 text-weight-bold"
     >
-      스택이 비어있습니다. 타이머를 활용해 스택을 생성해주세요.
+      스택이 비어있습니다. 스택을 생성하려면 상단의 'CREATE STACK' 버튼을
+      눌러주세요.
     </div>
   </q-scroll-area>
 </template>
@@ -34,6 +35,7 @@ import BuilderMain from 'src/core/builder/presentation/BuilderMain.vue';
 import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
 import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import StackLoader from 'src/core/stack/presentation/components/StackLoader.vue';
+import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 
 const stackStore = useStackStore();
@@ -42,10 +44,15 @@ const selectorStore = useSelectorStore();
 const builderStore = useBuilderStore();
 const builderStoreRefs = storeToRefs(builderStore);
 const { stackInBuilder } = builderStoreRefs;
+const userStore = useUserStore();
+const userStoreRef = storeToRefs(userStore);
 
-stackStore.fetchAll();
+if (!!userStoreRef.user) {
+  stackStore.fetchAll();
+}
 
 const { listStacks } = stacksStoreRefs;
+
 const removeStacks = (id: string) => {
   stackStore.remove(id);
 };
