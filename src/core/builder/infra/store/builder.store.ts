@@ -11,6 +11,8 @@ export interface BuilderState {
   stackInBuilder: IStack;
 }
 
+const timerStore = useTimerStore();
+
 export const useBuilderStore = defineStore('BuilderStore', {
   state: (): BuilderState => {
     return {
@@ -54,18 +56,30 @@ export const useBuilderStore = defineStore('BuilderStore', {
 
   actions: {
     orderStack() {
-      if (this.stackInBuilder.stacksToFrag !== undefined) {
+      if ('stacksToFrag' in this.stackInBuilder) {
+        alert('passed');
         return this.stackInBuilder.stacksToFrag.map((timer, index) => {
           timer.order = index;
+          timer.frag.order = index;
         });
       }
     },
 
     async saveStack(stack: IStack) {
       // TODO: 상단에서 Initialize 하면 발생하는 오류 해결 -> ReferenceError: Cannot access 'useTimerStore' before initialization
-      const timerStore = useTimerStore();
-      timerStore.saveTimer();
-      this.orderStack();
+      try {
+        await timerStore.saveTimer();
+      } catch {
+        Notify.create({
+          color: 'negative',
+          message: '저장 과정에서 오류가 발생했습니다.',
+        });
+      }
+
+      stack.stacksToFrag.map((timer, index) => {
+        timer.order = index;
+      });
+
       const res = await api.post('stacks/save', stack);
       if (res.data.success) {
         Notify.create({
