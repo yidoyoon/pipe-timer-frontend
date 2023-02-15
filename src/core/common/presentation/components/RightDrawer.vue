@@ -18,51 +18,19 @@
       <q-list padding>
         <q-item-section>
           <q-item class="row justify-center">
-            <q-item-label v-if="!!user"
-              >Logged in as <b>{{ userStore.user.userName }}</b></q-item-label
+            <q-item-label v-if="isLoggedIn"
+              >Logged in as
+              <b>{{ userStoreRefs.user.value.userName }}</b></q-item-label
             >
-            <q-item-label v-else
-              >타이머, 스택 정보를 서버에<br>저장하시려면 로그인 해주세요.</q-item-label
-            >
+            <div v-else>
+              <q-item-label
+                >타이머, 스택 정보를 서버에<br />저장하려면 로그인
+                해주세요.</q-item-label
+              >
+              <q-item-label caption>기본적으로 로컬에 저장됩니다.</q-item-label>
+            </div>
           </q-item>
         </q-item-section>
-        <q-separator />
-
-        <div class="row justify-evenly">
-          <q-btn
-            v-if="user"
-            @click="createTimerBtn"
-            :disable="!listTimers.length"
-            dense
-            icon="add"
-            flat
-            label="add"
-            text-color="positive"
-            class="q-pr-sm"
-          >
-            <q-tooltip anchor="top middle" self="top middle">
-              <div>타이머를 생성합니다.</div>
-            </q-tooltip>
-          </q-btn>
-
-          <q-separator vertical />
-
-          <q-btn
-            v-if="user"
-            @click="saveTimersBtn"
-            :disable="!listTimers.length"
-            dense
-            icon="save"
-            flat
-            label="save"
-            text-color="positive"
-            class="q-pr-sm"
-          >
-            <q-tooltip anchor="top middle" self="top middle">
-              <div>타이머를 저장합니다.</div>
-            </q-tooltip>
-          </q-btn>
-        </div>
 
         <q-separator />
 
@@ -78,26 +46,59 @@
 
         <q-separator />
 
-        <TimerCore v-if="listTimers.length" :timers="listTimers" class="col-12" />
-        <div v-else class="row justify-between q-pt-lg absolute-center">
-          <q-icon name="hourglass_disabled" class="col-12"> 타이머가 비어있습니다. </q-icon>
+        <div class="row justify-evenly">
+          <div>
+            <q-btn
+              @click="createTimerBtn"
+              dense
+              icon="add"
+              flat
+              label="add"
+              text-color="positive"
+              class="q-pr-sm"
+            />
+            <q-tooltip anchor="top middle" self="top middle">
+              타이머를 생성합니다.
+            </q-tooltip>
+          </div>
+
+          <q-separator vertical />
+
+          <div>
+            <q-btn
+              @click="saveTimersBtn"
+              dense
+              icon="save"
+              flat
+              label="save"
+              text-color="positive"
+              class="q-pr-sm"
+              :disable="!listTimersRef.length"
+            />
+
+            <q-tooltip
+              v-if="!listTimersRef.length"
+              anchor="top middle"
+              self="top middle"
+            >
+              타이머가 없다면 서버에 저장할 수 없습니다.
+            </q-tooltip>
+            <q-tooltip v-else anchor="top middle" self="top middle">
+              서버에 타이머 정보를 저장합니다.
+            </q-tooltip>
+          </div>
         </div>
+
+        <q-separator />
+
+        <TimerCore :timers="listTimersRef" class="col-12" @remove="remove" />
+        <!--        <div v-else class="row justify-between q-pt-lg absolute-center">-->
+        <!--          <q-icon name="hourglass_disabled" class="col-12">-->
+        <!--            타이머가 비어있습니다.-->
+        <!--          </q-icon>-->
+        <!--        </div>-->
       </q-list>
     </q-scroll-area>
-
-    <!--    <q-img-->
-    <!--      class="absolute-top"-->
-    <!--      src="https://cdn.quasar.dev/img/material.png"-->
-    <!--      style="height: 150px"-->
-    <!--    >-->
-    <!--      <div class="absolute-bottom bg-transparent">-->
-    <!--        <q-avatar size="56px" class="q-mb-sm">-->
-    <!--          <img src="https://cdn.quasar.dev/img/boy-avatar.png" />-->
-    <!--        </q-avatar>-->
-    <!--        <div class="text-weight-bold">Razvan Stoenescu</div>-->
-    <!--        <div>@rstoenescu</div>-->
-    <!--      </div>-->
-    <!--    </q-img>-->
   </q-drawer>
 
   <!--  Create timer dialog-->
@@ -106,7 +107,6 @@
       <q-card-section>
         <div class="text-h6">Create new timer</div>
       </q-card-section>
-
       <q-card-section class="q-pt-none">
         <q-input
           label="Name"
@@ -114,34 +114,55 @@
           hint="타이머의 이름을 입력해주세요."
           dense
           autofocus
+          debounce="300"
           @keyup.enter.prevent="createTimer"
           @keyup.esc.prevent="timerPrompt = false"
-          :rules="[
-            (val) => val.length >= 1 || '최소 1 글자 이상으로 설정해주세요.',
-          ]"
+          :error="!!nameError"
+          :error-message="nameError"
         />
-        <!--        TODO: 시간 입력기 개선-->
+        <div class="row justify-start q-gutter-lg">
+          <q-input
+            hide-bottom-space
+            label="Hour"
+            v-model="hours"
+            dense
+            autofocus
+            debounce="300"
+            :input-style="{ width: '4rem' }"
+            :error="!!hoursError"
+            :error-message="hoursError"
+          />
+          <q-input
+            hide-bottom-space
+            label="Minutes"
+            v-model="minutes"
+            dense
+            autofocus
+            debounce="300"
+            :input-style="{ width: '4rem' }"
+            :error="!!minutesError"
+            :error-message="minutesError"
+          />
+          <q-input
+            hide-bottom-space
+            label="Seconds"
+            v-model="seconds"
+            dense
+            autofocus
+            debounce="300"
+            :input-style="{ width: '4rem' }"
+            :error="!!secondsError"
+            :error-message="secondsError"
+          />
+        </div>
+
         <q-input
-          label="Duration"
-          v-model="duration"
-          dense
-          autofocus
-          hint="설정할 시간을 초 단위로 입력해주세요."
-          @keyup.enter.prevent="createTimer"
-          @keyup.esc.prevent="timerPrompt = false"
-          :rules="[
-            (val) =>
-              val.length >= 1 ||
-              val.length <= 86400 ||
-              '1초 - 86400초(24 시간) 사이로 입력해주세요',
-          ]"
-        />
-        <q-input
-          filled
           v-model="color"
           :rules="['anyColor']"
           hint="타이머 구분에 사용할 색상을 선택합니다."
-          class="my-input"
+          debounce="300"
+          :error="!!colorError"
+          :error-message="colorError"
         >
           <template v-slot:append>
             <q-icon name="colorize" class="cursor-pointer">
@@ -156,15 +177,16 @@
           </template>
         </q-input>
       </q-card-section>
-
       <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn flat label="Cancel" v-close-popup @click="resetForm" />
         <q-btn
           flat
           label="Confirm"
           color="green"
+          type="submit"
+          @click="onSubmit"
+          :disable="!isEmptyObj(errors)"
           v-close-popup
-          @click="createTimer"
         />
       </q-card-actions>
     </q-card>
@@ -172,17 +194,19 @@
 </template>
 
 <script setup lang="ts">
+import { toFormValidator } from '@vee-validate/zod';
 import { api } from 'boot/axios';
 import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
-import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
-import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
 import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import { Timer } from 'src/core/timer/domain/timer.model';
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
+import { isEmptyObj } from 'src/util/is-empty-object.util';
+import { useField, useForm } from 'vee-validate';
 import { ref, watch } from 'vue';
 import TimerCore from 'src/core/timer/presentation/components/TimerCore.vue';
+import * as zod from 'zod';
 
 const props = withDefaults(defineProps<{ rightDrawerOpen: boolean }>(), {
   rightDrawerOpen: true,
@@ -190,10 +214,13 @@ const props = withDefaults(defineProps<{ rightDrawerOpen: boolean }>(), {
 
 const timerStore = useTimerStore();
 const userStore = useUserStore();
-const { listTimers } = timerStore;
 const stackStore = useStackStore();
-const selectorStore = useSelectorStore();
 const { user } = userStore;
+const { listTimers } = timerStore;
+const { listTimers: listTimersRef } = storeToRefs(timerStore);
+
+const userStoreRefs = storeToRefs(userStore);
+const isLoggedIn = userStoreRefs.user;
 
 const rightDrawerOpen = ref(props.rightDrawerOpen);
 // const { canSaveTimers } = timerStoreRefs;
@@ -205,25 +232,83 @@ const $q = useQuasar();
 
 const timerPrompt = ref(false);
 
-const timerName = ref('');
-const duration = ref(0);
-const color = ref('#000000ff');
+const addTimerSchema = toFormValidator(
+  zod
+    .object({
+      timerName: zod
+        .string()
+        .nonempty()
+        .min(1, '최소 1글자 이상으로 설정해주세요.'),
+      hours: zod.coerce
+        .number()
+        .min(0, '최소 0 이상으로 설정해주세요.')
+        .max(23, '최대 23 이하로 설정해주세요.'),
+      minutes: zod.coerce
+        .number()
+        .min(0, '최소 0 이상으로 설정해주세요.')
+        .max(59, '최대 59 이하로 설정해주세요.'),
+      seconds: zod.coerce
+        .number()
+        .min(0, '최소 0 이상으로 설정해주세요.')
+        .max(59, '최대 59 이하로 설정해주세요.'),
+      color: zod
+        .string()
+        .nonempty()
+        .regex(
+          /^#[0-9A-Fa-f]{8}$/,
+          '색상값 형태가 잘못되었습니다. 우측의 Colorize 아이콘을 활용해주세요.'
+        ),
+    })
+    .refine((data) => +data.hours + +data.minutes + +data.seconds > 0, {
+      path: ['seconds'],
+      message: '타이머는 최소 1초 이상으로 설정되어야 합니다.',
+    })
+);
+
+const { handleSubmit, resetForm, errors } = useForm({
+  validationSchema: addTimerSchema,
+});
+
+const { value: timerName, errorMessage: nameError } =
+  useField<string>('timerName');
+const { value: hours, errorMessage: hoursError } = useField<number>('hours');
+const { value: minutes, errorMessage: minutesError } =
+  useField<number>('minutes');
+const { value: seconds, errorMessage: secondsError } =
+  useField<number>('seconds');
+const { value: color, errorMessage: colorError } = useField<string>('color');
 
 timerStore.fetchAll();
+
+resetForm({
+  values: {
+    timerName: '새로운 타이머',
+    hours: 0,
+    minutes: 0,
+    seconds: 1,
+    color: '#000000ff',
+  },
+});
 
 watch(props, () => {
   rightDrawerOpen.value = props.rightDrawerOpen;
 });
+
+const remove = (id: string) => {
+  timerStore.remove(id);
+};
 
 const createTimerBtn = () => {
   timerPrompt.value = true;
 };
 
 const createTimer = () => {
+  const totalDuration =
+    +hours.value * 3600 + +minutes.value * 60 + +seconds.value;
   timerStore.add(
     new Timer({
       name: timerName.value,
-      duration: duration.value,
+      duration: totalDuration,
       color: color.value,
     })
   );
@@ -231,20 +316,15 @@ const createTimer = () => {
 };
 
 const saveTimersBtn = () => {
-  $q.notify({
-    progress: true,
-    message: '타이머를 저장합니다. 계속 하시겠습니까?',
-    color: 'navy',
-    multiLine: true,
-    actions: [
-      {
-        label: '확인',
-        color: 'white',
-        handler: saveTimers,
-      },
-      { label: '취소', color: 'white' },
-    ],
-  });
+  if (!!user) {
+    saveTimers();
+  } else {
+    $q.notify({
+      html: true,
+      message:
+        '서버에 저장하기 위해선 로그인 해야합니다.<br>로그인하지 않는다면 로컬에 자동으로 저장됩니다.',
+    });
+  }
 };
 
 const saveTimers = () => {
@@ -264,4 +344,17 @@ const saveTimers = () => {
     }
   }
 };
+
+const onSubmit = handleSubmit(() => {
+  createTimer();
+  resetForm({
+    values: {
+      timerName: '새로운 타이머',
+      hours: 0,
+      minutes: 0,
+      seconds: 1,
+      color: '#000000ff',
+    },
+  });
+});
 </script>
