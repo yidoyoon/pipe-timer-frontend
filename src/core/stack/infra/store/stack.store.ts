@@ -1,8 +1,9 @@
 import { api } from 'boot/axios';
 import { defineStore } from 'pinia';
 import { LocalStorage } from 'quasar';
+import { usePomodoroStore } from 'src/core/pomodoro/infra/store/pomodoro.store';
 import { IStack } from 'src/core/stack/domain/stack.model';
-import { IStacksToFrag } from 'src/core/timer/domain/timer.model';
+import { IStacksToFrag, ITimer } from 'src/core/timer/domain/timer.model';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 
 export interface StacksState {
@@ -13,6 +14,7 @@ export interface StacksState {
 }
 
 const userStore = useUserStore();
+const pomodoroStore = usePomodoroStore();
 const { user } = userStore;
 
 export const useStackStore = defineStore('StackStore', {
@@ -98,12 +100,18 @@ export const useStackStore = defineStore('StackStore', {
       }
     },
 
-    remove(timeStacksId: string) {
-      const target = this.stacks[timeStacksId];
+    async remove(stackId: string) {
+      const target = this.stacks[stackId];
       if (!!target) {
-        delete this.stacks[timeStacksId];
-        const i = this.stacksIds.lastIndexOf(timeStacksId);
+        delete this.stacks[stackId];
+        const i = this.stacksIds.lastIndexOf(stackId);
         if (i > -1) this.stacksIds.splice(i, 1);
+        if (stackId === pomodoroStore.stack.id) {
+          pomodoroStore.stack = {} as IStack;
+        }
+        if (!!user) {
+          const res = await api.post('stacks/remove', target.id);
+        }
       }
     },
 
