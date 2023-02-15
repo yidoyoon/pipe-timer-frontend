@@ -113,9 +113,8 @@ const currDuration = computed(() => {
 });
 
 const timeFormatter = computed(() => {
-  const formatted = dayjs
-    .duration(currDuration.value, 'seconds')
-    .format('HH:mm:ss');
+  const time = currDuration.value || 0;
+  const formatted = dayjs.duration(time, 'seconds').format('HH:mm:ss');
   return formatted;
 });
 
