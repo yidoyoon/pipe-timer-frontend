@@ -122,10 +122,11 @@ module.exports = configure(function (ctx) {
       plugins: ['Notify', 'Cookies', 'SessionStorage'],
       config: {
         notify: {
+          progress: true,
           position: 'top-right',
-          timeout: 3000,
+          timeout: 5000,
           textColor: 'white',
-          actions: [{ icon: 'close', color: 'white' }]
+          actions: [{ icon: 'close', color: 'white' }],
         },
       },
     },
