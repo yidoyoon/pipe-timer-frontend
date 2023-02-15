@@ -3,13 +3,20 @@
     <!--    Login button-->
     <q-page-sticky position="top-right" :offset="[30, 10]" class="z-top">
       <q-btn v-if="!user" to="/login" label="login" outline color="black" />
-      <q-btn v-else @click="logoutUser" label="logout" outline color="black" />
+      <q-btn
+        v-else
+        @click="handleLogout"
+        label="logout"
+        outline
+        color="black"
+      />
     </q-page-sticky>
   </q-header>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
 import { logoutUserFn } from 'src/core/users/infra/http/user.api';
@@ -22,14 +29,17 @@ const router = useRouter();
 
 const userStore = useUserStore();
 const userStoreRefs = storeToRefs(userStore);
-const fragStore = useTimerStore();
+const timerStore = useTimerStore();
+const stackStore = useStackStore();
 const { user } = userStoreRefs;
 
 const { mutate: logoutUser } = useMutation(() => logoutUserFn(), {
   onSuccess: () => {
+    userStore.setUser(null);
     router.push({ name: 'login' });
     userStore.$reset();
-    fragStore.$reset();
+    timerStore.$reset();
+    stackStore.$reset();
   },
   onError: (error) => {
     const errMsg = (error as any).response.data.error;
@@ -52,4 +62,9 @@ const { mutate: logoutUser } = useMutation(() => logoutUserFn(), {
     }
   },
 });
+
+const handleLogout = () => {
+  userStore.$reset();
+  logoutUser();
+};
 </script>
