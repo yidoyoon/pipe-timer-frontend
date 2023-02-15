@@ -11,15 +11,6 @@
     <div class="text-subtitle1 text-black q-px-md">
       <!--      {{ stack.stacksToFrag }}-->
       <b>Name: {{ props.stack.name }}</b>
-      <q-btn
-        v-if="!!removeStack"
-        round
-        color="negative"
-        icon="delete"
-        size="xs"
-        class="q-ml-xs"
-        @click="remove"
-      />
     </div>
     <q-card-section class="q-py-none">
       <div
@@ -32,6 +23,18 @@
           :key="t.frag.fragId"
           class="q-pa-none row no-wrap"
         >
+          <q-menu touch-position context-menu>
+            <q-list dense style="min-width: 100px">
+              <q-item clickable v-close-popup @click="editTimer(element)">
+                <q-item-section>수정</q-item-section>
+              </q-item>
+              <q-separator></q-separator>
+              <q-item clickable v-close-popup @click="remove">
+                <q-item-section style="color: #8b1c00">삭제</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+
           <q-card
             class="inner-my-card text-white flat"
             style="display: inline-block; width: 12vw"
@@ -101,13 +104,13 @@ import { useQuasar } from 'quasar';
 import { ITimer } from 'src/core/timer/domain/timer.model';
 import { ref } from 'vue';
 
-const stacksStore = useStackStore();
+const stackStore = useStackStore();
 const builderStore = useBuilderStore();
 const selectorStore = useSelectorStore();
 const pomodoroStore = usePomodoroStore();
 
-const { isLoadingStacks } = storeToRefs(stacksStore);
-const { removeStack, importFrom } = storeToRefs(selectorStore);
+const { isLoadingStacks } = storeToRefs(stackStore);
+const { importFrom } = storeToRefs(selectorStore);
 
 const $q = useQuasar();
 
@@ -123,13 +126,13 @@ const remove = () => {
   $q.notify({
     progress: true,
     message: '해당 스택 삭제합니다. 계속 하시겠습니까?',
-    color: 'negative',
+    position: 'bottom',
     multiLine: true,
     icon: 'warning',
     actions: [
       {
         label: '확인',
-        color: 'white',
+        color: 'negative',
         handler: () => {
           isLoadingStacks.value = false;
           emit('remove', props.stack.id);
