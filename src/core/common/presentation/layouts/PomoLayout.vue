@@ -40,7 +40,7 @@
         >
           <q-tab-panel name="pomodoro">
             <q-page-container>
-              <q-page style="min-height: auto;">
+              <q-page style="height: 50vh;">
                 <router-view />
               </q-page>
             </q-page-container>
