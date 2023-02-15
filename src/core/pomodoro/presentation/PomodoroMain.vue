@@ -41,33 +41,54 @@
         "
       >
         <!--        Add stack button-->
-        <q-btn
-          v-if="!stackInBuilder.stacksToFrag"
-          @click="createStacksBtn"
-          :disable="!listTimers.length"
-          dense
-          icon="add"
-          flat
-          label="create stack"
-          text-color="positive"
-          class="q-pr-sm"
-        >
+        <div>
+          <q-btn
+            v-if="!stackInBuilder.stacksToFrag"
+            @click="createStacksBtn"
+            :disable="!listTimerRefs.length"
+            dense
+            icon="add"
+            flat
+            label="create stack"
+            text-color="positive"
+            class="q-pr-sm"
+          />
           <q-tooltip anchor="top middle" self="top middle">
-            <div v-if="listTimers.length">스택을 생성합니다.</div>
+            <div v-if="listTimerRefs.length">스택을 생성합니다.</div>
             <div v-else>스택을 생성하려면 최소 1개의 타이머가 필요합니다.</div>
           </q-tooltip>
-        </q-btn>
+        </div>
         <!--        Add stack button-->
-        <q-btn
-          v-if="stackInBuilder.stacksToFrag"
-          @click="saveStackBtn"
-          dense
-          icon="save"
-          flat
-          label="save"
-          text-color="positive"
-          class="q-pr-sm"
-        />
+        <div v-if="stackInBuilder.stacksToFrag">
+          <q-btn
+            v-if="stackInBuilder.stacksToFrag"
+            @click="saveStackBtn"
+            dense
+            icon="save"
+            flat
+            label="save"
+            text-color="positive"
+            class="q-pr-sm"
+          />
+          <q-tooltip anchor="top middle" self="top middle">
+            스택을 저장합니다.
+          </q-tooltip>
+        </div>
+        <!--        Cancel stack button-->
+        <div v-if="stackInBuilder.stacksToFrag">
+          <q-btn
+            @click="resetBuilder"
+            dense
+            icon="cancel"
+            flat
+            label="cancel"
+            text-color="positive"
+            class="q-pr-sm"
+          />
+          <q-tooltip anchor="top middle" self="top middle">
+            스택 생성을 취소합니다.
+          </q-tooltip>
+        </div>
         <q-space />
         <q-btn dense flat icon="minimize" @click="showStack = false" />
       </q-bar>
@@ -165,31 +186,28 @@ import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { ref } from 'vue';
 
 const selectorStore = useSelectorStore();
-const { editNow } = storeToRefs(selectorStore);
-const { user } = storeToRefs(useUserStore());
 const stackStore = useStackStore();
 const timerStore = useTimerStore();
-const { listTimers } = timerStore;
 const builderStore = useBuilderStore();
+const userStore = useUserStore();
+const { editNow } = storeToRefs(selectorStore);
+const { user: userRef } = storeToRefs(useUserStore());
+const { user } = userStore;
+const { listTimers } = timerStore;
+const { listTimers: listTimerRefs } = storeToRefs(timerStore);
 const cancelBtnPrompt = ref(false);
 
 selectorStore.importFrom = 'PomodoroMain';
 
 const { isEditBuilder, stackInBuilder } = storeToRefs(useBuilderStore());
 
-const showStack = ref(false);
-const showTimer = ref(false);
+const showStack = ref(true);
 
 const $q = useQuasar();
 
 const builderPrompt = ref(false);
 const builderWarn = ref(false);
-const timerPrompt = ref(false);
-
 const stackName = ref('');
-const timerName = ref('');
-const duration = ref(0);
-const color = ref('#000000ff');
 
 const toggleStackList = () => {
   showStack.value = !showStack.value;
@@ -213,9 +231,8 @@ const saveStackBtn = () => {
   const stack = builderStore.stackInBuilder;
   if (stack.stacksToFrag.length === 0) {
     $q.notify({
-      color: 'yellow-6',
+      color: 'negative',
       icon: 'warning',
-      textColor: 'black',
       message:
         '스택이 비어있습니다. 우측 타이머 영역에서 스택을 끌어와 추가해주세요.',
     });
@@ -227,8 +244,14 @@ const saveStackBtn = () => {
 };
 
 const saveStack = async (stack: IStack) => {
-  await builderStore.saveStack(stack);
-  await stackStore.fetchAll();
+  if (user !== null) {
+    await timerStore.saveTimer();
+    await builderStore.saveStack(stack);
+    await stackStore.fetchAll();
+  } else {
+    stackStore.stacksIds.push(stack.id);
+    stackStore.stacks[stack.id] = stack;
+  }
   editNow.value = '';
 };
 
