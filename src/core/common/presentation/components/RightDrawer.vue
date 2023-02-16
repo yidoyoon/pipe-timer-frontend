@@ -56,9 +56,18 @@
               label="add"
               text-color="positive"
               class="q-pr-sm"
+              :disable="!!isEmptyObj(builderStoreRefs.isEditBuilder)"
             />
-            <q-tooltip anchor="top middle" self="top middle">
+            <q-tooltip
+              v-if="!isEmptyObj(builderStoreRefs.isEditBuilder)"
+              anchor="top middle"
+              self="top middle"
+            >
               타이머를 생성합니다.
+            </q-tooltip>
+            <q-tooltip v-else anchor="top middle" self="top middle">
+              스택을 생성하거나 수정할 땐, 타이머를 수정하거나 삭제할 수
+              없습니다.
             </q-tooltip>
           </div>
 
@@ -73,11 +82,13 @@
               label="save"
               text-color="positive"
               class="q-pr-sm"
-              :disable="!listTimersRef.length"
+              :disable="!listTimersRef.length || !user"
             />
-
+            <q-tooltip v-if="!user" anchor="top middle" self="top middle">
+              로그인하지 않으면 서버에 저장할 수 없습니다.
+            </q-tooltip>
             <q-tooltip
-              v-if="!listTimersRef.length"
+              v-else-if="!listTimersRef.length"
               anchor="top middle"
               self="top middle"
             >
@@ -91,7 +102,12 @@
 
         <q-separator />
 
-        <TimerCore :timers="listTimersRef" class="col-12" @remove="remove" />
+        <TimerCore
+          :timers="listTimersRef"
+          class="col-12"
+          @remove="remove"
+          @removeLocal="removeLocalTimer"
+        />
         <!--        <div v-else class="row justify-between q-pt-lg absolute-center">-->
         <!--          <q-icon name="hourglass_disabled" class="col-12">-->
         <!--            타이머가 비어있습니다.-->
@@ -198,6 +214,7 @@ import { toFormValidator } from '@vee-validate/zod';
 import { api } from 'boot/axios';
 import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
+import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
 import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import { Timer } from 'src/core/timer/domain/timer.model';
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
@@ -216,8 +233,9 @@ const timerStore = useTimerStore();
 const userStore = useUserStore();
 const stackStore = useStackStore();
 const { user } = userStore;
-const { listTimers } = timerStore;
 const { listTimers: listTimersRef } = storeToRefs(timerStore);
+const builderStore = useBuilderStore();
+const builderStoreRefs = storeToRefs(builderStore);
 
 const userStoreRefs = storeToRefs(userStore);
 const isLoggedIn = userStoreRefs.user;
@@ -294,8 +312,13 @@ watch(props, () => {
   rightDrawerOpen.value = props.rightDrawerOpen;
 });
 
-const remove = (id: string) => {
-  timerStore.remove(id);
+const remove = (timerId: string) => {
+  timerStore.remove(timerId);
+};
+
+const removeLocalTimer = (timerId: string) => {
+  timerStore.remove(timerId);
+  stackStore.removeLocalTimer(timerId);
 };
 
 const createTimerBtn = () => {
