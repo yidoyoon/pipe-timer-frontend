@@ -9,7 +9,6 @@
     "
   >
     <div class="text-subtitle1 text-black q-px-md">
-      <!--      {{ stack.stacksToFrag }}-->
       <b>Name: {{ props.stack.name }}</b>
     </div>
     <q-card-section class="q-py-none">
@@ -97,25 +96,25 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from 'dayjs';
 import { storeToRefs } from 'pinia';
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
 import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
 import { usePomodoroStore } from 'src/core/pomodoro/infra/store/pomodoro.store';
 import { IStack } from 'src/core/stack/domain/stack.model';
 import { useStackStore } from 'src/core/stack/infra/store/stack.store';
-import { useQuasar } from 'quasar';
+import { LocalStorage, useQuasar } from 'quasar';
 import { ITimer } from 'src/core/timer/domain/timer.model';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
+
+const $q = useQuasar();
 
 const stackStore = useStackStore();
 const builderStore = useBuilderStore();
 const selectorStore = useSelectorStore();
 const pomodoroStore = usePomodoroStore();
-
 const { isLoadingStacks } = storeToRefs(stackStore);
 const { importFrom } = storeToRefs(selectorStore);
-
-const $q = useQuasar();
 
 const toBuilderPrompt = ref(false);
 const toBuilderWarnPrompt = ref(false);
@@ -128,7 +127,7 @@ const emit = defineEmits<{
 const remove = () => {
   $q.notify({
     progress: true,
-    message: '해당 스택 삭제합니다. 계속 하시겠습니까?',
+    message: '스택을 삭제하시겠습니까?',
     position: 'bottom',
     multiLine: true,
     icon: 'warning',
