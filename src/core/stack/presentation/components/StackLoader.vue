@@ -158,6 +158,8 @@ const toBuilder = (stack: IStack) => {
   builderStore.$reset();
   builderStore.stackInBuilder = stack;
   toBuilderPrompt.value = false;
+
+  LocalStorage.set('builder-backup', builderStore.stackInBuilder);
 };
 
 const arrowDrawer = (index: number) => {
