@@ -18,6 +18,7 @@
           v-ripple
           @dblclick="toPomodoro(element)"
         >
+          <!--          TODO: 스택 생성 및 수정 중 타이머 수정 및 삭제 못하도록 제어-->
           <q-menu touch-position context-menu>
             <q-list dense style="min-width: 100px">
               <q-item clickable v-close-popup @click="editTimer(element)">
@@ -28,6 +29,9 @@
                 <q-item-section style="color: #8b1c00">삭제</q-item-section>
               </q-item>
             </q-list>
+            <!--            <q-tooltip anchor="top middle" self="top middle">-->
+            <!--              스택 생성 및 수정 중엔 타이머를 수정하거나 삭제할 수 없습니다.-->
+            <!--            </q-tooltip>-->
           </q-menu>
 
           <q-card-section>
@@ -145,15 +149,19 @@
 </template>
 
 <script setup lang="ts">
-import { toFormValidator } from '@vee-validate/zod';
-import dayjs from 'dayjs';
-import { storeToRefs } from 'pinia';
-import { useQuasar } from 'quasar';
-import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
-import { usePomodoroStore } from 'src/core/pomodoro/infra/store/pomodoro.store';
+import { toFormValidator }       from '@vee-validate/zod';
+import dayjs                     from 'dayjs';
+import _                         from 'lodash-es';
+import { storeToRefs }           from 'pinia';
+import { useQuasar }             from 'quasar';
+import { useBuilderStore }       from 'src/core/builder/infra/store/builder.store';
+import { useSelectorStore }      from 'src/core/common/infra/store/selector.store';
+import { usePomodoroStore }      from 'src/core/pomodoro/infra/store/pomodoro.store';
+import { useStackStore }         from 'src/core/stack/infra/store/stack.store';
 import { IStacksToFrag, ITimer } from 'src/core/timer/domain/timer.model';
-import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
-import { isEmptyObj } from 'src/util/is-empty-object.util';
+import { useTimerStore }         from 'src/core/timer/infra/store/timer.store';
+import { useUserStore }          from 'src/core/users/infra/store/user.store';
+import { isEmptyObj }            from 'src/util/is-empty-object.util';
 import { useField, useForm } from 'vee-validate';
 import { computed, reactive, ref, watch } from 'vue';
 import * as zod from 'zod';
@@ -161,14 +169,19 @@ import draggable from 'vuedraggable';
 
 const timerStore = useTimerStore();
 const pomodoroStore = usePomodoroStore();
-
+const stackStore = useStackStore();
+const userStore = useUserStore();
+const builderStore = useBuilderStore();
+const selectorStore = useSelectorStore();
 const { isLoadingTimer } = storeToRefs(timerStore);
 const { listTimers } = storeToRefs(timerStore);
-let rTimers = reactive(listTimers);
 
+let rTimers = reactive(listTimers);
 const props = defineProps<{ timers: ITimer[] }>();
+
 const emit = defineEmits<{
   (e: 'remove', id: string): void;
+  (e: 'removeLocal', id: string): void;
 }>();
 
 const drag = ref(false);
@@ -227,21 +240,81 @@ const { value: seconds, errorMessage: secondsError } =
 const { value: color, errorMessage: colorError } = useField<string>('color');
 
 const remove = (index: number) => {
-  $q.notify({
-    progress: true,
-    message: '해당 타이머를 삭제할까요?',
-    actions: [
-      {
-        label: '확인',
-        color: 'negative',
-        handler: () => {
-          isLoadingTimer.value = false;
-          emit('remove', props.timers[index].fragId);
-        },
-      },
-      { label: '취소', color: 'white' },
-    ],
+  const relatedStackIds = findRelatedStack(index);
+  const relatedStackNames: string[] = [];
+
+  relatedStackIds.forEach((id: string) => {
+    relatedStackNames.push(stackStore.stacks[id].name);
   });
+
+  if (relatedStackIds.length > 0) {
+    if (!!userStore.user) {
+      $q.notify({
+        progress: true,
+        icon: 'warning',
+        html: true,
+        message: `삭제하려는 타이머는 ${relatedStackNames} 스택에 포함되어 있습니다.<br>삭제를 진행할 경우 관련된 스택에서 제외됩니다(스택은 삭제되지 않음).<br>계속하시겠습니까?`,
+        actions: [
+          {
+            label: '확인',
+            color: 'negative',
+            handler: () => {
+              isLoadingTimer.value = false;
+              emit('remove', props.timers[index].fragId);
+            },
+          },
+          { label: '취소', color: 'white' },
+        ],
+      });
+    } else {
+      $q.notify({
+        progress: true,
+        icon: 'warning',
+        html: true,
+        message: `삭제하려는 타이머는 ${relatedStackNames} 스택에 포함되어 있습니다.<br>삭제를 진행할 경우 관련된 스택에서 제외됩니다(스택은 삭제되지 않음).<br>계속하시겠습니까?`,
+        actions: [
+          {
+            label: '확인',
+            color: 'negative',
+            handler: () => {
+              isLoadingTimer.value = false;
+              emit('removeLocal', props.timers[index].fragId);
+            },
+          },
+          { label: '취소', color: 'white' },
+        ],
+      });
+    }
+  } else {
+    $q.notify({
+      progress: true,
+      message: '타이머를 삭제하시겠습니까?',
+      actions: [
+        {
+          label: '확인',
+          color: 'negative',
+          handler: () => {
+            isLoadingTimer.value = false;
+            emit('remove', props.timers[index].fragId);
+          },
+        },
+        { label: '취소', color: 'white' },
+      ],
+    });
+  }
+};
+
+const findRelatedStack = (index: number): string[] => {
+  const timerId = props.timers[index].fragId;
+  const stackList = stackStore.listStacks;
+  const result: string[] = [];
+
+  stackList.forEach((stack) => {
+    stack.stacksToFrag.filter((timer) => timer.frag.fragId !== timerId);
+    result.push(stack.id);
+  });
+
+  return result;
 };
 
 const cancel = () => {
@@ -336,8 +409,7 @@ const toPomodoro = (timer: ITimer) => {
   // Session storage for saving initial state of stack, timer
   try {
     $q.sessionStorage.set('timer-data', timer);
-    pomodoroStore.timer = {} as ITimer;
-    pomodoroStore.timer = { ...timer };
+    pomodoroStore.timer = _.cloneDeep(timer);
     pomodoroStore.mode = 'timer';
     pomodoroStore.state = 'pause';
     pomodoroStore.round = 0;
