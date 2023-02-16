@@ -155,8 +155,8 @@ export const useTimerStore = defineStore('timerStore', {
     //   }
     // },
 
-    saveTimer() {
-      const res = api.post('frag/save', this.listTimers);
+    async saveTimer() {
+      const res = await api.post('frag/save', this.listTimers);
       if (!res) {
         Notify.create({
           message:
