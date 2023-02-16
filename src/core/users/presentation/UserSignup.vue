@@ -59,7 +59,12 @@
         debounce="500"
       />
       <div class="row">
-        <q-btn label="SIGN UP" color="primary" type="submit" />
+        <q-btn
+          label="SIGN UP"
+          color="primary"
+          type="submit"
+          :disable="!isEmptyObj(errors)"
+        />
         <div class="q-space"></div>
         <q-btn label="CANCEL" to="/" color="primary" flat class="q-ml-sm" />
       </div>
@@ -70,9 +75,10 @@
 <script setup lang="ts">
 import { CHECK_EMPTY, userMsg, userVar } from 'src/core/users/domain/userConst';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
+import { isEmptyObj } from 'src/util/is-empty-object.util';
 import * as zod from 'zod';
 import { ISignupInput } from 'src/type-defs/userTypes';
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { toFormValidator } from '@vee-validate/zod';
 import { useField, useForm } from 'vee-validate';
 import { useMutation } from '@tanstack/vue-query';
@@ -107,17 +113,19 @@ const registerSchema = toFormValidator(
     })
 );
 
-const { handleSubmit, resetForm } = useForm({
+const { handleSubmit, resetForm, errors } = useForm({
   validationSchema: registerSchema,
 });
 
 const email = computed(() => {
   return userStore.verifiedEmail;
 });
-const { value: name, errorMessage: nameError } = useField('name');
-const { value: password, errorMessage: passwordError } = useField('password');
+
+const { value: name, errorMessage: nameError } = useField<string>('name');
+const { value: password, errorMessage: passwordError } =
+  useField<string>('password');
 const { value: passwordConfirm, errorMessage: passwordConfirmError } =
-  useField('passwordConfirm');
+  useField<string>('passwordConfirm');
 
 const { isLoading, mutate } = useMutation(
   (credentials: ISignupInput) => signUpUserFn(credentials),

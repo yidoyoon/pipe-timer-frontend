@@ -1,4 +1,7 @@
 import axiosRetry from 'axios-retry';
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { EventBus } from 'quasar';
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
@@ -25,6 +28,9 @@ const api = axios.create({
 });
 
 export default boot(({ app }) => {
+  dayjs.extend(duration);
+  dayjs.extend(relativeTime);
+
   const bus = new EventBus();
   app.provide('bus', bus);
   app.provide('axios', axios);

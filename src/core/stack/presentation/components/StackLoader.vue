@@ -9,17 +9,7 @@
     "
   >
     <div class="text-subtitle1 text-black q-px-md">
-      <!--      {{ stack.stacksToFrag }}-->
       <b>Name: {{ props.stack.name }}</b>
-      <q-btn
-        v-if="!!removeStack"
-        round
-        color="negative"
-        icon="delete"
-        size="xs"
-        class="q-ml-xs"
-        @click="remove"
-      />
     </div>
     <q-card-section class="q-py-none">
       <div
@@ -32,14 +22,29 @@
           :key="t.frag.fragId"
           class="q-pa-none row no-wrap"
         >
+          <q-menu touch-position context-menu>
+            <q-list dense style="min-width: 100px">
+              <q-item clickable v-close-popup @click="toBuilder(props.stack)">
+                <q-item-section>수정</q-item-section>
+              </q-item>
+              <q-separator></q-separator>
+              <q-item clickable v-close-popup @click="remove">
+                <q-item-section style="color: #8b1c00">삭제</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+
           <q-card
             class="inner-my-card text-white flat"
             style="display: inline-block; width: 12vw"
             :style="colorExtractor(t.frag)"
           >
             <q-card-section class="q-img-container">
-              <div>Name: {{ t.frag.name }}</div>
-              <div>Duration: {{ t.frag.duration }}<br /></div>
+              <div>{{ t.frag.name }}</div>
+              <div>
+                <q-icon name="timer" /> {{ timeFormatter(t.frag.duration)
+                }}<br />
+              </div>
             </q-card-section>
           </q-card>
           <div class="row items-center">
@@ -91,25 +96,25 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from 'dayjs';
 import { storeToRefs } from 'pinia';
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
 import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
 import { usePomodoroStore } from 'src/core/pomodoro/infra/store/pomodoro.store';
 import { IStack } from 'src/core/stack/domain/stack.model';
 import { useStackStore } from 'src/core/stack/infra/store/stack.store';
-import { useQuasar } from 'quasar';
+import { LocalStorage, useQuasar } from 'quasar';
 import { ITimer } from 'src/core/timer/domain/timer.model';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
-const stacksStore = useStackStore();
+const $q = useQuasar();
+
+const stackStore = useStackStore();
 const builderStore = useBuilderStore();
 const selectorStore = useSelectorStore();
 const pomodoroStore = usePomodoroStore();
-
-const { isLoadingStacks } = storeToRefs(stacksStore);
-const { removeStack, importFrom } = storeToRefs(selectorStore);
-
-const $q = useQuasar();
+const { isLoadingStacks } = storeToRefs(stackStore);
+const { importFrom } = storeToRefs(selectorStore);
 
 const toBuilderPrompt = ref(false);
 const toBuilderWarnPrompt = ref(false);
@@ -122,14 +127,14 @@ const emit = defineEmits<{
 const remove = () => {
   $q.notify({
     progress: true,
-    message: '해당 스택 삭제합니다. 계속 하시겠습니까?',
-    color: 'negative',
+    message: '스택을 삭제하시겠습니까?',
+    position: 'bottom',
     multiLine: true,
     icon: 'warning',
     actions: [
       {
         label: '확인',
-        color: 'white',
+        color: 'negative',
         handler: () => {
           isLoadingStacks.value = false;
           emit('remove', props.stack.id);
@@ -152,6 +157,8 @@ const toBuilder = (stack: IStack) => {
   builderStore.$reset();
   builderStore.stackInBuilder = stack;
   toBuilderPrompt.value = false;
+
+  LocalStorage.set('builder-backup', builderStore.stackInBuilder);
 };
 
 const arrowDrawer = (index: number) => {
@@ -176,5 +183,11 @@ const toPomodoro = (stack: IStack) => {
   } catch (e) {
     console.log(e);
   }
+};
+
+const timeFormatter = (duration: string | number) => {
+  return computed(() => {
+    return dayjs.duration(+duration, 'seconds').format('HH:mm:ss');
+  });
 };
 </script>

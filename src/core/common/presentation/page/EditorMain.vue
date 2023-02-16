@@ -18,7 +18,7 @@
     <div v-if="editNow === ''">
       <DefaultFooter></DefaultFooter>
     </div>
-    <div v-else-if="isEditBuilder ? editNow === 'builder' : (editNow = '')">
+    <div v-else-if="isEditBuilder ? editNow === 'builder' : {}">
       <BuilderFooter></BuilderFooter>
     </div>
     <div v-else-if="editNow === 'stack'">
@@ -81,7 +81,8 @@ const active = {
 
 <style scoped lang="scss">
 .area {
-  border: solid;
-  color: black;
+  background-color: #f2f2f2;
+  border-radius: 30px;
+  border: solid transparent;
 }
 </style>

@@ -1,15 +1,15 @@
 <template>
-  <div class="row justify-start">
-    현재 알림 설정: {{ permission === 'granted' ? 'On' : 'Off' }}
-  </div>
-  <div class="row dense justify-center" style="height: 35vh">
-    <q-space class="flex-break"></q-space>
-
+  <!--  <div class="row justify-start">-->
+  <!--    현재 알림 설정: {{ permission === 'granted' ? 'On' : 'Off' }}-->
+  <!--  </div>-->
+  <div class="row fit justify-center content-start">
     <div id="clock">
       <div class="time">{{ timeFormatter }}</div>
     </div>
+
     <q-space class="flex-break"></q-space>
-    <div>
+
+    <div class="q-my-none">
       <q-toggle
         v-model="endless"
         icon="all_inclusive"
@@ -18,7 +18,7 @@
       />
       <q-toggle
         v-model="autoStart"
-        icon="autorenew"
+        icon="check"
         color="purple-6"
         class="q-pr-sm"
       />
@@ -31,7 +31,7 @@
 
     <q-space class="flex-break"></q-space>
 
-    <div class="row justify-center col-3 no-wrap text-no-wrap">
+    <div class="row justify-center col-3 no-wrap text-no-wrap q-my-md">
       <q-btn
         v-if="pomodoroStore.state !== 'start'"
         color="green-7"
@@ -50,63 +50,6 @@
         >stop</q-btn
       >
     </div>
-
-    <q-space class="flex-break"></q-space>
-    <q-card class="no-shadow my-card flat" style="background: transparent">
-      <q-card-section class="q-py-none">
-        <!--        Stack-->
-        <div
-          v-if="pomodoroStore.mode === 'stack'"
-          class="row justify-between no-wrap"
-          style="height: 5rem; white-space: nowrap"
-        >
-          <div
-            v-for="(t, index) in stack.stacksToFrag"
-            :key="t.frag.fragId"
-            class="q-pa-none row no-wrap"
-          >
-            <q-card
-              class="inner-my-card text-white flat"
-              style="background: black; width: 12vw"
-              :style="
-                index === round ? highlightBorder(t.frag) : notCurrent(t.frag)
-              "
-            >
-              <q-card-section v-show="'frag' in t" class="q-img-container">
-                <div>Name: {{ t.frag.name }}</div>
-                <div>Duration: {{ t.frag.duration }}<br /></div>
-              </q-card-section>
-            </q-card>
-            <div class="row items-center">
-              <q-icon
-                v-if="arrowDrawer(index)"
-                name="arrow_right"
-                style="font-size: 4rem; color: grey"
-              ></q-icon>
-            </div>
-          </div>
-        </div>
-
-        <!--        Timer-->
-        <div
-          v-else-if="pomodoroStore.mode === 'timer'"
-          class="row justify-between no-wrap"
-          style="height: 5rem; white-space: nowrap"
-        >
-          <div class="q-pa-none row no-wrap">
-            <q-card
-              class="inner-my-card text-white flat"
-              :style="highlightBorder"
-            >
-              <q-card-section class="q-img-container">
-                <div>Name: {{ pomodoroStore.timer.name }}</div>
-                <div>Duration: {{ pomodoroStore.timer.duration }}<br /></div>
-              </q-card-section>
-            </q-card>
-          </div>
-        </div>
-      </q-card-section>
-    </q-card>
   </div>
 </template>
 
@@ -114,6 +57,7 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import _ from 'lodash-es';
 import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
 import { usePomodoroStore } from 'src/core/pomodoro/infra/store/pomodoro.store';
@@ -121,7 +65,7 @@ import { IStack } from 'src/core/stack/domain/stack.model';
 import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import { ITimer } from 'src/core/timer/domain/timer.model';
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
-import { computed, nextTick, onMounted, ref, watch, watchEffect } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 const $q = useQuasar();
 
@@ -131,12 +75,10 @@ dayjs.extend(relativeTime);
 const pomodoroStore = usePomodoroStore();
 const { stack } = storeToRefs(usePomodoroStore());
 let { round } = storeToRefs(usePomodoroStore());
-const { permission } = Notification;
 const stackStore = useStackStore();
 const timerStore = useTimerStore();
 
 const notifOptions: NotificationOptions = {
-  tag: 'round',
   requireInteraction: false,
 };
 
@@ -172,9 +114,8 @@ const currDuration = computed(() => {
 });
 
 const timeFormatter = computed(() => {
-  const formatted = dayjs
-    .duration(currDuration.value, 'seconds')
-    .format('HH:mm:ss');
+  const time = currDuration.value || 0;
+  const formatted = dayjs.duration(time, 'seconds').format('HH:mm:ss');
   return formatted;
 });
 
@@ -251,14 +192,14 @@ const loadSession = () => {
   let data;
   if (pomodoroStore.mode === 'stack') {
     data = $q.sessionStorage.getItem('pomodoro-data') as IStack;
-    pomodoroStore.stack = { ...data } as IStack;
-    pomodoroStore.timer = {} as ITimer;
+    pomodoroStore.stack = _.cloneDeep(data);
+    pomodoroStore.timer = _.cloneDeep({} as ITimer);
     const id = data.id;
     stackStore.stacks[id] = data;
   } else if (pomodoroStore.mode === 'timer') {
     data = $q.sessionStorage.getItem('timer-data') as ITimer;
-    pomodoroStore.timer = { ...data } as ITimer;
-    pomodoroStore.stack = {} as IStack;
+    pomodoroStore.timer = _.cloneDeep(data);
+    pomodoroStore.stack = _.cloneDeep({} as IStack);
     const id = data.fragId;
     timerStore.timers[id] = data;
   }
@@ -269,29 +210,53 @@ const setNotification = () => {
     Notification.requestPermission();
   }
 };
+watch(endless, () => {
+  if (endless.value === true) {
+    $q.notify({
+      html: true,
+      message:
+        '무제한 모드를 활성화합니다.<br>설정된 스택, 타이머가 STOP 버튼을 누를 때 까지 계속해서 반복 작동합니다',
+    });
+  }
 
-watch([notification, autoStart, Notification.permission], () => {
+  if (endless.value === false) {
+    $q.notify({
+      html: true,
+      message: '무제한 모드를 비활성화합니다',
+    });
+  }
+});
+
+watch([notification, Notification.permission], () => {
   if (notification.value === true) {
     setNotification();
     if (Notification.permission === 'granted') {
       new Notification(
-        '알림 설정을 활성화합니다.\n타이머 종료 시, 데스크톱 알림을 전송합니다.',
+        '데스크톱 푸시 알림 설정을 활성화합니다.\n타이머 종료 시, 데스크톱 알림을 전송합니다.',
         notifOptions
       );
     }
-  } else {
+  }
+  if (notification.value === false) {
     $q.notify({
-      message: '알림 설정을 비활성화합니다.',
-      color: 'grey',
+      message: '데스크톱 푸시 알림을 비활성화 합니다.',
     });
   }
-  if (Notification.permission === 'granted') {
-    if (autoStart.value === true) {
-      new Notification(
-        '자동 시작 기능을 활성화합니다.\n라운드 종료 시, 다음 라운드를 자동으로 실행합니다.',
-        notifOptions
-      );
-    }
+});
+
+watch(autoStart, () => {
+  if (autoStart.value === true) {
+    $q.notify({
+      html: true,
+      message:
+        '자동 시작 기능을 활성화합니다.<br>라운드 종료 시, 다음 라운드를 자동으로 실행합니다.',
+    });
+  }
+
+  if (autoStart.value === false) {
+    $q.notify({
+      message: '자동 시작 기능을 비활성화합니다.',
+    });
   }
 });
 
@@ -394,7 +359,7 @@ onMounted(() => {
 
 const highlightBorder = (timer: ITimer) => {
   return {
-    border: 'solid red 0.3rem',
+    border: 'solid teal 0.3rem',
     ...colorExtractor(timer),
   };
 };
@@ -428,11 +393,6 @@ $color-light: white;
 
 #clock {
   order: 0;
-  flex: 0 1 auto;
-  align-self: center;
-
-  color: $color;
-  //text-shadow: 0px 0px 25px $color;
 
   .time {
     font-family: 'Share Tech Mono', sans-serif;

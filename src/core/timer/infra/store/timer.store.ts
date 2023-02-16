@@ -1,10 +1,12 @@
 import { api } from 'boot/axios';
 import { defineStore } from 'pinia';
 import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
+import { usePomodoroStore } from 'src/core/pomodoro/infra/store/pomodoro.store';
 import { ITimer } from 'src/core/timer/domain/timer.model';
 import { LocalStorage } from 'quasar';
 import { Notify } from 'quasar';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
+import _ from 'lodash-es';
 
 export interface TimerState {
   timers: Record<string, ITimer>;
@@ -13,6 +15,7 @@ export interface TimerState {
 }
 
 const selectorStore = useSelectorStore();
+const pomodoroStore = usePomodoroStore();
 const userStore = useUserStore();
 const { user } = userStore;
 
@@ -100,12 +103,22 @@ export const useTimerStore = defineStore('timerStore', {
       this.timers[newTimer.fragId] = newTimer;
     },
 
-    remove(timerId: string) {
+    async remove(timerId: string) {
       const target = this.timers[timerId];
       if (!!target) {
         delete this.timers[timerId];
+        if (timerId === pomodoroStore.timer.fragId) {
+          pomodoroStore.timer = _.cloneDeep({} as ITimer) ;
+        }
         const i = this.timerIds.lastIndexOf(timerId);
         if (i > -1) this.timerIds.splice(i, 1);
+      }
+      if (!!user) {
+        await this.saveTimer().catch(() => {
+          Notify.create({
+            message: '타이머 삭제 중 오류가 발생했습니다.',
+          });
+        });
       }
     },
 
@@ -142,8 +155,8 @@ export const useTimerStore = defineStore('timerStore', {
     //   }
     // },
 
-    saveTimer() {
-      const res = api.post('frag/save', this.listTimers);
+    async saveTimer() {
+      const res = await api.post('frag/save', this.listTimers);
       if (!res) {
         Notify.create({
           message:

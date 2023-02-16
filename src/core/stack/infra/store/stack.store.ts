@@ -1,9 +1,11 @@
 import { api } from 'boot/axios';
 import { defineStore } from 'pinia';
 import { LocalStorage } from 'quasar';
+import { usePomodoroStore } from 'src/core/pomodoro/infra/store/pomodoro.store';
 import { IStack } from 'src/core/stack/domain/stack.model';
-import { IStacksToFrag } from 'src/core/timer/domain/timer.model';
+import { IStacksToFrag, ITimer } from 'src/core/timer/domain/timer.model';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
+import _ from 'lodash-es';
 
 export interface StacksState {
   stacks: Record<string, IStack>;
@@ -13,6 +15,7 @@ export interface StacksState {
 }
 
 const userStore = useUserStore();
+const pomodoroStore = usePomodoroStore();
 const { user } = userStore;
 
 export const useStackStore = defineStore('StackStore', {
@@ -98,13 +101,39 @@ export const useStackStore = defineStore('StackStore', {
       }
     },
 
-    remove(timeStacksId: string) {
-      const target = this.stacks[timeStacksId];
+    async remove(stackId: string) {
+      const target = this.stacks[stackId];
       if (!!target) {
-        delete this.stacks[timeStacksId];
-        const i = this.stacksIds.lastIndexOf(timeStacksId);
+        delete this.stacks[stackId];
+        const i = this.stacksIds.lastIndexOf(stackId);
         if (i > -1) this.stacksIds.splice(i, 1);
+        if (stackId === pomodoroStore.stack.id) {
+          pomodoroStore.stack = _.cloneDeep({} as IStack);
+        }
+        if (!!user) {
+          // TODO: 에러처리
+          const res = await api.post('stacks/remove', target.id);
+        }
       }
+    },
+
+    // TODO: 에러처리
+    async removeLocalTimer(timerId: string) {
+      const stackList: string[] = [];
+      this.listStacks.forEach((stack) => {
+        const timerIds: number[] = [];
+        stack.stacksToFrag.forEach((timer, index) => {
+          if (timer.frag.fragId === timerId) {
+            timerIds.push(index);
+          }
+        });
+        for (let i = timerIds.length - 1; i >= 0; i--) {
+          if (i > -1) stack.stacksToFrag.splice(i, 1);
+        }
+        if (stack.stacksToFrag.length === 0) {
+          this.remove(stack.id);
+        }
+      });
     },
 
     setInitialState(): void {

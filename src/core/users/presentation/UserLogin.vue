@@ -23,7 +23,7 @@
         v-model="password"
         label="Password"
         :type="isPwd ? 'password' : 'text'"
-        placeholder="8 - 128 characters"
+        placeholder="8 - 32 characters"
         :error-message="passwordError"
         :error="!!passwordError"
         debounce="500"
@@ -38,9 +38,9 @@
       </q-input>
 
       <div class="row">
-        <q-btn label="LOGIN" type="submit" color="primary" />
-        <div class="q-space"></div>
-        <q-btn label="CANCEL" to="/" color="primary" flat class="q-ml-sm" />
+        <q-btn label="login" type="submit" color="primary" />
+        <q-space />
+        <q-btn label="cancel" to="/" flat class="q-ml-sm" />
       </div>
       <div class="text-body2">
         계정이 없다면 회원가입 해주세요.
@@ -112,16 +112,12 @@ const { isLoading, mutate } = useMutation(
       //   icon: 'warning',
       // });
     },
-    onSuccess: (data) => {
-      const user = Object.assign({}, data.userPayload);
+    onSuccess: (response) => {
+      const user = response.passport.user;
 
       userStore.setUser(user);
       queryClient.refetchQueries(['user']);
 
-      $q.notify({
-        type: 'positive',
-        message: userMsg.SUCCESS_USER_LOGIN,
-      });
       router.push('/');
     },
   }

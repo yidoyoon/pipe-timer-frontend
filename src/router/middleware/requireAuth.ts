@@ -1,3 +1,4 @@
+import _ from 'lodash-es';
 import { IUser } from 'src/type-defs/userTypes';
 import { NavigationGuardNext } from 'vue-router';
 import { Notify } from 'quasar';
@@ -23,7 +24,7 @@ export default async function requireAuth({
   try {
     const response = await getMeFn();
     const { id, userName, email } = response;
-    const user = {} as IUser;
+    const user = _.cloneDeep({} as IUser);
     user.id = id;
     user.userName = userName;
     user.email = email;
