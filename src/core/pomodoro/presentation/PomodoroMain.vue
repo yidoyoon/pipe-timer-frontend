@@ -3,7 +3,7 @@
     <div class="col-9 q-pt-lg">
       <PomodoroCore class="area" />
     </div>
-    <div class="col-9 q-pt-md">
+    <div class="col-12 q-pt-md">
       <PomodoroQueue class="area" style="height: 15vh" />
     </div>
   </div>
@@ -58,7 +58,7 @@
             <div v-else>스택을 생성하려면 최소 1개의 타이머가 필요합니다.</div>
           </q-tooltip>
         </div>
-        <!--        Add stack button-->
+        <!--        Save stack button-->
         <div v-if="stackInBuilder.stacksToFrag">
           <q-btn
             v-if="stackInBuilder.stacksToFrag"

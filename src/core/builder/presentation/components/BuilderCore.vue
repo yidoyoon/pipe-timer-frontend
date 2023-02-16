@@ -1,8 +1,6 @@
 <template>
   <q-item class="row fit justify-between q-pa-none q-ma-none">
     <q-item-section class="row justify-between">
-      <div style="color: black">
-      </div>
       <div
         v-if="isEditBuilder"
         class="text-subtitle1"

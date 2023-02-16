@@ -25,7 +25,7 @@
         >
           <q-menu touch-position context-menu>
             <q-list dense style="min-width: 100px">
-              <q-item clickable v-close-popup @click="editTimer(element)">
+              <q-item clickable v-close-popup @click="toBuilder(props.stack)">
                 <q-item-section>수정</q-item-section>
               </q-item>
               <q-separator></q-separator>
@@ -41,8 +41,11 @@
             :style="colorExtractor(t.frag)"
           >
             <q-card-section class="q-img-container">
-              <div>Name: {{ t.frag.name }}</div>
-              <div>Duration: {{ t.frag.duration }}<br /></div>
+              <div>{{ t.frag.name }}</div>
+              <div>
+                <q-icon name="timer" /> {{ timeFormatter(t.frag.duration)
+                }}<br />
+              </div>
             </q-card-section>
           </q-card>
           <div class="row items-center">
@@ -179,5 +182,11 @@ const toPomodoro = (stack: IStack) => {
   } catch (e) {
     console.log(e);
   }
+};
+
+const timeFormatter = (duration: string | number) => {
+  return computed(() => {
+    return dayjs.duration(+duration, 'seconds').format('HH:mm:ss');
+  });
 };
 </script>
