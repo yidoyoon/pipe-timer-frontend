@@ -183,6 +183,7 @@ const cancelEdit = () => {
   const backup = LocalStorage.getItem('builder-backup') as IStack;
   if (!!backup) {
     builderStore.stackInBuilder = backup;
+    LocalStorage.set('builder-backup', {});
   }
 };
 
