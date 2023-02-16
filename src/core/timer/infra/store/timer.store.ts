@@ -6,6 +6,7 @@ import { ITimer } from 'src/core/timer/domain/timer.model';
 import { LocalStorage } from 'quasar';
 import { Notify } from 'quasar';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
+import _ from 'lodash-es';
 
 export interface TimerState {
   timers: Record<string, ITimer>;
@@ -107,7 +108,7 @@ export const useTimerStore = defineStore('timerStore', {
       if (!!target) {
         delete this.timers[timerId];
         if (timerId === pomodoroStore.timer.fragId) {
-          pomodoroStore.timer = {} as ITimer;
+          pomodoroStore.timer = _.cloneDeep({} as ITimer) ;
         }
         const i = this.timerIds.lastIndexOf(timerId);
         if (i > -1) this.timerIds.splice(i, 1);

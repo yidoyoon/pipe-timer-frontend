@@ -57,6 +57,7 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import _ from 'lodash-es';
 import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
 import { usePomodoroStore } from 'src/core/pomodoro/infra/store/pomodoro.store';
@@ -191,14 +192,14 @@ const loadSession = () => {
   let data;
   if (pomodoroStore.mode === 'stack') {
     data = $q.sessionStorage.getItem('pomodoro-data') as IStack;
-    pomodoroStore.stack = { ...data } as IStack;
-    pomodoroStore.timer = {} as ITimer;
+    pomodoroStore.stack = _.cloneDeep(data);
+    pomodoroStore.timer = _.cloneDeep({} as ITimer);
     const id = data.id;
     stackStore.stacks[id] = data;
   } else if (pomodoroStore.mode === 'timer') {
     data = $q.sessionStorage.getItem('timer-data') as ITimer;
-    pomodoroStore.timer = { ...data } as ITimer;
-    pomodoroStore.stack = {} as IStack;
+    pomodoroStore.timer = _.cloneDeep(data);
+    pomodoroStore.stack = _.cloneDeep({} as IStack);
     const id = data.fragId;
     timerStore.timers[id] = data;
   }
