@@ -29,15 +29,6 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../core/users/presentation/UserSignup.vue'),
         name: 'signup',
       },
-      {
-        path: 'editor',
-        component: () =>
-          import('../core/common/presentation/page/EditorMain.vue'),
-        name: 'editor',
-        // meta: {
-        //   middleware: [requireAuth],
-        // },
-      },
       // {
       //   path: 'guide',
       //   component: () => import('../core/guide/presentation/AppGuide.vue'),
