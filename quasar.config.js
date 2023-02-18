@@ -92,7 +92,7 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
       host: 'localhost',
-      port: 0,
+      port: 9000,
       https: {
         key: fs.readFileSync(path.resolve(__dirname, './local-key.pem')),
         cert: fs.readFileSync(path.resolve(__dirname, './local-cert.pem')),
