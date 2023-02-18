@@ -2,11 +2,7 @@
   <q-card
     class="no-shadow my-card flat"
     style="background: transparent"
-    @dblclick="
-      importFrom === 'EditorMain'
-        ? toBuilderHandler(props.stack)
-        : toPomodoro(props.stack)
-    "
+    @dblclick="toPomodoro(props.stack)"
   >
     <div class="text-subtitle1 text-black q-px-md">
       <b>Name: {{ props.stack.name }}</b>
@@ -143,14 +139,6 @@ const remove = () => {
       { label: '취소', color: 'white' },
     ],
   });
-};
-
-const toBuilderHandler = (stack: IStack) => {
-  if ('stacksToFrag' in builderStore.stackInBuilder) {
-    toBuilderWarnPrompt.value = true;
-  } else {
-    toBuilder(stack);
-  }
 };
 
 const toBuilder = (stack: IStack) => {
