@@ -11,6 +11,7 @@
 const { configure } = require('quasar/wrappers');
 const path = require('path');
 const fs = require('fs');
+const dotenv = require('dotenv');
 
 module.exports = configure(function (ctx) {
   console.log(ctx);
@@ -65,7 +66,9 @@ module.exports = configure(function (ctx) {
 
       // publicPath: '/',
       // analyze: true,
-      env: require('dotenv').config().parsed,
+      env: dotenv.config({
+        path: __dirname + `./env/.${process.env.NODE_ENV}.env`,
+      }).parsed,
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
@@ -106,8 +109,15 @@ module.exports = configure(function (ctx) {
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
     framework: {
-      config: {},
-
+      config: {
+        notify: {
+          progress: true,
+          position: 'bottom',
+          timeout: 5000,
+          textColor: 'white',
+          actions: [{ icon: 'close', color: 'white' }],
+        },
+      },
       // iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack
 
@@ -120,15 +130,6 @@ module.exports = configure(function (ctx) {
 
       // Quasar plugins
       plugins: ['Notify', 'Cookies', 'SessionStorage'],
-      config: {
-        notify: {
-          progress: true,
-          position: 'bottom',
-          timeout: 5000,
-          textColor: 'white',
-          actions: [{ icon: 'close', color: 'white' }],
-        },
-      },
     },
 
     // animations: 'all', // --- includes all animations
