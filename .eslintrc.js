@@ -86,6 +86,6 @@ module.exports = {
     "@typescript-eslint/no-empty-function": 'off',
 
     // allow debugger during development only
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'prod' ? 'error' : 'off',
   },
 };

@@ -110,7 +110,6 @@ const builderStore = useBuilderStore();
 const selectorStore = useSelectorStore();
 const pomodoroStore = usePomodoroStore();
 const { isLoadingStacks } = storeToRefs(stackStore);
-const { importFrom } = storeToRefs(selectorStore);
 
 const toBuilderPrompt = ref(false);
 const toBuilderWarnPrompt = ref(false);
