@@ -22,7 +22,8 @@ export const userMsg = {
   ERROR_USER_LOGOUT: '로그아웃 중 문제가 발생했습니다.',
 
   // Authorization
-  INVALID_TOKEN: '로그인 정보가 없어 타이머와 스택을 불러올 수 없습니다.<br>타이머와 스택 정보를 저장하시려면 로그인 후 이용해주세요.',
+  INVALID_TOKEN:
+    '로그인 정보가 없어 타이머와 스택을 불러올 수 없습니다.<br>타이머와 스택 정보를 저장하시려면 로그인 후 이용해주세요.',
 
   // Signup
   INVALID_USER_EMAIL: '유효하지 않은 이메일 형식입니다.',

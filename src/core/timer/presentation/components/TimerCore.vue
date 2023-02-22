@@ -149,19 +149,19 @@
 </template>
 
 <script setup lang="ts">
-import { toFormValidator }       from '@vee-validate/zod';
-import dayjs                     from 'dayjs';
-import _                         from 'lodash-es';
-import { storeToRefs }           from 'pinia';
-import { useQuasar }             from 'quasar';
-import { useBuilderStore }       from 'src/core/builder/infra/store/builder.store';
-import { useSelectorStore }      from 'src/core/common/infra/store/selector.store';
-import { usePomodoroStore }      from 'src/core/pomodoro/infra/store/pomodoro.store';
-import { useStackStore }         from 'src/core/stack/infra/store/stack.store';
+import { toFormValidator } from '@vee-validate/zod';
+import dayjs from 'dayjs';
+import _ from 'lodash-es';
+import { storeToRefs } from 'pinia';
+import { useQuasar } from 'quasar';
+import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
+import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
+import { usePomodoroStore } from 'src/core/pomodoro/infra/store/pomodoro.store';
+import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import { IStacksToFrag, ITimer } from 'src/core/timer/domain/timer.model';
-import { useTimerStore }         from 'src/core/timer/infra/store/timer.store';
-import { useUserStore }          from 'src/core/users/infra/store/user.store';
-import { isEmptyObj }            from 'src/util/is-empty-object.util';
+import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
+import { useUserStore } from 'src/core/users/infra/store/user.store';
+import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { useField, useForm } from 'vee-validate';
 import { computed, reactive, ref, watch } from 'vue';
 import * as zod from 'zod';

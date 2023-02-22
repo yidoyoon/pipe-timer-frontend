@@ -1,4 +1,4 @@
-import {Timer} from 'src/core/timer/domain/timer.model';
+import { Timer } from 'src/core/timer/domain/timer.model';
 
 export interface ITimerRepository {
   getTimefragByUserId: (userId: string) => Promise<void>;

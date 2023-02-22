@@ -21,7 +21,8 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'check-email',
-        component: () => import('../core/users/presentation/UserCheckEmail.vue'),
+        component: () =>
+          import('../core/users/presentation/UserCheckEmail.vue'),
         name: 'check-email',
       },
       {

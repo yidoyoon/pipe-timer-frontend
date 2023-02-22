@@ -108,7 +108,7 @@ export const useTimerStore = defineStore('timerStore', {
       if (!!target) {
         delete this.timers[timerId];
         if (timerId === pomodoroStore.timer.fragId) {
-          pomodoroStore.timer = _.cloneDeep({} as ITimer) ;
+          pomodoroStore.timer = _.cloneDeep({} as ITimer);
         }
         const i = this.timerIds.lastIndexOf(timerId);
         if (i > -1) this.timerIds.splice(i, 1);
