@@ -13,8 +13,13 @@ const path = require('path');
 const fs = require('fs');
 const dotenv = require('dotenv');
 
+dotenv.config({
+  path: path.join(__dirname, `./env/.${process.env.NODE_ENV}.env`),
+});
+
 module.exports = configure(function (ctx) {
   console.log(ctx);
+  console.log(path.join(__dirname, `./env/.${process.env.NODE_ENV}.env`));
 
   return {
     eslint: {
@@ -52,6 +57,10 @@ module.exports = configure(function (ctx) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
     build: {
+      env: dotenv.config({
+        path: path.join(__dirname, `./env/.${process.env.NODE_ENV}.env`),
+      }).parsed,
+
       target: {
         browser: ['es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
         node: 'node16',
@@ -66,9 +75,6 @@ module.exports = configure(function (ctx) {
 
       // publicPath: '/',
       // analyze: true,
-      env: dotenv.config({
-        path: __dirname + `./env/.${process.env.NODE_ENV}.env`,
-      }).parsed,
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,

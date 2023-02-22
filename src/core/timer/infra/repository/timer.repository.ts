@@ -1,5 +1,5 @@
-import {ITimerRepository} from 'src/core/timer/domain/itimer.repository';
-import { Timer }          from 'src/core/timer/domain/timer.model';
+import { ITimerRepository } from 'src/core/timer/domain/itimer.repository';
+import { Timer } from 'src/core/timer/domain/timer.model';
 
 export class TimerRepository implements ITimerRepository {
   // carStore = useCarStore();

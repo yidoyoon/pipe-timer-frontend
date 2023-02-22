@@ -40,7 +40,7 @@
         >
           <q-tab-panel name="pomodoro">
             <q-page-container>
-              <q-page style="height: 50vh;">
+              <q-page style="height: 50vh">
                 <router-view />
               </q-page>
             </q-page-container>
@@ -53,11 +53,7 @@
     <RightDrawer :rightDrawerOpen="rightDrawerOpen" />
 
     <!--    Right drawer button-->
-    <q-page-sticky
-      position="right"
-      :offset="[20, 5]"
-      class="z-top"
-    >
+    <q-page-sticky position="right" :offset="[20, 5]" class="z-top">
       <q-btn
         @click="toggleRightDrawer"
         :icon="

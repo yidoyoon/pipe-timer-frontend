@@ -17,13 +17,13 @@ export interface IErrorResponse {
 
 export interface ILoginInput {
   email: string;
-  password: string
+  password: string;
 }
 
 export interface ISignupInput {
   email: string;
   userName: string;
-  password: string
+  password: string;
   passwordConfirm: string;
 }
 

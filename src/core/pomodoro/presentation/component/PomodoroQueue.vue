@@ -51,7 +51,7 @@
             <div class="q-pa-none row no-wrap">
               <q-card
                 class="inner-my-card text-white flat"
-                style="width:24.8vh"
+                style="width: 24.8vh"
                 :style="highlightBorder(pomodoroStore.timer)"
               >
                 <q-card-section class="q-img-container">
