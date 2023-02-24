@@ -38,7 +38,7 @@ export const useTimerStore = defineStore('timerStore', {
       },
     },
     beforeRestore: (ctx) => {
-      console.log(`about to restore '${ctx.store.$id}'`);
+      // TODO: 타이머 무결성 검사 추가
     },
   },
 
@@ -132,10 +132,6 @@ export const useTimerStore = defineStore('timerStore', {
 
       // update timer ids
       this.timerIds = newTimers.map((timer) => timer.fragId);
-    },
-
-    setInitialState() {
-      LocalStorage.set('timers', JSON.stringify(this.$state));
     },
 
     getInitState(): TimerState | null {

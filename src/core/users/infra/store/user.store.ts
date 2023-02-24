@@ -23,7 +23,7 @@ export const useUserStore = defineStore('userStore', {
       },
     },
     beforeRestore: (ctx) => {
-      console.log(`about to restore '${ctx.store.$id}'`);
+      // TODO: 로그인 무결성 검사 추가
     },
   },
   getters: {},
