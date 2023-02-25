@@ -1,5 +1,4 @@
 <template>
-  <q-header>
     <!--    Login button-->
     <q-page-sticky position="top-right" :offset="[30, 10]" class="z-top">
       <q-btn v-if="!user" to="/login" label="login" outline color="black" />
@@ -11,7 +10,6 @@
         color="black"
       />
     </q-page-sticky>
-  </q-header>
 </template>
 
 <script setup lang="ts">
