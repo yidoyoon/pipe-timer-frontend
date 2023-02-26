@@ -8,37 +8,45 @@
       "
     >
       <q-list padding>
-        <q-item clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon name="inbox" />
-          </q-item-section>
+        <q-tabs
+          v-model="tab"
+          vertical
+          class="text-teal"
+        >
+          <q-space style="height: 200px"></q-space>
+          <q-route-tab name="timers" icon="alarm" label="timers" to="/" />
+        </q-tabs>
+<!--        <q-item clickable v-ripple>-->
+<!--          <q-item-section avatar>-->
+<!--            <q-icon name="inbox" />-->
+<!--          </q-item-section>-->
 
-          <q-item-section> Inbox </q-item-section>
-        </q-item>
+<!--          <q-item-section> Inbox </q-item-section>-->
+<!--        </q-item>-->
 
-        <q-item active clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon name="star" />
-          </q-item-section>
+<!--        <q-item active clickable v-ripple>-->
+<!--          <q-item-section avatar>-->
+<!--            <q-icon name="star" />-->
+<!--          </q-item-section>-->
 
-          <q-item-section> Star </q-item-section>
-        </q-item>
+<!--          <q-item-section> Star </q-item-section>-->
+<!--        </q-item>-->
 
-        <q-item clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon name="send" />
-          </q-item-section>
+<!--        <q-item clickable v-ripple>-->
+<!--          <q-item-section avatar>-->
+<!--            <q-icon name="send" />-->
+<!--          </q-item-section>-->
 
-          <q-item-section> Send </q-item-section>
-        </q-item>
+<!--          <q-item-section> Send </q-item-section>-->
+<!--        </q-item>-->
 
-        <q-item clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon name="drafts" />
-          </q-item-section>
+<!--        <q-item clickable v-ripple>-->
+<!--          <q-item-section avatar>-->
+<!--            <q-icon name="drafts" />-->
+<!--          </q-item-section>-->
 
-          <q-item-section> Drafts </q-item-section>
-        </q-item>
+<!--          <q-item-section> Drafts </q-item-section>-->
+<!--        </q-item>-->
       </q-list>
     </q-scroll-area>
 
@@ -55,4 +63,5 @@
 import { ref } from 'vue';
 
 const drawer = ref(true);
+const tab = ref('timers')
 </script>
