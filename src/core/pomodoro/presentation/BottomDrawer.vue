@@ -12,7 +12,7 @@
             class="slide-drawer__handler--horizontal row flex-center justify-between q-pa-sm"
             v-touch-pan.mouse.vertical="slideDrawer"
           >
-            <div>
+            <div class="row q-px-none">
               <!--        Add stack button-->
               <div>
                 <q-btn
@@ -23,7 +23,7 @@
                   icon="add"
                   flat
                   text-color="positive"
-                  class="q-pr-sm"
+                  class="q-px-none q-mx-none"
                   size="0.6rem"
                 />
                 <q-tooltip anchor="top middle" self="top middle">
@@ -41,34 +41,34 @@
                   dense
                   icon="save"
                   flat
-                  label="save"
                   text-color="positive"
+                  size="0.6rem"
                   class="q-pr-sm"
                 />
                 <q-tooltip anchor="top middle" self="top middle">
                   스택을 저장합니다.
                 </q-tooltip>
               </div>
-              <!--        Cancel stack button-->
-              <div v-if="stackInBuilder.stacksToFrag">
-                <q-btn
-                  @click="resetBuilder"
-                  dense
-                  icon="cancel"
-                  flat
-                  label="cancel"
-                  text-color="positive"
-                  class="q-pr-sm"
-                />
-                <q-tooltip anchor="top middle" self="top middle">
-                  스택 생성 혹은 수정을 취소합니다.
-                </q-tooltip>
-              </div>
             </div>
 
             <div class="cursor-pointer open-dash" @click="cycleDrawer"></div>
 
-            <div />
+            <!--        Cancel stack button-->
+            <div v-if="stackInBuilder.stacksToFrag">
+              <q-btn
+                @click="resetBuilder"
+                dense
+                icon="cancel"
+                flat
+                text-color="positive"
+                size="0.6rem"
+                class="q-pr-sm"
+              />
+              <q-tooltip anchor="top middle" self="top middle">
+                스택 생성 혹은 수정을 취소합니다.
+              </q-tooltip>
+            </div>
+            <div v-if="!stackInBuilder.stacksToFrag" />
           </q-card-section>
 
           <!--            Stack list-->
@@ -327,6 +327,7 @@
 </template>
 
 <script setup lang="ts">
+import _ from 'lodash-es';
 import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
@@ -338,6 +339,7 @@ import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import StackMain from 'src/core/stack/presentation/StackMain.vue';
+import { IUser } from 'src/type-defs/userTypes';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
@@ -410,6 +412,7 @@ const resetBuilder = () => {
   builderStore.$reset();
   cancelBtnPrompt.value = false;
   editNow.value = '';
+  builderStore.stackInBuilder = _.cloneDeep({} as IStack);
 };
 
 const drawerMinHeight = 36;
