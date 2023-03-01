@@ -36,7 +36,7 @@ RUN NODE_ENV=$NODE_ENV quasar build -m pwa
 FROM nginx:alpine as prod
 
 COPY --from=build /app/dist/pwa /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY templates/nginx.conf /etc/nginx/templates/nginx.conf.template
 
 EXPOSE 80 443
 
