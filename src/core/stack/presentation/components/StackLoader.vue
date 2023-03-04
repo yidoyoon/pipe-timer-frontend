@@ -168,7 +168,7 @@ const toPomodoro = (stack: IStack) => {
     pomodoroStore.state = 'pause';
     pomodoroStore.round = 0;
   } catch (e) {
-    console.log(e);
+    // console.log(e);
   }
 };
 

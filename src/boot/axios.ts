@@ -53,7 +53,6 @@ export default boot(({ app }) => {
     retries: 1,
     retryDelay: axiosRetry.exponentialDelay,
     retryCondition: (error) => {
-      console.log(error);
       // You could do this way or try to implement your own
       return error.response?.data.status > 400;
       // something like this works too.

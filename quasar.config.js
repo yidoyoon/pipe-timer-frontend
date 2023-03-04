@@ -19,7 +19,6 @@ dotenv.config({
 
 module.exports = configure(function (ctx) {
   console.log(ctx);
-  console.log(path.join(__dirname, `./env/.${process.env.NODE_ENV}.env`));
 
   return {
     eslint: {
