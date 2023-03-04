@@ -20,7 +20,11 @@ declare module '@vue/runtime-core' {
 // for each client)
 // const api = axios.create({ baseURL: 'https://api.example.com' });
 
-const apiURL = `https://${process.env.API_BASE_URL}`;
+// TODO: Dev를 Development로 전부 교체
+const apiURL =
+  process.env.NODE_ENV === 'development'
+    ? `https://${process.env.FRONT_URL}`
+    : `https://${process.env.FRONT_URL}/api`;
 
 const api = axios.create({
   baseURL: apiURL,
