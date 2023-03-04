@@ -64,8 +64,9 @@ export default boot(({ app }) => {
     'https://127.0.0.1',
     'https://localhost:3000',
     'https://localhost',
+    'https://pomo.yibyeongyong.com',
     'https://api.yibyeongyong.com:3000',
-    'https://api.yibyeongyong.com'
+    'https://api.yibyeongyong.com',
   ];
 });
 
