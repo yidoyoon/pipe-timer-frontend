@@ -1,53 +1,64 @@
 <template>
   <q-layout view="lHr lpR lFr">
     <!--    Invisible header-->
-    <ButtonHeader />
+    <q-header>
+      <ButtonHeader />
+    </q-header>
+
+    <q-page-container>
+      <q-page>
+        <router-view />
+      </q-page>
+    </q-page-container>
+
+    <!--    LeftDrawer-->
+    <LeftDrawer :rightDrawerOpen="rightDrawerOpen" />
 
     <!--    Left splitter-->
-    <q-splitter
-      v-model="splitterModel"
-      :limits="[14, 14]"
-      style="height: 100vh"
-    >
-      <template v-slot:before>
-        <q-tabs v-model="tab" vertical class="text-teal">
-          <q-route-tab
-            to="/"
-            name="pomodoro"
-            icon="alarm"
-            label="Pomodoro"
-            style="height: 20vh"
-          />
-          <q-separator />
-          <q-route-tab
-            to="/guide"
-            name="guide"
-            icon="help"
-            label="guide"
-            exact
-          />
-        </q-tabs>
-      </template>
+    <!--    <q-splitter-->
+    <!--      v-model="splitterModel"-->
+    <!--      :limits="[14, 14]"-->
+    <!--      style="height: 100vh"-->
+    <!--    >-->
+    <!--      <template v-slot:before>-->
+    <!--        <q-tabs v-model="tab" vertical class="text-teal">-->
+    <!--          <q-route-tab-->
+    <!--            to="/"-->
+    <!--            name="pomodoro"-->
+    <!--            icon="alarm"-->
+    <!--            label="Pomodoro"-->
+    <!--            style="height: 20vh"-->
+    <!--          />-->
+    <!--          <q-separator />-->
+    <!--          <q-route-tab-->
+    <!--            to="/guide"-->
+    <!--            name="guide"-->
+    <!--            icon="help"-->
+    <!--            label="guide"-->
+    <!--            exact-->
+    <!--          />-->
+    <!--        </q-tabs>-->
+    <!--      </template>-->
 
-      <template v-slot:after>
-        <q-tab-panels
-          v-model="tab"
-          animated
-          swipeable
-          vertical
-          transition-prev="jump-up"
-          transition-next="jump-up"
-        >
-          <q-tab-panel name="pomodoro">
-            <q-page-container>
-              <q-page style="height: 50vh">
-                <router-view />
-              </q-page>
-            </q-page-container>
-          </q-tab-panel>
-        </q-tab-panels>
-      </template>
-    </q-splitter>
+    <!--      <template v-slot:after>-->
+    <!--        <q-tab-panels-->
+    <!--          v-model="tab"-->
+    <!--          animated-->
+    <!--          swipeable-->
+    <!--          vertical-->
+    <!--          transition-prev="jump-up"-->
+    <!--          transition-next="jump-up"-->
+    <!--        >-->
+    <!--          <q-tab-panel name="pomodoro">-->
+    <!--            <q-page-container>-->
+    <!--              <q-page style="height: 50vh">-->
+    <!--                <router-view />-->
+    <!--              </q-page>-->
+    <!--            </q-page-container>-->
+    <!--          </q-tab-panel>-->
+    <!--        </q-tab-panels>-->
+    <!--      </template>-->
+    <!--    </q-splitter>-->
 
     <!--    RightDrawer-->
     <RightDrawer :rightDrawerOpen="rightDrawerOpen" />
@@ -66,11 +77,18 @@
         round
       />
     </q-page-sticky>
+
+    <q-footer style="background-color: transparent">
+      <BottomDrawer></BottomDrawer>
+    </q-footer>
   </q-layout>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import LeftDrawer from 'src/core/common/presentation/components/LeftDrawer.vue';
+import BottomDrawer from 'src/core/pomodoro/presentation/BottomDrawer.vue';
+import PomodoroMain from 'src/core/pomodoro/presentation/PomodoroMain.vue';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { ref } from 'vue';
 import ButtonHeader from 'src/core/common/presentation/components/ButtonHeader.vue';

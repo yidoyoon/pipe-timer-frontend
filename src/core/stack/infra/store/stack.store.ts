@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import { LocalStorage } from 'quasar';
 import { usePomodoroStore } from 'src/core/pomodoro/infra/store/pomodoro.store';
 import { IStack } from 'src/core/stack/domain/stack.model';
-import { IStacksToFrag, ITimer } from 'src/core/timer/domain/timer.model';
+import { IStacksToFrag } from 'src/core/timer/domain/timer.model';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import _ from 'lodash-es';
 
@@ -38,7 +38,7 @@ export const useStackStore = defineStore('StackStore', {
       },
     },
     beforeRestore: (ctx) => {
-      console.log(`about to restore '${ctx.store.$id}'`);
+      // TODO: 스택 무결성 검사 추가
     },
   },
 
@@ -134,10 +134,6 @@ export const useStackStore = defineStore('StackStore', {
           this.remove(stack.id);
         }
       });
-    },
-
-    setInitialState(): void {
-      LocalStorage.set('stacks', JSON.stringify(this.$state));
     },
 
     getInitState(): StacksState | null {

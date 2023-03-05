@@ -19,7 +19,6 @@ dotenv.config({
 
 module.exports = configure(function (ctx) {
   console.log(ctx);
-  console.log(path.join(__dirname, `./env/.${process.env.NODE_ENV}.env`));
 
   return {
     eslint: {
@@ -66,6 +65,13 @@ module.exports = configure(function (ctx) {
         node: 'node16',
       },
 
+      extendWebpack(cfg) {
+        cfg.watchOptions = {
+          aggregateTimeout: 200,
+          poll: 1000,
+        };
+      },
+
       vueRouterMode: 'history', // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
@@ -100,15 +106,15 @@ module.exports = configure(function (ctx) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
-      host: 'localhost',
-      port: 9000,
+      host: '127.0.0.1',
+      port: 4000,
       https: {
-        key: fs.readFileSync(path.resolve(__dirname, './local-key.pem')),
-        cert: fs.readFileSync(path.resolve(__dirname, './local-cert.pem')),
+        key: fs.readFileSync(path.resolve(__dirname, './certs/local-key.pem')),
+        cert: fs.readFileSync(path.resolve(__dirname, './certs/local-cert.pem')),
       },
       open: false, // opens browser window automatically
       hmr: {
-        host: 'localhost',
+        host: '127.0.0.1',
         port: 0,
       },
     },

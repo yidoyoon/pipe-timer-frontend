@@ -30,7 +30,7 @@ export const useBuilderStore = defineStore('BuilderStore', {
       },
     },
     beforeRestore: (ctx) => {
-      console.log(`about to restore '${ctx.store.$id}'`);
+      // TODO: 데이터 무결성 검사 추가
     },
   },
 

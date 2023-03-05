@@ -19,11 +19,12 @@
       </div>
     </div>
     <div
-      v-if="stackStore.listStacks.length === 0"
+      v-if="stackStore.listStacks.length === 0 && !stackInBuilder.stacksToFrag"
       class="text-h6 text-weight-bold"
     >
-      스택이 비어있습니다. 스택을 생성하려면 상단의 'CREATE STACK' 버튼을
-      눌러주세요.
+      <span>
+        스택이 비어있습니다. 스택을 생성하려면 상단의 '+' 버튼을 눌러주세요.
+      </span>
     </div>
   </q-scroll-area>
 </template>

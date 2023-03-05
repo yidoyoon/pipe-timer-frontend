@@ -4,7 +4,7 @@
     show-if-above
     side="right"
     borderd
-    :width="205"
+    :width="220"
     :breakpoint="400"
   >
     <q-scroll-area
@@ -56,18 +56,9 @@
               label="add"
               text-color="positive"
               class="q-pr-sm"
-              :disable="!!isEmptyObj(builderStoreRefs.isEditBuilder)"
             />
-            <q-tooltip
-              v-if="!isEmptyObj(builderStoreRefs.isEditBuilder)"
-              anchor="top middle"
-              self="top middle"
-            >
+            <q-tooltip anchor="top middle" self="top middle">
               타이머를 생성합니다.
-            </q-tooltip>
-            <q-tooltip v-else anchor="top middle" self="top middle">
-              스택을 생성하거나 수정할 땐, 타이머를 수정하거나 삭제할 수
-              없습니다.
             </q-tooltip>
           </div>
 
@@ -84,8 +75,8 @@
               class="q-pr-sm"
               :disable="!listTimersRef.length || !user"
             />
-            <q-tooltip v-if="!user" anchor="top middle" self="top middle">
-              로그인하지 않으면 서버에 저장할 수 없습니다.
+            <q-tooltip v-if="!userRef" anchor="top middle" self="top middle">
+              로그인하지 않으면 서버 저장이 지원되지 않습니다.
             </q-tooltip>
             <q-tooltip
               v-else-if="!listTimersRef.length"
@@ -233,6 +224,7 @@ const timerStore = useTimerStore();
 const userStore = useUserStore();
 const stackStore = useStackStore();
 const { user } = userStore;
+const { user: userRef } = storeToRefs(userStore);
 const { listTimers: listTimersRef } = storeToRefs(timerStore);
 const builderStore = useBuilderStore();
 const builderStoreRefs = storeToRefs(builderStore);
@@ -314,6 +306,8 @@ watch(props, () => {
 
 const remove = (timerId: string) => {
   timerStore.remove(timerId);
+  timerStore.fetchAll();
+  stackStore.fetchAll();
 };
 
 const removeLocalTimer = (timerId: string) => {

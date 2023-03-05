@@ -20,7 +20,11 @@ declare module '@vue/runtime-core' {
 // for each client)
 // const api = axios.create({ baseURL: 'https://api.example.com' });
 
-const apiURL = `https://${process.env.API_BASE_URL}`;
+// TODO: Dev를 Development로 전부 교체
+const apiURL =
+  process.env.NODE_ENV === 'development'
+    ? `https://${process.env.FRONT_URL}:3000`
+    : `https://${process.env.FRONT_URL}/api`;
 
 const api = axios.create({
   baseURL: apiURL,
@@ -49,7 +53,6 @@ export default boot(({ app }) => {
     retries: 1,
     retryDelay: axiosRetry.exponentialDelay,
     retryCondition: (error) => {
-      console.log(error);
       // You could do this way or try to implement your own
       return error.response?.data.status > 400;
       // something like this works too.
@@ -60,9 +63,13 @@ export default boot(({ app }) => {
   // TODO: Change axios instance name
   api.defaults.headers.common['Content-Type'] = 'application/json';
   api.defaults.headers.post['Access-Control-Allow-Origin'] = [
-    apiURL,
-    `${process.env.API_BASE_URL}`,
-    'localhost:3000',
+    'https://127.0.0.1:3000',
+    'https://127.0.0.1',
+    'https://localhost:3000',
+    'https://localhost',
+    'https://pomo.yibyeongyong.com',
+    'https://api.yibyeongyong.com:3000',
+    'https://api.yibyeongyong.com',
   ];
 });
 

@@ -21,17 +21,27 @@
           <!--          TODO: 스택 생성 및 수정 중 타이머 수정 및 삭제 못하도록 제어-->
           <q-menu touch-position context-menu>
             <q-list dense style="min-width: 100px">
-              <q-item clickable v-close-popup @click="editTimer(element)">
+              <q-item
+                clickable
+                v-close-popup
+                @click="editTimer(element)"
+                :disable="!!isEdit"
+              >
                 <q-item-section>수정</q-item-section>
               </q-item>
               <q-separator></q-separator>
-              <q-item clickable v-close-popup @click="remove(index)">
+              <q-item
+                clickable
+                v-close-popup
+                @click="remove(index)"
+                :disable="!!isEdit"
+              >
                 <q-item-section style="color: #8b1c00">삭제</q-item-section>
               </q-item>
             </q-list>
-            <!--            <q-tooltip anchor="top middle" self="top middle">-->
-            <!--              스택 생성 및 수정 중엔 타이머를 수정하거나 삭제할 수 없습니다.-->
-            <!--            </q-tooltip>-->
+            <q-tooltip v-if="!!isEdit" anchor="top middle" self="top middle">
+              스택 생성 및 수정 시, 타이머를 삭제 및 수정이 불가능합니다.
+            </q-tooltip>
           </q-menu>
 
           <q-card-section>
@@ -155,7 +165,6 @@ import _ from 'lodash-es';
 import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
-import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
 import { usePomodoroStore } from 'src/core/pomodoro/infra/store/pomodoro.store';
 import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import { IStacksToFrag, ITimer } from 'src/core/timer/domain/timer.model';
@@ -172,18 +181,21 @@ const pomodoroStore = usePomodoroStore();
 const stackStore = useStackStore();
 const userStore = useUserStore();
 const builderStore = useBuilderStore();
-const selectorStore = useSelectorStore();
+const builderStoreRefs = storeToRefs(builderStore);
 const { isLoadingTimer } = storeToRefs(timerStore);
-const { listTimers } = storeToRefs(timerStore);
 
+const { listTimers } = storeToRefs(timerStore);
 let rTimers = reactive(listTimers);
+const isEdit = computed(() => {
+  return builderStoreRefs.isEditBuilder.value;
+});
+
 const props = defineProps<{ timers: ITimer[] }>();
 
 const emit = defineEmits<{
   (e: 'remove', id: string): void;
   (e: 'removeLocal', id: string): void;
 }>();
-
 const drag = ref(false);
 const fragId = ref('');
 watch([rTimers, pomodoroStore.timer, fragId], () => {
@@ -253,7 +265,7 @@ const remove = (index: number) => {
         progress: true,
         icon: 'warning',
         html: true,
-        message: `삭제하려는 타이머는 ${relatedStackNames} 스택에 포함되어 있습니다.<br>삭제를 진행할 경우 관련된 스택에서 제외됩니다(스택은 삭제되지 않음).<br>계속하시겠습니까?`,
+        message: `삭제하려는 타이머는 ${relatedStackNames} 스택에 포함되어 있습니다.<br>삭제를 진행할 경우 관련된 스택에서 타이머가 삭제됩니다.<br>계속하시겠습니까?`,
         actions: [
           {
             label: '확인',

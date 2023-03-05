@@ -44,7 +44,7 @@ const postSelectRes = (data: string) => {
 
 self.addEventListener('notificationclick', (event) => {
   if (!event.action) {
-    console.log('Notification Click.');
+    // console.log('Notification Click.');
     return;
   }
   switch (event.action) {
@@ -55,7 +55,7 @@ self.addEventListener('notificationclick', (event) => {
       event.notification.close();
       break;
     default:
-      console.log(`Unknown action clicked: '${event.action}'`);
+      // console.log(`Unknown action clicked: '${event.action}'`);
       break;
   }
 });
