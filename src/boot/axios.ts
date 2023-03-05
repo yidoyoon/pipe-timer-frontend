@@ -23,7 +23,7 @@ declare module '@vue/runtime-core' {
 // TODO: Dev를 Development로 전부 교체
 const apiURL =
   process.env.NODE_ENV === 'development'
-    ? `https://${process.env.FRONT_URL}`
+    ? `https://${process.env.FRONT_URL}:3000`
     : `https://${process.env.FRONT_URL}/api`;
 
 const api = axios.create({
