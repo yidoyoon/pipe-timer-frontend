@@ -19,9 +19,7 @@ export const refreshAccessTokenFn = () => {
 
 // TODO: retry, retryDelay, maxRetries 설정
 api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  response => response,
   // TODO: 토큰 만료 확인 기능 추가
   // 토큰 만료로 인한 에러 메시지 발생
   // TODO: 서버 자체가 열려있지 않을 때 로그인 비활성화
@@ -39,18 +37,14 @@ api.interceptors.response.use(
           icon: 'error',
         });
       });
-    } else if (errMsg === 'No matching account information') {
+    }  else if (errMsg.includes('regular expression')) {
       Notify.create({
         color: 'negative',
-        message: userMsg.NO_MATCHING_ACCOUNT,
+        message: '비밀번호로 사용 불가능한 문자가 포함되어 있습니다.',
         icon: 'error',
       });
-    } else if (errMsg === 'Incorrect password') {
-      Notify.create({
-        color: 'negative',
-        message: userMsg.UNAUTHORIZED_PASSWORD,
-      });
     }
+
     return Promise.reject(err);
   }
 );

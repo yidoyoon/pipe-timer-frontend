@@ -16,7 +16,7 @@
         placeholder="account@example.com"
         :error-message="emailError"
         :error="!!emailError"
-        debounce="500"
+        debounce="1000"
       />
       <q-input
         filled
@@ -26,7 +26,7 @@
         placeholder="8 - 32 characters"
         :error-message="passwordError"
         :error="!!passwordError"
-        debounce="500"
+        debounce="1000"
       >
         <template v-slot:append>
           <q-icon
@@ -60,7 +60,7 @@ import { toFormValidator } from '@vee-validate/zod';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { useField, useForm } from 'vee-validate';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
-import { useQuasar } from 'quasar';
+import { Notify, useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 
 const $q = useQuasar();
@@ -84,7 +84,7 @@ const { handleSubmit, resetForm } = useForm({
   validationSchema: loginSchema,
 });
 
-const { value: email, errorMessage: emailError } = useField('email');
+const { value: email, errorMessage: emailError, setErrors } = useField('email');
 const { value: password, errorMessage: passwordError } = useField('password');
 
 let authResult: any;
@@ -106,11 +106,12 @@ const { isLoading, mutate } = useMutation(
       const errMsg = err.response.data.message as string;
       const response = err.response.data;
 
-      // $q.notify({
-      //   type: 'negative',
-      //   message: errMsg,
-      //   icon: 'warning',
-      // });
+      if (
+        errMsg === 'Incorrect email or password' ||
+        errMsg === 'No matching account information'
+      ) {
+        setErrors('이메일 혹은 비밀번호가 일치하지 않습니다.');
+      }
     },
     onSuccess: (response) => {
       const user = response.passport.user;
