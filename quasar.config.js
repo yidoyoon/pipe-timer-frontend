@@ -115,7 +115,7 @@ module.exports = configure(function (ctx) {
       open: false, // opens browser window automatically
       hmr: {
         host: '127.0.0.1',
-        port: 0,
+        port: 4000,
       },
     },
 
