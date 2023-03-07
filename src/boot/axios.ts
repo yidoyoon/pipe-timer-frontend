@@ -62,6 +62,11 @@ export default boot(({ app }) => {
 
   // TODO: Change axios instance name
   api.defaults.headers.common['Content-Type'] = 'application/json';
+  axios.defaults.headers = {
+    'Cache-Control': 'no-cache',
+    Pragma: 'no-cache',
+    Expires: '0',
+  };
   api.defaults.headers.post['Access-Control-Allow-Origin'] = [
     'https://127.0.0.1:3000',
     'https://127.0.0.1',
