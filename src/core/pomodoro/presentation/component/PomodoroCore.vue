@@ -73,6 +73,7 @@ dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
 const pomodoroStore = usePomodoroStore();
+const pomodoroStoreRefs = storeToRefs(pomodoroStore);
 const { stack } = storeToRefs(usePomodoroStore());
 let { round } = storeToRefs(usePomodoroStore());
 const stackStore = useStackStore();
@@ -88,18 +89,6 @@ let started: string | number | NodeJS.Timeout | undefined;
 const endless = ref(false);
 const autoStart = ref(false);
 const notification = ref(false);
-
-// if ('serviceWorker' in navigator) {
-//   navigator.serviceWorker
-//     .register('./sw.js')
-//     .then(function (registration) {
-//       console.log('Service worker successfully registered.');
-//       return registration;
-//     })
-//     .catch(function (err) {
-//       console.error('Unable to register service worker.', err);
-//     });
-// }
 
 const currDuration = computed(() => {
   if (pomodoroStore.mode === 'stack') {
@@ -140,18 +129,6 @@ const start = () => {
     clearInterval(started);
   }
 };
-
-// watchEffect(() => {
-//   const time = pomodoroStore.getTotalDuration;
-//   if (time <= 0 && !endless.value) {
-//     $q.notify({
-//       message: '타이머를 종료합니다.',
-//     });
-//     // nextTick(() => {
-//     //   loadSession();
-//     // });
-//   }
-// });
 
 const elapse = () => {
   let timer;
@@ -265,12 +242,12 @@ const timeEnd = () => {
     pomodoroStore.mode === 'stack' &&
     +round.value >= +pomodoroStore.stack.stacksToFrag.length
   ) {
-    if (endless.value) {
+    if (endless.value === true) {
       round.value = 0;
     } else {
       clearInterval(started);
-      pomodoroStore.state = '';
-      pomodoroStore.round = 0;
+      pomodoroStoreRefs.state = ref('');
+      pomodoroStoreRefs.round = ref(0);
       $q.notify({ message: '타이머를 종료합니다', color: 'green' });
     }
   } else if (pomodoroStore.mode === 'timer' && +round.value >= 1) {
@@ -290,21 +267,31 @@ function endRoundPush(timerInfo: string) {
   pomodoroStore.state = 'pause';
   if (Notification.permission === 'granted') {
     navigator.serviceWorker.ready.then((registration) => {
-      registration.showNotification('Round ends notification', {
-        ...notifOptions,
-        requireInteraction: false,
-        body: `다음 타이머를 실행하시겠습니까?\n${timerInfo}`,
-        actions: [
-          {
-            title: 'Confirm',
-            action: 'confirm',
-          },
-          {
-            title: 'Cancel',
-            action: 'close',
-          },
-        ],
-      });
+      if (
+        pomodoroStore.mode === 'stack' &&
+        round.value < pomodoroStore.stack.stacksToFrag.length - 1
+      ) {
+        registration.showNotification('Round end notification', {
+          ...notifOptions,
+          requireInteraction: false,
+          body: `다음 타이머를 실행하시겠습니까?\n${timerInfo}`,
+          actions: [
+            {
+              title: 'Confirm',
+              action: 'confirm',
+            },
+            {
+              title: 'Cancel',
+              action: 'close',
+            },
+          ],
+        });
+      } else if (
+        (pomodoroStore.mode === 'stack' &&
+        round.value === pomodoroStore.stack.stacksToFrag.length - 1) || (pomodoroStore.mode === 'timer')
+      ) {
+        new Notification('모든 타이머를 실행했습니다.');
+      }
     });
   }
 }
@@ -314,18 +301,21 @@ const notifyRoundEnd = () => {
   let duration = 0;
   const nextRound = round.value + 1;
 
-  if (pomodoroStore.mode === 'stack') {
+  if (
+    pomodoroStore.mode === 'stack' &&
+    nextRound < pomodoroStore.stack.stacksToFrag.length
+  ) {
     const timer = pomodoroStore.stack.stacksToFrag[nextRound].frag;
     name = timer.name;
     duration = timer.duration;
-  } else {
+  } else if (pomodoroStore.mode === 'timer') {
     const id = pomodoroStore.timer.fragId;
     const timer = timerStore.timers[id];
     name = timer.name;
     duration = timer.duration;
   }
 
-  let nextTimerInfo = `타이머 이름: ${name}\t시간: ${duration}`;
+  let nextTimerInfo = `타이머 이름: ${name}\n시간: ${duration}`;
 
   if (!!autoStart.value) {
     new Notification(
@@ -341,8 +331,6 @@ const notifyRoundEnd = () => {
       )
     ) {
       endRoundPush(nextTimerInfo);
-    } else {
-      new Notification('모든 타이머를 실행했습니다.');
     }
   }
 };

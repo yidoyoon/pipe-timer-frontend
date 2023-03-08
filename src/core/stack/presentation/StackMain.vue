@@ -23,7 +23,7 @@
       class="text-h6 text-weight-bold"
     >
       <span>
-        스택이 비어있습니다. 스택을 생성하려면 상단의 '+' 버튼을 눌러주세요.
+        스택이 비어있습니다. 스택을 생성하려면 좌측 상단의 '+' 버튼을 눌러주세요.
       </span>
     </div>
   </q-scroll-area>
@@ -37,7 +37,6 @@ import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
 import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import StackLoader from 'src/core/stack/presentation/components/StackLoader.vue';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
-import { isEmptyObj } from 'src/util/is-empty-object.util';
 
 const stackStore = useStackStore();
 const stacksStoreRefs = storeToRefs(stackStore);

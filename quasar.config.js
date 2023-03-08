@@ -109,13 +109,14 @@ module.exports = configure(function (ctx) {
       host: '127.0.0.1',
       port: 4000,
       https: {
-        key: fs.readFileSync(path.resolve(__dirname, './certs/local-key.pem')),
-        cert: fs.readFileSync(path.resolve(__dirname, './certs/local-cert.pem')),
+        key: fs.readFileSync(path.resolve(__dirname, './certs/127.0.0.1-key.pem')),
+        cert: fs.readFileSync(path.resolve(__dirname, './certs/127.0.0.1-cert.pem')),
       },
+      pwa: true,
       open: false, // opens browser window automatically
       hmr: {
         host: '127.0.0.1',
-        port: 0,
+        port: 4000,
       },
     },
 

@@ -6,9 +6,9 @@
   "author": "Yi Byeongyong <ybyo@yibyeongyong.com>",
   "private": true,
   "scripts": {
-    "start:dev": "cross-env NODE_ENV=dev quasar dev -m pwa",
-    "build:dev": "cross-env NODE_ENV=dev quasar build -m pwa",
-    "serve:dev": "cross-env NODE_ENV=dev quasar serve ./dist/pwa --hostname 127.0.0.1 --history --https --port 4000 -m pwa -K ./certs/local-key.pem -C ./certs/local-cert.pem",
+    "start:dev": "cross-env NODE_ENV=development quasar dev -m pwa --history",
+    "build:dev": "cross-env NODE_ENV=development quasar build -m pwa --history",
+    "serve:dev": "cross-env NODE_ENV=development quasar serve ./dist/pwa --hostname 127.0.0.1 --history --https --port 4000 -m pwa -K ./certs/127.0.0.1-key.pem -C ./certs/127.0.0.1-cert.pem",
     "lint": "eslint --ext .js,.ts,.vue ./",
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
     "test": "echo \"No test specified\" && exit 0",

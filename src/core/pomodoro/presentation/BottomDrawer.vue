@@ -147,182 +147,9 @@
               </q-card-actions>
             </q-card>
           </q-dialog>
-
-          <!--          <q-card-section class="col">-->
-          <!--            <div class="text-h6">Our Changing Planet</div>-->
-          <!--            <div class="text-subtitle2">by John Doe</div>-->
-          <!--          </q-card-section>-->
-
-          <!--          <q-card-section v-if="drawerMode !== 'handler'" class="col">-->
-          <!--            <div class="text-h6">-->
-          <!--              Our Changing Planet - only shown when drawer is open-->
-          <!--            </div>-->
-          <!--            <div class="text-subtitle2">by John Doe</div>-->
-          <!--            <div>{{ lorem }}</div>-->
-          <!--          </q-card-section>-->
         </q-card>
       </div>
     </div>
-
-    <!--  &lt;!&ndash;    Open stack list button&ndash;&gt;-->
-    <!--  <q-page-sticky-->
-    <!--    v-if="!showStack"-->
-    <!--    position="bottom"-->
-    <!--    class="z-top"-->
-    <!--    style="left: 120px; bottom: 0.5rem"-->
-    <!--  >-->
-    <!--    <q-btn-->
-    <!--      @click="toggleStackList"-->
-    <!--      icon="keyboard_double_arrow_up"-->
-    <!--      color="black"-->
-    <!--      flat-->
-    <!--      round-->
-    <!--    />-->
-    <!--  </q-page-sticky>-->
-
-    <!--  &lt;!&ndash;  Stack list dialog&ndash;&gt;-->
-    <!--  <q-dialog-->
-    <!--    v-model="showStack"-->
-    <!--    transition-show="slide-up"-->
-    <!--    transition-hide="slide-down"-->
-    <!--    seamless-->
-    <!--    position="bottom"-->
-    <!--  >-->
-    <!--    <q-card style="width: 70vw; max-width: 70vw; height: 47vh">-->
-    <!--      <q-bar-->
-    <!--        class="q-mb-md"-->
-    <!--        style="-->
-    <!--          background-color: transparent;-->
-    <!--          border-bottom: solid 0.1rem #002222;-->
-    <!--        "-->
-    <!--      >-->
-    <!--        &lt;!&ndash;        Add stack button&ndash;&gt;-->
-    <!--        <div>-->
-    <!--          <q-btn-->
-    <!--            v-if="!stackInBuilder.stacksToFrag"-->
-    <!--            @click="createStacksBtn"-->
-    <!--            :disable="!listTimerRefs.length"-->
-    <!--            dense-->
-    <!--            icon="add"-->
-    <!--            flat-->
-    <!--            label="create stack"-->
-    <!--            text-color="positive"-->
-    <!--            class="q-pr-sm"-->
-    <!--          />-->
-    <!--          <q-tooltip anchor="top middle" self="top middle">-->
-    <!--            <div v-if="listTimerRefs.length">스택을 생성합니다.</div>-->
-    <!--            <div v-else>스택을 생성하려면 최소 1개의 타이머가 필요합니다.</div>-->
-    <!--          </q-tooltip>-->
-    <!--        </div>-->
-    <!--        &lt;!&ndash;        Save stack button&ndash;&gt;-->
-    <!--        <div v-if="stackInBuilder.stacksToFrag">-->
-    <!--          <q-btn-->
-    <!--            v-if="stackInBuilder.stacksToFrag"-->
-    <!--            @click="saveStackBtn"-->
-    <!--            dense-->
-    <!--            icon="save"-->
-    <!--            flat-->
-    <!--            label="save"-->
-    <!--            text-color="positive"-->
-    <!--            class="q-pr-sm"-->
-    <!--          />-->
-    <!--          <q-tooltip anchor="top middle" self="top middle">-->
-    <!--            스택을 저장합니다.-->
-    <!--          </q-tooltip>-->
-    <!--        </div>-->
-    <!--        &lt;!&ndash;        Cancel stack button&ndash;&gt;-->
-    <!--        <div v-if="stackInBuilder.stacksToFrag">-->
-    <!--          <q-btn-->
-    <!--            @click="resetBuilder"-->
-    <!--            dense-->
-    <!--            icon="cancel"-->
-    <!--            flat-->
-    <!--            label="cancel"-->
-    <!--            text-color="positive"-->
-    <!--            class="q-pr-sm"-->
-    <!--          />-->
-    <!--          <q-tooltip anchor="top middle" self="top middle">-->
-    <!--            스택 생성 혹은 수정을 취소합니다.-->
-    <!--          </q-tooltip>-->
-    <!--        </div>-->
-    <!--        <q-space />-->
-    <!--        <q-btn dense flat icon="minimize" @click="showStack = false" />-->
-    <!--      </q-bar>-->
-    <!--      <q-card-section class="row wrap justify-between q-py-none">-->
-    <!--        <div class="col">-->
-    <!--          <StackMain></StackMain>-->
-    <!--        </div>-->
-    <!--      </q-card-section>-->
-    <!--    </q-card>-->
-    <!--  </q-dialog>-->
-
-    <!--  &lt;!&ndash;    CreateStack dialog&ndash;&gt;-->
-    <!--  <q-dialog-->
-    <!--    v-model="builderWarn"-->
-    <!--    persistent-->
-    <!--    @keyup.enter="-->
-    <!--      builderWarn = false;-->
-    <!--      builderPrompt = true;-->
-    <!--    "-->
-    <!--    @keyup.esc.prevent="builderWarn = false"-->
-    <!--  >-->
-    <!--    <q-card style="min-width: 350px">-->
-    <!--      <q-card-section>-->
-    <!--        <div class="text-h6">-->
-    <!--          <q-icon name="warning"></q-icon>-->
-    <!--          Confirmation-->
-    <!--        </div>-->
-    <!--      </q-card-section>-->
-
-    <!--      <q-card-section class="q-pt-none">-->
-    <!--        <div>-->
-    <!--          현재 작업중인 스택이 있습니다. 스택 생성을 계속할 경우 저장되지 않은-->
-    <!--          내용은 삭제됩니다. 계속하시겠습니까?-->
-    <!--        </div>-->
-    <!--      </q-card-section>-->
-
-    <!--      <q-card-actions align="right" class="text-primary">-->
-    <!--        <q-btn flat label="Cancel" v-close-popup />-->
-    <!--        <q-btn-->
-    <!--          flat-->
-    <!--          label="Confirm"-->
-    <!--          color="red"-->
-    <!--          v-close-popup-->
-    <!--          @click="builderPrompt = true"-->
-    <!--        />-->
-    <!--      </q-card-actions>-->
-    <!--    </q-card>-->
-    <!--  </q-dialog>-->
-
-    <!--  &lt;!&ndash;  Create stack prompt&ndash;&gt;-->
-    <!--  <q-dialog v-model="builderPrompt" persistent>-->
-    <!--    <q-card style="min-width: 350px">-->
-    <!--      <q-card-section>-->
-    <!--        <div class="text-h6">Stack name</div>-->
-    <!--      </q-card-section>-->
-
-    <!--      <q-card-section class="q-pt-none">-->
-    <!--        <q-input-->
-    <!--          dense-->
-    <!--          v-model="stackName"-->
-    <!--          autofocus-->
-    <!--          @keyup.enter.prevent="createStack"-->
-    <!--          @keyup.esc.prevent="builderPrompt = false"-->
-    <!--        />-->
-    <!--      </q-card-section>-->
-
-    <!--      <q-card-actions align="right" class="text-primary">-->
-    <!--        <q-btn flat label="Cancel" v-close-popup />-->
-    <!--        <q-btn-->
-    <!--          flat-->
-    <!--          label="Confirm"-->
-    <!--          color="green"-->
-    <!--          v-close-popup-->
-    <!--          @click="createStack"-->
-    <!--        />-->
-    <!--      </q-card-actions>-->
-    <!--    </q-card>-->
-    <!--  </q-dialog>-->
   </div>
 </template>
 
@@ -332,17 +159,14 @@ import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
 import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
-import PomodoroCore from 'src/core/pomodoro/presentation/component/PomodoroCore.vue';
-import PomodoroQueue from 'src/core/pomodoro/presentation/component/PomodoroQueue.vue';
 import { IStack } from 'src/core/stack/domain/stack.model';
 import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import StackMain from 'src/core/stack/presentation/StackMain.vue';
-import { IUser } from 'src/type-defs/userTypes';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
 const selectorStore = useSelectorStore();
 const stackStore = useStackStore();
@@ -358,7 +182,7 @@ const cancelBtnPrompt = ref(false);
 
 selectorStore.importFrom = 'PomodoroMain';
 
-const { isEditBuilder, stackInBuilder } = storeToRefs(useBuilderStore());
+const { stackInBuilder } = storeToRefs(useBuilderStore());
 
 const $q = useQuasar();
 
@@ -419,7 +243,7 @@ const drawerMinHeight = 36;
 const drawerTopOffset = 100;
 const drawerOpenRatioHalf = 50;
 
-const drawerPos = ref(drawerMinHeight);
+const drawerPos = ref(350);
 let animateTimeout: number;
 
 const drawerMaxHeight = computed(() => {
@@ -441,7 +265,7 @@ const drawerStyle = computed(() => {
   };
 });
 
-const drawerMode = computed(() => {
+let drawerMode = computed(() => {
   if (drawerOpenRatio.value > drawerOpenRatioHalf) {
     return 'full';
   }
@@ -460,7 +284,7 @@ const slideDrawer = (ev: {
     Math.min(drawerMaxHeight.value, drawerPos.value - delta.y)
   );
 
-  if (isFinal === true) {
+  if (isFinal) {
     const aboveHalf = drawerOpenRatio.value > drawerOpenRatioHalf;
     const targetHeight =
       direction === 'up'
