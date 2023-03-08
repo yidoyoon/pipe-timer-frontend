@@ -290,21 +290,31 @@ function endRoundPush(timerInfo: string) {
   pomodoroStore.state = 'pause';
   if (Notification.permission === 'granted') {
     navigator.serviceWorker.ready.then((registration) => {
-      registration.showNotification('Round ends notification', {
-        ...notifOptions,
-        requireInteraction: false,
-        body: `다음 타이머를 실행하시겠습니까?\n${timerInfo}`,
-        actions: [
-          {
-            title: 'Confirm',
-            action: 'confirm',
-          },
-          {
-            title: 'Cancel',
-            action: 'close',
-          },
-        ],
-      });
+      if (
+        pomodoroStore.mode === 'stack' &&
+        round.value < pomodoroStore.stack.stacksToFrag.length - 1
+      ) {
+        registration.showNotification('Round end notification', {
+          ...notifOptions,
+          requireInteraction: false,
+          body: `다음 타이머를 실행하시겠습니까?\n${timerInfo}`,
+          actions: [
+            {
+              title: 'Confirm',
+              action: 'confirm',
+            },
+            {
+              title: 'Cancel',
+              action: 'close',
+            },
+          ],
+        });
+      } else if (
+        (pomodoroStore.mode === 'stack' &&
+        round.value === pomodoroStore.stack.stacksToFrag.length - 1) || (pomodoroStore.mode === 'timer')
+      ) {
+        new Notification('모든 타이머를 실행했습니다.');
+      }
     });
   }
 }
@@ -314,11 +324,14 @@ const notifyRoundEnd = () => {
   let duration = 0;
   const nextRound = round.value + 1;
 
-  if (pomodoroStore.mode === 'stack') {
+  if (
+    pomodoroStore.mode === 'stack' &&
+    nextRound < pomodoroStore.stack.stacksToFrag.length
+  ) {
     const timer = pomodoroStore.stack.stacksToFrag[nextRound].frag;
     name = timer.name;
     duration = timer.duration;
-  } else {
+  } else if (pomodoroStore.mode === 'timer') {
     const id = pomodoroStore.timer.fragId;
     const timer = timerStore.timers[id];
     name = timer.name;
@@ -341,8 +354,6 @@ const notifyRoundEnd = () => {
       )
     ) {
       endRoundPush(nextTimerInfo);
-    } else {
-      new Notification('모든 타이머를 실행했습니다.');
     }
   }
 };
