@@ -73,6 +73,7 @@ dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
 const pomodoroStore = usePomodoroStore();
+const pomodoroStoreRefs = storeToRefs(pomodoroStore);
 const { stack } = storeToRefs(usePomodoroStore());
 let { round } = storeToRefs(usePomodoroStore());
 const stackStore = useStackStore();
@@ -88,18 +89,6 @@ let started: string | number | NodeJS.Timeout | undefined;
 const endless = ref(false);
 const autoStart = ref(false);
 const notification = ref(false);
-
-// if ('serviceWorker' in navigator) {
-//   navigator.serviceWorker
-//     .register('./sw.js')
-//     .then(function (registration) {
-//       console.log('Service worker successfully registered.');
-//       return registration;
-//     })
-//     .catch(function (err) {
-//       console.error('Unable to register service worker.', err);
-//     });
-// }
 
 const currDuration = computed(() => {
   if (pomodoroStore.mode === 'stack') {
@@ -140,18 +129,6 @@ const start = () => {
     clearInterval(started);
   }
 };
-
-// watchEffect(() => {
-//   const time = pomodoroStore.getTotalDuration;
-//   if (time <= 0 && !endless.value) {
-//     $q.notify({
-//       message: '타이머를 종료합니다.',
-//     });
-//     // nextTick(() => {
-//     //   loadSession();
-//     // });
-//   }
-// });
 
 const elapse = () => {
   let timer;
@@ -265,12 +242,12 @@ const timeEnd = () => {
     pomodoroStore.mode === 'stack' &&
     +round.value >= +pomodoroStore.stack.stacksToFrag.length
   ) {
-    if (endless.value) {
+    if (endless.value === true) {
       round.value = 0;
     } else {
       clearInterval(started);
-      pomodoroStore.state = '';
-      pomodoroStore.round = 0;
+      pomodoroStoreRefs.state = ref('');
+      pomodoroStoreRefs.round = ref(0);
       $q.notify({ message: '타이머를 종료합니다', color: 'green' });
     }
   } else if (pomodoroStore.mode === 'timer' && +round.value >= 1) {
@@ -338,7 +315,7 @@ const notifyRoundEnd = () => {
     duration = timer.duration;
   }
 
-  let nextTimerInfo = `타이머 이름: ${name}\t시간: ${duration}`;
+  let nextTimerInfo = `타이머 이름: ${name}\n시간: ${duration}`;
 
   if (!!autoStart.value) {
     new Notification(

@@ -14,52 +14,6 @@
     <!--    LeftDrawer-->
     <LeftDrawer :rightDrawerOpen="rightDrawerOpen" />
 
-    <!--    Left splitter-->
-    <!--    <q-splitter-->
-    <!--      v-model="splitterModel"-->
-    <!--      :limits="[14, 14]"-->
-    <!--      style="height: 100vh"-->
-    <!--    >-->
-    <!--      <template v-slot:before>-->
-    <!--        <q-tabs v-model="tab" vertical class="text-teal">-->
-    <!--          <q-route-tab-->
-    <!--            to="/"-->
-    <!--            name="pomodoro"-->
-    <!--            icon="alarm"-->
-    <!--            label="Pomodoro"-->
-    <!--            style="height: 20vh"-->
-    <!--          />-->
-    <!--          <q-separator />-->
-    <!--          <q-route-tab-->
-    <!--            to="/guide"-->
-    <!--            name="guide"-->
-    <!--            icon="help"-->
-    <!--            label="guide"-->
-    <!--            exact-->
-    <!--          />-->
-    <!--        </q-tabs>-->
-    <!--      </template>-->
-
-    <!--      <template v-slot:after>-->
-    <!--        <q-tab-panels-->
-    <!--          v-model="tab"-->
-    <!--          animated-->
-    <!--          swipeable-->
-    <!--          vertical-->
-    <!--          transition-prev="jump-up"-->
-    <!--          transition-next="jump-up"-->
-    <!--        >-->
-    <!--          <q-tab-panel name="pomodoro">-->
-    <!--            <q-page-container>-->
-    <!--              <q-page style="height: 50vh">-->
-    <!--                <router-view />-->
-    <!--              </q-page>-->
-    <!--            </q-page-container>-->
-    <!--          </q-tab-panel>-->
-    <!--        </q-tab-panels>-->
-    <!--      </template>-->
-    <!--    </q-splitter>-->
-
     <!--    RightDrawer-->
     <RightDrawer :rightDrawerOpen="rightDrawerOpen" />
 
