@@ -419,7 +419,7 @@ const drawerMinHeight = 36;
 const drawerTopOffset = 100;
 const drawerOpenRatioHalf = 50;
 
-const drawerPos = ref(drawerMinHeight);
+const drawerPos = ref(350);
 let animateTimeout: number;
 
 const drawerMaxHeight = computed(() => {
