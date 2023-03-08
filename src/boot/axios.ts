@@ -35,8 +35,6 @@ export default boot(({ app }) => {
   dayjs.extend(duration);
   dayjs.extend(relativeTime);
 
-  const bus = new EventBus();
-  app.provide('bus', bus);
   app.provide('axios', axios);
   app.provide('api', api);
 
