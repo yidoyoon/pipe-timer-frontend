@@ -1,48 +1,48 @@
 <template>
   <q-drawer
     v-model="rightDrawerOpen"
-    show-if-above
     side="right"
     borderd
-    :width="220"
-    :breakpoint="400"
+    :width="$q.platform.is.desktop ? 220 : 170"
+    :breakpoint="600"
   >
-    <q-scroll-area
-      style="
-        height: 100%;
-        /*height: calc(100% - 150px);*/
-        /*margin-top: 150px;*/
-        border-left: 1px solid #ddd;
-      "
-    >
+    <q-scroll-area style="height: 100%; border-left: 1px solid #ddd">
       <q-list padding>
         <q-item-section>
-          <q-item class="row justify-center">
+          <q-item class="justify-center q-pa-sm q-pr-md">
             <q-item-label v-if="isLoggedIn"
               >Logged in as
               <b>{{ userStoreRefs.user.value.userName }}</b></q-item-label
             >
             <div v-else>
-              <q-item-label
+              <q-item-label class="lt-md fontsize-11"
                 >타이머, 스택 정보를 서버에<br />저장하려면 로그인
                 해주세요.</q-item-label
               >
-              <q-item-label caption>기본적으로 로컬에 저장됩니다.</q-item-label>
+              <q-item-label class="gt-sm"
+                >타이머, 스택 정보를 서버에<br />저장하려면 로그인
+                해주세요.</q-item-label
+              >
+              <q-item-label class="lt-md fontsize-9" caption
+                >기본적으로 로컬에 저장됩니다.</q-item-label
+              >
+              <q-item-label class="gt-sm" caption
+                >기본적으로 로컬에 저장됩니다.</q-item-label
+              >
             </div>
           </q-item>
         </q-item-section>
 
         <q-separator />
 
-        <q-item>
-          <q-item-section avatar>
-            <q-icon name="timer" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>타이머 리스트</q-item-label>
-            <!--            <q-item-label caption>Caption</q-item-label>-->
-          </q-item-section>
-        </q-item>
+        <div class="gt-sm q-pa-md fontsize-10 row justify-center items-center">
+          <q-icon name="timer" class="fontsize-12" />
+          <span style="margin-left: 0.2rem;">타이머 리스트</span>
+        </div>
+        <div class="lt-md q-pa-md fontsize-14 row justify-center items-center">
+          <q-icon name="timer" class="fontsize-16" />
+          <span style="margin-left: 0.2rem;">타이머 리스트</span>
+        </div>
 
         <q-separator />
 
@@ -233,7 +233,6 @@ const userStoreRefs = storeToRefs(userStore);
 const isLoggedIn = userStoreRefs.user;
 
 const rightDrawerOpen = ref(props.rightDrawerOpen);
-// const { canSaveTimers } = timerStoreRefs;
 
 timerStore.fetchAll();
 stackStore.fetchAll();
