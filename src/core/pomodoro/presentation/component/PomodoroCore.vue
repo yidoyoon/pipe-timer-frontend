@@ -133,11 +133,13 @@ const start = () => {
 const elapse = () => {
   let timer;
   if (pomodoroStore.mode === 'stack') {
-    timer = pomodoroStore.stack.stacksToFrag[round.value].frag;
-    pomodoroStore.stack.stacksToFrag[round.value].frag.duration--;
-  } else if (pomodoroStore.mode === 'timer') {
-    timer = pomodoroStore.timer;
+    timer = _.cloneDeep(pomodoroStore.stack.stacksToFrag[round.value].frag);
     timer.duration--;
+    pomodoroStore.stack.stacksToFrag[round.value].frag = _.cloneDeep(timer);
+  } else if (pomodoroStore.mode === 'timer') {
+    timer = _.cloneDeep(pomodoroStore.timer);
+    timer.duration--;
+    pomodoroStore.timer = timer;
   }
   if (timer !== undefined && timer.duration <= 0) {
     if (!!notification.value) {

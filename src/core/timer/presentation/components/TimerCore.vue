@@ -16,7 +16,7 @@
           class="my-card text-white cursor-pointer no-shadow q-ma-sm"
           :style="colorExtractor(element)"
           v-ripple
-          @dblclick="toPomodoro(element)"
+          @dblclick="toPomodoro(element.value)"
         >
           <!--          TODO: 스택 생성 및 수정 중 타이머 수정 및 삭제 못하도록 제어-->
           <q-menu touch-position context-menu>
@@ -198,9 +198,9 @@ const emit = defineEmits<{
 }>();
 const drag = ref(false);
 const fragId = ref('');
-watch([rTimers, pomodoroStore.timer, fragId], () => {
-  rTimers = reactive(listTimers);
-});
+// watch([rTimers, pomodoroStore.timer, fragId], () => {
+//   rTimers = reactive(listTimers);
+// });
 const duration = ref(0);
 const order = ref(-2);
 const isEditing = ref(false);
@@ -226,7 +226,7 @@ const editTimerSchema = toFormValidator(
       color: zod
         .string()
         .startsWith('#')
-        .max(8)
+        .max(9)
         .regex(
           /^#[0-9A-Fa-f]{8}$/,
           '색상값 형태가 잘못되었습니다. 우측의 Colorize 아이콘을 활용해주세요.'

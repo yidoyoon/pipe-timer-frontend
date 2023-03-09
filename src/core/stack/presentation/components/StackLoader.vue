@@ -102,6 +102,7 @@ import { useStackStore } from 'src/core/stack/infra/store/stack.store';
 import { LocalStorage, useQuasar } from 'quasar';
 import { ITimer } from 'src/core/timer/domain/timer.model';
 import { computed, ref } from 'vue';
+import _ from 'lodash-es';
 
 const $q = useQuasar();
 
@@ -142,7 +143,7 @@ const remove = () => {
 
 const toBuilder = (stack: IStack) => {
   builderStore.$reset();
-  builderStore.stackInBuilder = stack;
+  builderStore.stackInBuilder = _.cloneDeep(stack);
   toBuilderPrompt.value = false;
 
   LocalStorage.set('builder-backup', builderStore.stackInBuilder);
@@ -163,7 +164,7 @@ const toPomodoro = (stack: IStack) => {
   // Session storage for saving initial state of stack, timer
   try {
     $q.sessionStorage.set('pomodoro-data', stack);
-    pomodoroStore.stack = { ...stack };
+    pomodoroStore.stack = _.cloneDeep(stack);
     pomodoroStore.mode = 'stack';
     pomodoroStore.state = 'pause';
     pomodoroStore.round = 0;
