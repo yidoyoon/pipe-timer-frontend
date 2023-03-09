@@ -60,8 +60,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { useQuasar } from "quasar";
+import { ref }       from 'vue';
 
-const drawer = ref(true);
-const tab = ref('timers')
+const $q = useQuasar()
+
+const drawer = $q.screen.gt.sm ? ref(true) : ref(false);
+const tab = ref('timers');
 </script>
