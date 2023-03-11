@@ -2,7 +2,6 @@ import axiosRetry from 'axios-retry';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { EventBus } from 'quasar';
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
 
@@ -20,7 +19,7 @@ declare module '@vue/runtime-core' {
 // for each client)
 // const api = axios.create({ baseURL: 'https://api.example.com' });
 
-const apiURL = process.env.dev
+const apiURL = process.env.DEV
   ? `https://${process.env.FRONT_URL}:3000`
   : `https://${process.env.FRONT_URL}/api`;
 
@@ -65,6 +64,7 @@ export default boot(({ app }) => {
   };
   api.defaults.headers.post['Access-Control-Allow-Origin'] = [
     'https://127.0.0.1:3000',
+    'https://127.0.0.1:4000',
     'https://127.0.0.1',
     'https://localhost:3000',
     'https://localhost',
