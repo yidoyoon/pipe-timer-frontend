@@ -1,7 +1,4 @@
 <template>
-  <!--  <div class="row justify-start">-->
-  <!--    현재 알림 설정: {{ permission === 'granted' ? 'On' : 'Off' }}-->
-  <!--  </div>-->
   <div class="row fit justify-center content-start">
     <div id="clock">
       <div class="time">{{ timeFormatter }}</div>
@@ -290,7 +287,8 @@ function endRoundPush(timerInfo: string) {
         });
       } else if (
         (pomodoroStore.mode === 'stack' &&
-        round.value === pomodoroStore.stack.stacksToFrag.length - 1) || (pomodoroStore.mode === 'timer')
+          round.value === pomodoroStore.stack.stacksToFrag.length - 1) ||
+        pomodoroStore.mode === 'timer'
       ) {
         new Notification('모든 타이머를 실행했습니다.');
       }
