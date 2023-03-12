@@ -13,9 +13,15 @@ const path = require('path');
 const fs = require('fs');
 const dotenv = require('dotenv');
 
-dotenv.config({
-  path: path.join(__dirname, `./env/.${process.env.NODE_ENV}.env`),
-});
+try {
+  dotenv.config({
+    path: path.join(__dirname, `./env/.${process.env.ENV_NAME}.env`),
+  });
+} catch (err) {
+  throw new Error(
+    `${err} Error occurred while load env file ${process.env.ENV_NAME}`
+  );
+}
 
 module.exports = configure(function (ctx) {
   console.log(ctx);
@@ -56,9 +62,9 @@ module.exports = configure(function (ctx) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
     build: {
-      env: dotenv.config({
-        path: path.join(__dirname, `./env/.${process.env.NODE_ENV}.env`),
-      }).parsed,
+      env: {
+        FRONT_URL: process.env.FRONT_URL,
+      },
 
       target: {
         browser: ['es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
@@ -109,8 +115,12 @@ module.exports = configure(function (ctx) {
       host: '127.0.0.1',
       port: 4000,
       https: {
-        key: fs.readFileSync(path.resolve(__dirname, './certs/127.0.0.1-key.pem')),
-        cert: fs.readFileSync(path.resolve(__dirname, './certs/127.0.0.1-cert.pem')),
+        key: fs.readFileSync(
+          path.resolve(__dirname, './certs/127.0.0.1-key.pem')
+        ),
+        cert: fs.readFileSync(
+          path.resolve(__dirname, './certs/127.0.0.1-cert.pem')
+        ),
       },
       pwa: true,
       open: false, // opens browser window automatically

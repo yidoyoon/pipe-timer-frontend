@@ -1,6 +1,6 @@
 <template>
     <!--    Login button-->
-    <q-page-sticky position="top-right" :offset="[30, 10]" class="z-top">
+    <q-page-sticky position="top-right" :offset="[50, 10]" class="z-top">
       <q-btn v-if="!user" to="/login" label="login" outline color="black" />
       <q-btn
         v-else

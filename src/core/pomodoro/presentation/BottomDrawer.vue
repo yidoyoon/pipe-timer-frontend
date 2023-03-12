@@ -351,12 +351,7 @@ onBeforeUnmount(() => {
   &--bottom {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    // background-color: #333;
-    // background-image: radial-gradient(
-    //     circle,
-    //     rgba(0, 0, 0, 0.1) 0%,
-    //     rgba(0, 0, 0, 0.4) 100%
-    // );
+
     bottom: unset;
     top: 100%;
     transition: background-color 0.3s ease-in-out;
@@ -366,14 +361,6 @@ onBeforeUnmount(() => {
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
     }
-
-    // &.slide-drawer--open-half {
-    //   background-color: #014a88;
-    // }
-    //
-    // &.slide-drawer--open-full {
-    //   background-color: #01884a;
-    // }
   }
 
   &__handler {
