@@ -26,7 +26,7 @@ api.interceptors.response.use(
   // TODO: 에러메시지를 각 서비스로 분산
   async (err) => {
     // const originalRequest = error.config;
-    const errMsg = err.response.data.message as string;
+    const errMsg = err.response.data?.message as string;
 
     if (errMsg === 'Unauthorized') {
       return await refreshAccessTokenFn().catch(() => {
