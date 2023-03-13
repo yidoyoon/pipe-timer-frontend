@@ -6,24 +6,45 @@
 
     <q-space class="flex-break"></q-space>
 
-    <div class="q-my-none">
-      <q-toggle
-        v-model="endless"
-        icon="all_inclusive"
-        class="q-pr-sm"
-        color="orange-6"
-      />
-      <q-toggle
-        v-model="autoStart"
-        icon="check"
-        color="purple-6"
-        class="q-pr-sm"
-      />
-      <q-toggle
-        v-model="notification"
-        icon="notifications_active"
-        color="teal-6"
-      />
+    <div class="row flex q-my-none">
+      <div>
+        <q-toggle
+          v-model="endless"
+          icon="all_inclusive"
+          class="q-pr-sm"
+          color="orange-6"
+        />
+        <q-tooltip anchor="top middle" self="top middle">
+          <div>
+            반복 모드를 활성화 합니다. 스택이 끝까지 도달해도 처음으로
+            되돌아갑니다.
+          </div>
+        </q-tooltip>
+      </div>
+      <div>
+        <q-toggle
+          v-model="autoStart"
+          icon="check"
+          color="purple-6"
+          class="q-pr-sm"
+        />
+        <q-tooltip anchor="top middle" self="top middle">
+          <div>
+            자동 시작 모드를 활성화 합니다. 데스크톱 알림에 응답하지 않아도
+            자동으로 다음 타이머가 실행됩니다.
+          </div>
+        </q-tooltip>
+      </div>
+      <div>
+        <q-toggle
+          v-model="notification"
+          icon="notifications_active"
+          color="teal-6"
+        />
+        <q-tooltip anchor="top middle" self="top middle">
+          <div>데스크톱 알림을 활성화 합니다.</div>
+        </q-tooltip>
+      </div>
     </div>
 
     <q-space class="flex-break"></q-space>
