@@ -51,8 +51,8 @@
 </template>
 
 <script setup lang="ts">
-import { CHECK_EMPTY, userMsg } from 'src/core/users/domain/userConst';
-import * as zod from 'zod';
+import { CHECK_EMPTY, userMsg } from 'src/core/users/domain/user.const';
+import * as zod                 from 'zod';
 import { ILoginInput } from 'src/type-defs/userTypes';
 import { getMeFn, loginUserFn } from 'src/core/users/infra/http/user.api';
 import { onBeforeUpdate, ref } from 'vue';
@@ -60,7 +60,7 @@ import { toFormValidator } from '@vee-validate/zod';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { useField, useForm } from 'vee-validate';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
-import { Notify, useQuasar } from 'quasar';
+import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 
 const $q = useQuasar();
@@ -89,7 +89,6 @@ const { value: password, errorMessage: passwordError } = useField('password');
 
 let authResult: any;
 
-// TODO: 항상 True로 나오는 것 수정
 if (userData !== null) {
   authResult = useQuery(['user'], () => getMeFn(), {
     enabled: false,

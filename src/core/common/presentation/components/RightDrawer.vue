@@ -16,11 +16,11 @@
             >
             <div v-else>
               <q-item-label class="lt-md fontsize-11"
-                >타이머, 스택 정보를 서버에<br />저장하려면 로그인
+                >타이머, 루틴 정보를 서버에<br />저장하려면 로그인
                 해주세요.</q-item-label
               >
               <q-item-label class="gt-sm"
-                >타이머, 스택 정보를 서버에<br />저장하려면 로그인
+                >타이머, 루틴 정보를 서버에<br />저장하려면 로그인
                 해주세요.</q-item-label
               >
               <q-item-label class="lt-md fontsize-9" caption
@@ -37,11 +37,11 @@
 
         <div class="gt-sm q-pa-md fontsize-10 row justify-center items-center">
           <q-icon name="timer" class="fontsize-12" />
-          <span style="margin-left: 0.2rem;">타이머 리스트</span>
+          <span style="margin-left: 0.2rem">타이머 리스트</span>
         </div>
         <div class="lt-md q-pa-md fontsize-14 row justify-center items-center">
           <q-icon name="timer" class="fontsize-16" />
-          <span style="margin-left: 0.2rem;">타이머 리스트</span>
+          <span style="margin-left: 0.2rem">타이머 리스트</span>
         </div>
 
         <q-separator />
@@ -73,20 +73,17 @@
               label="save"
               text-color="positive"
               class="q-pr-sm"
-              :disable="!listTimersRef.length || !user"
+              :disable="isEmptyObj(timerStoreRef.listTimers)"
             />
-            <q-tooltip v-if="!userRef" anchor="top middle" self="top middle">
-              로그인하지 않으면 서버 저장이 지원되지 않습니다.
-            </q-tooltip>
             <q-tooltip
-              v-else-if="!listTimersRef.length"
+              v-if="isEmptyObj(timerStoreRef.listTimers)"
               anchor="top middle"
               self="top middle"
             >
               타이머가 없다면 서버에 저장할 수 없습니다.
             </q-tooltip>
             <q-tooltip v-else anchor="top middle" self="top middle">
-              서버에 타이머 정보를 저장합니다.
+              서버에 타이머를 저장합니다.
             </q-tooltip>
           </div>
         </div>
@@ -94,7 +91,7 @@
         <q-separator />
 
         <TimerCore
-          :timers="listTimersRef"
+          :timers="timerStoreRef.listTimers.value"
           class="col-12"
           @remove="remove"
           @removeLocal="removeLocalTimer"
@@ -108,11 +105,11 @@
     </q-scroll-area>
   </q-drawer>
 
-  <!--  Create timer dialog-->
+  <!--  Create timers dialog-->
   <q-dialog v-model="timerPrompt" persistent>
     <q-card style="min-width: 350px">
       <q-card-section>
-        <div class="text-h6">Create new timer</div>
+        <div class="text-h6">새로운 타이머 생성</div>
       </q-card-section>
       <q-card-section class="q-pt-none">
         <q-input
@@ -167,9 +164,10 @@
           v-model="color"
           :rules="['anyColor']"
           hint="타이머 구분에 사용할 색상을 선택합니다."
-          debounce="300"
+          debounce="500"
           :error="!!colorError"
           :error-message="colorError"
+          dense
         >
           <template v-slot:append>
             <q-icon name="colorize" class="cursor-pointer">
@@ -205,15 +203,14 @@ import { toFormValidator } from '@vee-validate/zod';
 import { api } from 'boot/axios';
 import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
-import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
-import { useStackStore } from 'src/core/stack/infra/store/stack.store';
-import { Timer } from 'src/core/timer/domain/timer.model';
-import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
+import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
+import { Timer } from 'src/core/timers/domain/timer.model';
+import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { useField, useForm } from 'vee-validate';
 import { ref, watch } from 'vue';
-import TimerCore from 'src/core/timer/presentation/components/TimerCore.vue';
+import TimerCore from 'src/core/timers/presentation/components/TimerCore.vue';
 import * as zod from 'zod';
 
 const props = withDefaults(defineProps<{ rightDrawerOpen: boolean }>(), {
@@ -221,13 +218,10 @@ const props = withDefaults(defineProps<{ rightDrawerOpen: boolean }>(), {
 });
 
 const timerStore = useTimerStore();
+const timerStoreRef = storeToRefs(timerStore);
 const userStore = useUserStore();
-const stackStore = useStackStore();
+const routineStore = useRoutineStore();
 const { user } = userStore;
-const { user: userRef } = storeToRefs(userStore);
-const { listTimers: listTimersRef } = storeToRefs(timerStore);
-const builderStore = useBuilderStore();
-const builderStoreRefs = storeToRefs(builderStore);
 
 const userStoreRefs = storeToRefs(userStore);
 const isLoggedIn = userStoreRefs.user;
@@ -235,7 +229,7 @@ const isLoggedIn = userStoreRefs.user;
 const rightDrawerOpen = ref(props.rightDrawerOpen);
 
 timerStore.fetchAll();
-stackStore.fetchAll();
+routineStore.fetchAll();
 
 const $q = useQuasar();
 
@@ -294,7 +288,7 @@ resetForm({
     timerName: '새로운 타이머',
     hours: 0,
     minutes: 0,
-    seconds: 1,
+    seconds: 0,
     color: '#000000ff',
   },
 });
@@ -306,12 +300,12 @@ watch(props, () => {
 const remove = (timerId: string) => {
   timerStore.remove(timerId);
   timerStore.fetchAll();
-  stackStore.fetchAll();
+  routineStore.fetchAll();
 };
 
 const removeLocalTimer = (timerId: string) => {
   timerStore.remove(timerId);
-  stackStore.removeLocalTimer(timerId);
+  routineStore.removeLocalTimer(timerId);
 };
 
 const createTimerBtn = () => {
@@ -336,16 +330,14 @@ const saveTimersBtn = () => {
     saveTimers();
   } else {
     $q.notify({
-      html: true,
-      message:
-        '서버에 저장하기 위해선 로그인 해야합니다.<br>로그인하지 않는다면 로컬에 자동으로 저장됩니다.',
+      message: '서버 저장 기능을 이용하기 위해선 로그인이 필요합니다.',
     });
   }
 };
 
 const saveTimers = () => {
   if (!!user) {
-    const res = api.post('frag/save', timerStore.listTimers);
+    const res = api.post('timer/save', timerStore.listTimers);
     if (!res) {
       $q.notify({
         message: '저장이 완료되지 않았습니다. 인터넷 연결 상태를 확인해주세요',

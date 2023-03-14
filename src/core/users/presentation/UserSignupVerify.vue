@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { userMsg } from 'src/core/users/domain/userConst';
+import { userMsg }   from 'src/core/users/domain/user.const';
 import { onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import { useRoute, useRouter } from 'vue-router';

@@ -6,13 +6,13 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () =>
-      import('../core/common/presentation/layouts/PomoLayout.vue'),
+      import('../core/common/presentation/layouts/AppLayout.vue'),
     children: [
       {
         path: '',
         component: () =>
-          import('../core/pomodoro/presentation/PomodoroMain.vue'),
-        name: 'pomodoro',
+          import('../core/controller/presentation/ControllerMain.vue'),
+        name: 'controller',
       },
       {
         path: 'login',
