@@ -6,7 +6,7 @@
   "author": "Yi Byeongyong <ybyo@yibyeongyong.com>",
   "private": true,
   "scripts": {
-    "start:dev": "cross-env quasar dev -m pwa",
+    "start:dev": "cross-env ENV_NAME=development quasar dev -m pwa",
     "build:dev": "cross-env ENV_NAME=staging quasar build -m pwa --history",
     "serve:dev": "cross-env ENV_NAME=staging quasar serve ./dist/pwa --hostname 127.0.0.1 --history --https --port 4000 -m pwa -K ./certs/127.0.0.1-key.pem -C ./certs/127.0.0.1-cert.pem",
     "lint": "eslint --ext .js,.ts,.vue ./",
