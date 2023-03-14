@@ -11,11 +11,11 @@
 const { configure } = require('quasar/wrappers');
 const path = require('path');
 const fs = require('fs');
-const dotenv = require('dotenv');
 
 try {
-  dotenv.config({
+  require('dotenv').config({
     path: path.join(__dirname, `./env/.${process.env.ENV_NAME}.env`),
+    override: true,
   });
 } catch (err) {
   throw new Error(
@@ -63,6 +63,7 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
     build: {
       env: {
+        ENV_NAME: process.env.ENV_NAME,
         FRONT_URL: process.env.FRONT_URL,
       },
 
@@ -239,7 +240,7 @@ module.exports = configure(function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'flexible-pomodoro-front',
+        appId: 'flexible-controller-front',
       },
     },
 
