@@ -14,12 +14,12 @@
             <div class="q-ml-sm">{{ props.stack.name }}</div>
             <div>
               <q-btn
-                v-show="!isEmptyObj(stackInBuilder)"
+                v-show="!isEmptyObj(routineInBuilder)"
                 icon="edit"
                 dense
                 flat
                 size="sm"
-                @click="editStackBtn"
+                @click="editRoutineBtn"
                 style="position: relative; bottom: 2px"
               />
             </div>
@@ -27,7 +27,7 @@
           <div class="q-mx-sm fixed-right">Total - {{ totalDuration }}</div>
         </div>
         <div
-          v-if="!stackInBuilder.stacksToFrag.length"
+          v-if="!routineInBuilder.routineToTimer.length"
           class="text-h6 text-weight-bold q-ml-sm"
         >
           우측 타이머 영역에서 추가하려는 타이머를 이곳에 드래그해주세요.
