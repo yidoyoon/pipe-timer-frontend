@@ -1,7 +1,7 @@
 <template>
   <q-scroll-area style="height: 20vh">
     <div class="row justify-between">
-      <BuilderCore :stack="newStack" style="height: 30vh" />
+      <BuilderCore :routine="newRoutine" style="height: 30vh" />
     </div>
   </q-scroll-area>
 </template>
@@ -13,7 +13,7 @@ import { computed } from 'vue';
 
 const builderStore = useBuilderStore();
 
-const newStack = computed(() => {
-  return builderStore.stackInBuilder;
+const newRoutine = computed(() => {
+  return builderStore.routineInBuilder;
 });
 </script>

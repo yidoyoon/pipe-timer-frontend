@@ -1,14 +1,14 @@
 import { api } from 'boot/axios';
 import { defineStore } from 'pinia';
 import { LocalStorage } from 'quasar';
-import { IStack, Stack } from 'src/core/stack/domain/stack.model';
-import { IStacksToFrag } from 'src/core/timer/domain/timer.model';
-import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
+import { IRoutine, Routine } from 'src/core/routines/domain/routine.model';
+import { IRoutineToTimer } from 'src/core/timers/domain/timer.model';
+import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
 import { Notify } from 'quasar';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 
 export interface BuilderState {
-  stackInBuilder: IStack;
+  routineInBuilder: IRoutine;
 }
 
 const timerStore = useTimerStore();
@@ -16,7 +16,7 @@ const timerStore = useTimerStore();
 export const useBuilderStore = defineStore('BuilderStore', {
   state: (): BuilderState => {
     return {
-      stackInBuilder: {} as IStack,
+      routineInBuilder: {} as IRoutine,
     };
   },
   persist: {
@@ -37,35 +37,35 @@ export const useBuilderStore = defineStore('BuilderStore', {
   getters: {
     getTotalDur(): number {
       let total = 0;
-      this.stackInBuilder.stacksToFrag.forEach((e) => {
-        total += e.frag.duration;
+      this.routineInBuilder.routineToTimer.forEach((e) => {
+        total += e.timer.duration;
       });
       return total;
     },
-    getBuilder(): IStack {
-      return this.stackInBuilder;
+    getBuilder(): IRoutine {
+      return this.routineInBuilder;
     },
 
-    getTimersInBuilder(): IStacksToFrag[] {
-      return this.stackInBuilder.stacksToFrag;
+    getTimersInBuilder(): IRoutineToTimer[] {
+      return this.routineInBuilder.routineToTimer;
     },
     isEditBuilder(): boolean {
-      return !isEmptyObj(this.stackInBuilder);
+      return !isEmptyObj(this.routineInBuilder);
     },
   },
 
   actions: {
-    orderStack() {
-      if ('stacksToFrag' in this.stackInBuilder) {
+    orderRoutine() {
+      if ('routineToTimer' in this.routineInBuilder) {
         alert('passed');
-        return this.stackInBuilder.stacksToFrag.map((timer, index) => {
+        return this.routineInBuilder.routineToTimer.map((timer, index) => {
           timer.order = index;
-          timer.frag.order = index;
+          timer.timer.order = index;
         });
       }
     },
 
-    async saveStack(stack: IStack) {
+    async saveRoutine(routine: IRoutine) {
       // TODO: 상단에서 Initialize 하면 발생하는 오류 해결 -> ReferenceError: Cannot access 'useTimerStore' before initialization
       try {
         await timerStore.saveTimer();
@@ -76,18 +76,18 @@ export const useBuilderStore = defineStore('BuilderStore', {
         });
       }
 
-      stack.stacksToFrag.map((timer, index) => {
+      routine.routineToTimer.map((timer, index) => {
         timer.order = index;
       });
 
-      const res = await api.post('stacks/save', stack);
+      const res = await api.post('routine/save', routine);
       if (res.data.success) {
         Notify.create({
           position: 'top',
           color: 'positive',
           message: '저장되었습니다',
         });
-        // TODO: 저장 완료 후 fetch 통해서 StackList 다시 불러오도록 구현
+        // TODO: 저장 완료 후 fetch 통해서 RoutineList 다시 불러오도록 구현
       } else {
         Notify.create({
           position: 'top',
@@ -97,9 +97,9 @@ export const useBuilderStore = defineStore('BuilderStore', {
       }
     },
 
-    createStack(name: string) {
+    createRoutine(name: string) {
       // this.$reset();
-      this.stackInBuilder = new Stack({ name: name });
+      this.routineInBuilder = new Routine({ name: name });
     },
   },
 });

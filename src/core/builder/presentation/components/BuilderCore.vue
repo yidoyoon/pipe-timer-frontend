@@ -11,7 +11,7 @@
           style="background-color: #007777; color: white"
         >
           <div class="row justify-between">
-            <div class="q-ml-sm">{{ props.stack.name }}</div>
+            <div class="q-ml-sm">{{ props.routine.name }}</div>
             <div>
               <q-btn
                 v-show="!isEmptyObj(routineInBuilder)"
@@ -34,10 +34,10 @@
         </div>
       </div>
 
-      <q-space v-if="!stackInBuilder.stacksToFrag.length" class="q-my-lg" />
+      <q-space v-if="!routineInBuilder.routineToTimer.length" class="q-my-lg" />
 
       <draggable
-        v-if="props.stack.stacksToFrag !== undefined"
+        v-if="props.routine.routineToTimer !== undefined"
         :list="rBuilder"
         v-bind="dragOptions"
         :component-data="{
@@ -48,7 +48,7 @@
         class="q-my-lg q-mx-md row no-wrap builder-group"
         @start="drag = true"
         @end="drag = false"
-        item-key="order fragId"
+        item-key="order timerId"
         :removeOnSpill="true"
         :onSpill="removeDraggedItem"
       >
@@ -67,13 +67,13 @@
               <q-card
                 class="inner-my-card text-white cursor-pointer flat justify-between"
                 style="background: black; display: inline-block"
-                :style="colorExtractor(element.frag)"
+                :style="colorExtractor(element.timer)"
               >
                 <q-card-section>
-                  <div>{{ element.frag.name }}</div>
+                  <div>{{ element.timer.name }}</div>
                   <div>
                     <q-icon name="timer" />
-                    {{ timeFormatter(element.frag.duration) }}
+                    {{ timeFormatter(element.timer.duration) }}
                   </div>
                 </q-card-section>
               </q-card>
@@ -91,20 +91,20 @@
     </q-item-section>
   </q-item>
 
-  <!--  Edit stack prompt-->
-  <q-dialog v-model="editStackPrompt" persistent>
+  <!--  Edit routines prompt-->
+  <q-dialog v-model="editRoutinePrompt" persistent>
     <q-card style="min-width: 350px">
       <q-card-section>
-        <div class="text-h6">새로운 스택 이름</div>
+        <div class="text-h6">새로운 루틴 이름</div>
       </q-card-section>
 
       <q-card-section class="q-pt-none">
         <q-input
           dense
-          v-model="stackName"
+          v-model="routineName"
           autofocus
-          @keyup.enter.prevent="editStack"
-          @keyup.esc.prevent="editStackPrompt = false"
+          @keyup.enter.prevent="editRoutine"
+          @keyup.esc.prevent="editRoutinePrompt = false"
         />
       </q-card-section>
 
@@ -115,7 +115,7 @@
           label="확인"
           color="green"
           v-close-popup
-          @click="editStack"
+          @click="editRoutine"
         />
       </q-card-actions>
     </q-card>
@@ -127,32 +127,32 @@ import dayjs from 'dayjs';
 import { storeToRefs } from 'pinia';
 import { LocalStorage } from 'quasar';
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
-import { IStack } from 'src/core/stack/domain/stack.model';
-import { ITimer } from 'src/core/timer/domain/timer.model';
+import { IRoutine } from 'src/core/routines/domain/routine.model';
+import { ITimer } from 'src/core/timers/domain/timer.model';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { computed, reactive, ref } from 'vue';
 import _ from 'lodash';
 import draggable from 'vuedraggable';
 
 const builderStore = useBuilderStore();
-const { getTotalDur, isEditBuilder, stackInBuilder } =
+const { getTotalDur, isEditBuilder, routineInBuilder } =
   storeToRefs(builderStore);
-const editStackPrompt = ref(false);
+const editRoutinePrompt = ref(false);
 
-const props = defineProps<{ stack: IStack }>();
+const props = defineProps<{ routine: IRoutine }>();
 const rBuilder = computed(() => {
-  return reactive(props.stack.stacksToFrag);
+  return reactive(props.routine.routineToTimer);
 });
 
-const stackName = ref('');
+const routineName = ref('');
 const drag = ref(false);
 
 const arrowDrawer = (index: number) => {
-  return !!props.stack && index !== props.stack.stacksToFrag.length - 1;
+  return !!props.routine && index !== props.routine.routineToTimer.length - 1;
 };
 
 const removeDraggedItem = (e: any) => {
-  builderStore.stackInBuilder.stacksToFrag.splice(e.oldIndex, 1);
+  builderStore.routineInBuilder.routineToTimer.splice(e.oldIndex, 1);
 };
 
 const timeFormatter = (duration: string | number) => {
@@ -168,19 +168,19 @@ const totalDuration = computed(() => {
   return formatted;
 });
 
-const editStackBtn = () => {
-  editStackPrompt.value = true;
+const editRoutineBtn = () => {
+  editRoutinePrompt.value = true;
 };
 
-const editStack = () => {
-  builderStore.stackInBuilder.name = stackName.value;
-  editStackPrompt.value = false;
+const editRoutine = () => {
+  builderStore.routineInBuilder.name = routineName.value;
+  editRoutinePrompt.value = false;
 };
 
 const cancelEdit = () => {
-  const backup = LocalStorage.getItem('builder-backup') as IStack;
+  const backup = LocalStorage.getItem('builder-backup') as IRoutine;
   if (!!backup) {
-    builderStore.stackInBuilder = backup;
+    builderStore.routineInBuilder = backup;
     LocalStorage.set('builder-backup', {});
   }
 };

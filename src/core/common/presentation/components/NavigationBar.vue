@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
+import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
 import { logoutUserFn } from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { useQuasar } from 'quasar';
@@ -56,7 +56,7 @@ import { useMutation } from '@tanstack/vue-query';
 
 const userStore = useUserStore();
 const userStoreRefs = storeToRefs(userStore);
-const fragStore = useTimerStore();
+const timerStore = useTimerStore();
 
 const { user } = userStoreRefs;
 
@@ -68,7 +68,7 @@ const { mutate: logoutUser } = useMutation(() => logoutUserFn(), {
     userStore.setUser(null);
     router.push({ name: 'login' });
     userStore.$reset();
-    fragStore.$reset();
+    timerStore.$reset();
   },
   onError: (error) => {
     const errMsg = (error as any).response.data.error;
@@ -105,8 +105,8 @@ const navLinks = [
   // },
   {
     label: 'Pomodoro',
-    value: 'pomodoro',
-    to: { name: 'pomodoro' },
+    value: 'controller',
+    to: { name: 'controller' },
   },
   {
     label: 'Editor',

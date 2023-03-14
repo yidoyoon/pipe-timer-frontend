@@ -24,10 +24,10 @@
 </template>
 
 <script setup lang="ts">
-import { useQuasar } from "quasar";
-import { ref }       from 'vue';
+import { useQuasar } from 'quasar';
+import { ref } from 'vue';
 
-const $q = useQuasar()
+const $q = useQuasar();
 
 const drawer = $q.screen.gt.sm ? ref(true) : ref(false);
 const tab = ref('timers');

@@ -1,22 +1,16 @@
 <template>
-    <!--    Login button-->
-    <q-page-sticky position="top-right" :offset="[50, 10]" class="z-top">
-      <q-btn v-if="!user" to="/login" label="login" outline color="black" />
-      <q-btn
-        v-else
-        @click="handleLogout"
-        label="logout"
-        outline
-        color="black"
-      />
-    </q-page-sticky>
+  <!--    Login button-->
+  <q-page-sticky position="top-right" :offset="[50, 10]" class="z-top">
+    <q-btn v-if="!user" to="/login" label="login" outline color="black" />
+    <q-btn v-else @click="handleLogout" label="logout" outline color="black" />
+  </q-page-sticky>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useStackStore } from 'src/core/stack/infra/store/stack.store';
+import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
-import { useTimerStore } from 'src/core/timer/infra/store/timer.store';
+import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
 import { logoutUserFn } from 'src/core/users/infra/http/user.api';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
@@ -28,7 +22,7 @@ const router = useRouter();
 const userStore = useUserStore();
 const userStoreRefs = storeToRefs(userStore);
 const timerStore = useTimerStore();
-const stackStore = useStackStore();
+const routineStore = useRoutineStore();
 const { user } = userStoreRefs;
 
 const { mutate: logoutUser } = useMutation(() => logoutUserFn(), {
@@ -37,7 +31,7 @@ const { mutate: logoutUser } = useMutation(() => logoutUserFn(), {
     router.push({ name: 'login' });
     userStore.$reset();
     timerStore.$reset();
-    stackStore.$reset();
+    routineStore.$reset();
   },
   onError: (error) => {
     const errMsg = (error as any).response.data.error;

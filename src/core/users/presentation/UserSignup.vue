@@ -73,8 +73,8 @@
 </template>
 
 <script setup lang="ts">
-import { CHECK_EMPTY, userMsg, userVar } from 'src/core/users/domain/userConst';
-import { useUserStore } from 'src/core/users/infra/store/user.store';
+import { CHECK_EMPTY, userMsg, userVar } from 'src/core/users/domain/user.const';
+import { useUserStore }                  from 'src/core/users/infra/store/user.store';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 import * as zod from 'zod';
 import { ISignupInput } from 'src/type-defs/userTypes';
@@ -162,7 +162,7 @@ const { isLoading, mutate } = useMutation(
         type: 'positive',
         message: variables.email + userMsg.SEND_USER_SIGNUP_VERIFICATION_EMAIL,
       });
-      router.push({ name: 'pomodoro' });
+      router.push({ name: 'controller' });
       userStore.verifiedEmail = null;
     },
   }
