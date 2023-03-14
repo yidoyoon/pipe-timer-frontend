@@ -17,7 +17,7 @@
     </q-page-container>
 
     <!--    LeftDrawer-->
-    <LeftDrawer class="gt-sm" :leftDrawerOpen="leftDrawerOpen" />
+    <LeftDrawer :leftDrawerOpen="leftDrawerOpen" />
 
     <!--    RightDrawer-->
     <RightDrawer :rightDrawerOpen="rightDrawerOpen" />
@@ -46,7 +46,7 @@ const $q = useQuasar();
 
 const tab = ref('');
 const rightDrawerOpen = $q.platform.is.desktop ? ref(true) : ref(false);
-const leftDrawerOpen = ref(true);
+const leftDrawerOpen = $q.platform.is.desktop ? ref(true) : ref(false);
 
 const toggleRightDrawer = () => {
   rightDrawerOpen.value = !rightDrawerOpen.value;
