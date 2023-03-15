@@ -96,11 +96,6 @@
           @remove="remove"
           @removeLocal="removeLocalTimer"
         />
-        <!--        <div v-else class="row justify-between q-pt-lg absolute-center">-->
-        <!--          <q-icon name="hourglass_disabled" class="col-12">-->
-        <!--            타이머가 비어있습니다.-->
-        <!--          </q-icon>-->
-        <!--        </div>-->
       </q-list>
     </q-scroll-area>
   </q-drawer>
@@ -191,7 +186,6 @@
           type="submit"
           @click="onSubmit"
           :disable="!isEmptyObj(errors)"
-          v-close-popup
         />
       </q-card-actions>
     </q-card>
@@ -209,7 +203,7 @@ import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { useField, useForm } from 'vee-validate';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import TimerCore from 'src/core/timers/presentation/components/TimerCore.vue';
 import * as zod from 'zod';
 
