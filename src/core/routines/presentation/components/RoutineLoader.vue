@@ -38,8 +38,8 @@
             <q-card-section class="q-img-container">
               <div>{{ t.timer.name }}</div>
               <div>
-                <q-icon name="timer" /> {{ timeFormatter(t.timer.duration)
-                }}<br />
+                <q-icon name="timer" />
+                {{ timeFormatter(t.timer.duration).value }}<br />
               </div>
             </q-card-section>
           </q-card>
@@ -96,8 +96,8 @@ import dayjs from 'dayjs';
 import { storeToRefs } from 'pinia';
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
 import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
-import { usePomodoroStore } from 'src/core/controller/infra/store/controller.store';
-import { IRoutine }         from 'src/core/routines/domain/routine.model';
+import { usePanelStore } from 'src/core/panel/infra/store/panel.store';
+import { IRoutine } from 'src/core/routines/domain/routine.model';
 import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
 import { LocalStorage, useQuasar } from 'quasar';
 import { ITimer } from 'src/core/timers/domain/timer.model';
@@ -108,7 +108,7 @@ const $q = useQuasar();
 
 const routineStore = useRoutineStore();
 const builderStore = useBuilderStore();
-const pomodoroStore = usePomodoroStore();
+const pomodoroStore = usePanelStore();
 const { isLoadingRoutine } = storeToRefs(routineStore);
 
 const toBuilderPrompt = ref(false);
@@ -162,7 +162,7 @@ const colorExtractor = (timer: ITimer) => {
 const toPomodoro = (routine: IRoutine) => {
   // Session storage for saving initial state of routines, timers
   try {
-    $q.sessionStorage.set('controller-data', routine);
+    $q.sessionStorage.set('panel-data', routine);
     pomodoroStore.routine = _.cloneDeep(routine);
     pomodoroStore.mode = 'routine';
     pomodoroStore.state = 'pause';

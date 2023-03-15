@@ -31,7 +31,7 @@
                     <div>{{ t.timer.name }}</div>
                     <div>
                       <q-icon name="timer" />
-                      {{ timeFormatter(t.timer.duration) }}<br />
+                      {{ timeFormatter(t.timer.duration).value }}<br />
                     </div>
                   </q-card-section>
                 </q-card>
@@ -62,7 +62,7 @@
                     <div>{{ pomodoroStore.timer.name }}</div>
                     <div>
                       <q-icon name="timer" />
-                      {{ timeFormatter(pomodoroStore.timer.duration) }}<br />
+                      {{ timeFormatter(pomodoroStore.timer.duration).value }}<br />
                     </div>
                   </q-card-section>
                 </q-card>
@@ -82,18 +82,18 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { storeToRefs }      from 'pinia';
-import { usePomodoroStore } from 'src/core/controller/infra/store/controller.store';
-import { ITimer }           from 'src/core/timers/domain/timer.model';
+import { storeToRefs }   from 'pinia';
+import { usePanelStore } from 'src/core/panel/infra/store/panel.store';
+import { ITimer }        from 'src/core/timers/domain/timer.model';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { computed } from 'vue';
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
-const pomodoroStore = usePomodoroStore();
-const { routine, timer } = storeToRefs(usePomodoroStore());
-let { round } = storeToRefs(usePomodoroStore());
+const pomodoroStore = usePanelStore();
+const { routine, timer } = storeToRefs(usePanelStore());
+let { round } = storeToRefs(usePanelStore());
 
 const arrowDrawer = (index: number) => {
   return !!routine.value && index !== routine.value.routineToTimer.length - 1;

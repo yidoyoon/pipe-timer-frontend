@@ -1,7 +1,7 @@
 import { api } from 'boot/axios';
 import { defineStore } from 'pinia';
 import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
-import { usePomodoroStore } from 'src/core/controller/infra/store/controller.store';
+import { usePanelStore }    from 'src/core/panel/infra/store/panel.store';
 import { ITimer }           from 'src/core/timers/domain/timer.model';
 import { LocalStorage } from 'quasar';
 import { Notify } from 'quasar';
@@ -15,7 +15,7 @@ export interface TimerState {
 }
 
 const selectorStore = useSelectorStore();
-const pomodoroStore = usePomodoroStore();
+const pomodoroStore = usePanelStore();
 const userStore = useUserStore();
 const { user } = userStore;
 

@@ -45,8 +45,8 @@
           </q-menu>
 
           <q-card-section>
-            {{ element.name }} <br />
-            <q-icon name="timer" /> {{ timeFormatter(element.duration) }}
+            {{ element.name }} <br/>
+            <q-icon name="timer" /> {{ timeFormatter(element.duration).value }}
           </q-card-section>
         </q-card>
 
@@ -164,9 +164,9 @@ import dayjs from 'dayjs';
 import _ from 'lodash-es';
 import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
-import { useBuilderStore }  from 'src/core/builder/infra/store/builder.store';
-import { usePomodoroStore } from 'src/core/controller/infra/store/controller.store';
-import { useRoutineStore }  from 'src/core/routines/infra/store/routine.store';
+import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
+import { usePanelStore }   from 'src/core/panel/infra/store/panel.store';
+import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
 import { IRoutineToTimer, ITimer } from 'src/core/timers/domain/timer.model';
 import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
@@ -177,7 +177,7 @@ import * as zod from 'zod';
 import draggable from 'vuedraggable';
 
 const timerStore = useTimerStore();
-const pomodoroStore = usePomodoroStore();
+const pomodoroStore = usePanelStore();
 const routineStore = useRoutineStore();
 const userStore = useUserStore();
 const builderStore = useBuilderStore();

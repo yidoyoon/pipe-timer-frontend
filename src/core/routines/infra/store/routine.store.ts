@@ -1,8 +1,8 @@
 import { api } from 'boot/axios';
 import { defineStore } from 'pinia';
-import { LocalStorage }     from 'quasar';
-import { usePomodoroStore } from 'src/core/controller/infra/store/controller.store';
-import { IRoutine }         from 'src/core/routines/domain/routine.model';
+import { LocalStorage }  from 'quasar';
+import { usePanelStore } from 'src/core/panel/infra/store/panel.store';
+import { IRoutine }      from 'src/core/routines/domain/routine.model';
 import { IRoutineToTimer } from 'src/core/timers/domain/timer.model';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import _ from 'lodash-es';
@@ -15,7 +15,7 @@ export interface RoutineState {
 }
 
 const userStore = useUserStore();
-const pomodoroStore = usePomodoroStore();
+const pomodoroStore = usePanelStore();
 const { user } = userStore;
 
 export const useRoutineStore = defineStore('RoutineStore', {

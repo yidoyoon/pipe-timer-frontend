@@ -153,7 +153,7 @@ module.exports = configure(function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['Notify', 'Cookies', 'SessionStorage'],
+      plugins: ['Notify', 'Cookies', 'SessionStorage', 'Meta'],
     },
 
     // animations: 'all', // --- includes all animations
@@ -240,7 +240,7 @@ module.exports = configure(function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'flexible-controller-front',
+        appId: 'flexible-panel-front',
       },
     },
 

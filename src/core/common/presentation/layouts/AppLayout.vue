@@ -37,9 +37,9 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 
 import BottomDrawer from 'src/core/common/presentation/components/BottomDrawer.vue';
-import LeftDrawer from 'src/core/common/presentation/components/LeftDrawer.vue';
+import LeftDrawer   from 'src/core/tabs/presentation/TabsMain.vue';
+import RightDrawer  from 'src/core/timers/presentation/TimerMain.vue';
 import ButtonHeader from 'src/core/common/presentation/components/ButtonHeader.vue';
-import RightDrawer from 'src/core/common/presentation/components/RightDrawer.vue';
 
 const $q = useQuasar();
 
