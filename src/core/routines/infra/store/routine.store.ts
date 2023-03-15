@@ -15,7 +15,7 @@ export interface RoutineState {
 }
 
 const userStore = useUserStore();
-const pomodoroStore = usePomodoroStore();
+const pomodoroStore = usePanelStore();
 const { user } = userStore;
 
 export const useRoutineStore = defineStore('RoutineStore', {

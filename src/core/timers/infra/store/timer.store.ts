@@ -15,7 +15,7 @@ export interface TimerState {
 }
 
 const selectorStore = useSelectorStore();
-const pomodoroStore = usePomodoroStore();
+const pomodoroStore = usePanelStore();
 const userStore = useUserStore();
 const { user } = userStore;
 
