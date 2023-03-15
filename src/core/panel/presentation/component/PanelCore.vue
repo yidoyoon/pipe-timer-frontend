@@ -98,7 +98,7 @@ const routineStore = useRoutineStore();
 const timerStore = useTimerStore();
 
 const notifOptions: NotificationOptions = {
-  requireInteraction: false,
+  requireInteraction: true,
 };
 
 let started: string | number | NodeJS.Timeout | undefined;
@@ -295,7 +295,6 @@ function endRoundPush(timerInfo: string) {
       ) {
         registration.showNotification('Round end notification', {
           ...notifOptions,
-          requireInteraction: false,
           body: `다음 타이머를 실행하시겠습니까?\n${timerInfo}`,
           actions: [
             {
