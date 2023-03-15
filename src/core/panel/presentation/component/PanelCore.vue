@@ -1,7 +1,7 @@
 <template>
   <div class="row fit justify-center content-start">
     <div id="clock">
-      <div class="time">{{ timeFormatter }}</div>
+      <div class="time">{{ formattedTime.value }}</div>
     </div>
 
     <q-space class="flex-break"></q-space>
@@ -51,14 +51,14 @@
 
     <div class="row justify-center col-3 no-wrap text-no-wrap q-my-md">
       <q-btn
-        v-if="controllerStore.state !== 'start'"
+        v-if="panelStore.state !== 'start'"
         color="green-7"
         text-color="white"
         @click="start"
         >start</q-btn
       >
       <q-btn
-        v-else-if="controllerStore.state === 'start'"
+        v-else-if="panelStore.state === 'start'"
         color="yellow"
         text-color="black"
         @click="pause"
@@ -77,9 +77,9 @@ import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import _ from 'lodash-es';
 import { storeToRefs } from 'pinia';
-import { useQuasar }        from 'quasar';
-import { usePomodoroStore } from 'src/core/controller/infra/store/controller.store';
-import { IRoutine }         from 'src/core/routines/domain/routine.model';
+import { useMeta, useQuasar } from 'quasar';
+import { usePanelStore } from 'src/core/panel/infra/store/panel.store';
+import { IRoutine } from 'src/core/routines/domain/routine.model';
 import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
 import { ITimer } from 'src/core/timers/domain/timer.model';
 import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
@@ -90,10 +90,10 @@ const $q = useQuasar();
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
-const controllerStore = usePomodoroStore();
-const pomodoroStoreRefs = storeToRefs(controllerStore);
-const { routine } = storeToRefs(usePomodoroStore());
-let { round } = storeToRefs(usePomodoroStore());
+const panelStore = usePanelStore();
+const pomodoroStoreRefs = storeToRefs(panelStore);
+const { routine } = storeToRefs(usePanelStore());
+let { round } = storeToRefs(usePanelStore());
 const routineStore = useRoutineStore();
 const timerStore = useTimerStore();
 
@@ -109,35 +109,34 @@ const autoStart = ref(false);
 const notification = ref(false);
 
 const currDuration = computed(() => {
-  if (controllerStore.mode === 'routine') {
-    const data = controllerStore.routine;
+  if (panelStore.mode === 'routine') {
+    const data = panelStore.routine;
     if ('routineToTimer' in data && round.value < data.routineToTimer.length) {
       return data.routineToTimer[round.value].timer.duration;
     }
-  } else if (controllerStore.mode === 'timer') {
-    return controllerStore.timer.duration;
+  } else if (panelStore.mode === 'timer') {
+    return panelStore.timer.duration;
   }
+
   return 0;
 });
 
-const timeFormatter = computed(() => {
-  const time = currDuration.value || 0;
-  const formatted = dayjs.duration(time, 'seconds').format('HH:mm:ss');
-  return formatted;
+const timeFormatter = (duration: number) =>
+  computed(() => {
+    const time = duration || 0;
+
+    return dayjs.duration(time, 'seconds').format('HH:mm:ss');
+  });
+
+const formattedTime = computed(() => {
+  return timeFormatter(currDuration.value);
 });
 
-const arrowDrawer = (index: number) => {
-  return !!routine.value && index !== routine.value.routineToTimer.length - 1;
-};
-
 const start = () => {
-  if (controllerStore.state === 'start') return;
-  if (
-    'routineToTimer' in controllerStore.routine ||
-    'timerId' in controllerStore.timer
-  ) {
+  if (panelStore.state === 'start') return;
+  if ('routineToTimer' in panelStore.routine || 'timerId' in panelStore.timer) {
     started = setInterval(elapse, 1000);
-    controllerStore.state = 'start';
+    panelStore.state = 'start';
   } else {
     $q.notify({
       color: 'warning',
@@ -148,58 +147,58 @@ const start = () => {
   }
 };
 
+let timer = {} as ITimer | null;
+
 const elapse = () => {
-  let timer;
-  if (controllerStore.mode === 'routine') {
-    timer = _.cloneDeep(
-      controllerStore.routine.routineToTimer[round.value].timer
-    );
+  if (panelStore.mode === 'routine') {
+    timer = _.cloneDeep(panelStore.routine.routineToTimer[round.value].timer);
     timer.duration--;
-    controllerStore.routine.routineToTimer[round.value].timer =
-      _.cloneDeep(timer);
-  } else if (controllerStore.mode === 'timer') {
-    timer = _.cloneDeep(controllerStore.timer);
+    panelStore.routine.routineToTimer[round.value].timer = _.cloneDeep(timer);
+    useMeta({ title: `${formattedTime.value.value}` });
+  } else if (panelStore.mode === 'timer') {
+    timer = _.cloneDeep(panelStore.timer);
     timer.duration--;
-    controllerStore.timer = timer;
+    panelStore.timer = _.cloneDeep(timer);
+    useMeta({ title: `${formattedTime.value.value}` });
   }
-  if (timer !== undefined && timer.duration <= 0) {
+  if (timer !== null && timer.duration <= 0) {
     if (!!notification.value) {
       clearInterval(started);
       notifyRoundEnd();
     }
-    controllerStore.round++;
+    panelStore.round++;
     timeEnd();
   }
 };
 
 const pause = () => {
   // TODO: 시간 정보 출력 부분이 깜빡이는 트랜지션 추가
-  if (controllerStore.state === 'pause') return;
-  controllerStore.state = 'pause';
+  if (panelStore.state === 'pause') return;
+  panelStore.state = 'pause';
 
   clearInterval(started);
 };
 
 const stop = () => {
-  if (controllerStore.state === 'stop') return;
+  if (panelStore.state === 'stop') return;
   loadSession();
-  controllerStore.state = 'stop';
-  controllerStore.round = 0;
+  panelStore.state = 'stop';
+  panelStore.round = 0;
   clearInterval(started);
 };
 
 const loadSession = () => {
   let data;
-  if (controllerStore.mode === 'routine') {
-    data = $q.sessionStorage.getItem('controller-data') as IRoutine;
-    controllerStore.routine = _.cloneDeep(data);
-    controllerStore.timer = _.cloneDeep({} as ITimer);
+  if (panelStore.mode === 'routine') {
+    data = $q.sessionStorage.getItem('panel-data') as IRoutine;
+    panelStore.routine = _.cloneDeep(data);
+    panelStore.timer = _.cloneDeep({} as ITimer);
     const id = data.id;
     routineStore.routine[id] = data;
-  } else if (controllerStore.mode === 'timer') {
+  } else if (panelStore.mode === 'timer') {
     data = $q.sessionStorage.getItem('timers-data') as ITimer;
-    controllerStore.timer = _.cloneDeep(data);
-    controllerStore.routine = _.cloneDeep({} as IRoutine);
+    panelStore.timer = _.cloneDeep(data);
+    panelStore.routine = _.cloneDeep({} as IRoutine);
     const id = data.timerId;
     timerStore.timers[id] = data;
   }
@@ -262,8 +261,8 @@ watch(autoStart, () => {
 
 const timeEnd = () => {
   if (
-    controllerStore.mode === 'routine' &&
-    +round.value >= +controllerStore.routine.routineToTimer.length
+    panelStore.mode === 'routine' &&
+    +round.value >= +panelStore.routine.routineToTimer.length
   ) {
     if (endless.value === true) {
       round.value = 0;
@@ -273,13 +272,13 @@ const timeEnd = () => {
       pomodoroStoreRefs.round = ref(0);
       $q.notify({ message: '타이머를 종료합니다', color: 'green' });
     }
-  } else if (controllerStore.mode === 'timer' && +round.value >= 1) {
+  } else if (panelStore.mode === 'timer' && +round.value >= 1) {
     if (endless.value) {
       round.value = 0;
     } else {
       clearInterval(started);
-      controllerStore.state = '';
-      controllerStore.round = 0;
+      panelStore.state = '';
+      panelStore.round = 0;
       $q.notify({ message: '타이머를 종료합니다', color: 'green' });
     }
   }
@@ -287,12 +286,12 @@ const timeEnd = () => {
 };
 
 function endRoundPush(timerInfo: string) {
-  controllerStore.state = 'pause';
+  panelStore.state = 'pause';
   if (Notification.permission === 'granted') {
     navigator.serviceWorker.ready.then((registration) => {
       if (
-        controllerStore.mode === 'routine' &&
-        round.value < controllerStore.routine.routineToTimer.length - 1
+        panelStore.mode === 'routine' &&
+        round.value < panelStore.routine.routineToTimer.length - 1
       ) {
         registration.showNotification('Round end notification', {
           ...notifOptions,
@@ -310,9 +309,9 @@ function endRoundPush(timerInfo: string) {
           ],
         });
       } else if (
-        (controllerStore.mode === 'routine' &&
-         round.value === controllerStore.routine.routineToTimer.length - 1) ||
-        controllerStore.mode === 'timer'
+        (panelStore.mode === 'routine' &&
+          round.value === panelStore.routine.routineToTimer.length - 1) ||
+        panelStore.mode === 'timer'
       ) {
         new Notification('모든 타이머를 실행했습니다.');
       }
@@ -326,14 +325,14 @@ const notifyRoundEnd = () => {
   const nextRound = round.value + 1;
 
   if (
-    controllerStore.mode === 'routine' &&
-    nextRound < controllerStore.routine.routineToTimer.length
+    panelStore.mode === 'routine' &&
+    nextRound < panelStore.routine.routineToTimer.length
   ) {
-    const timer = controllerStore.routine.routineToTimer[nextRound].timer;
+    const timer = panelStore.routine.routineToTimer[nextRound].timer;
     name = timer.name;
     duration = timer.duration;
-  } else if (controllerStore.mode === 'timer') {
-    const id = controllerStore.timer.timerId;
+  } else if (panelStore.mode === 'timer') {
+    const id = panelStore.timer.timerId;
     const timer = timerStore.timers[id];
     name = timer.name;
     duration = timer.duration;
@@ -350,8 +349,8 @@ const notifyRoundEnd = () => {
   } else {
     if (
       !(
-        controllerStore.mode === 'routine' &&
-        round.value > controllerStore.routine.routineToTimer.length
+        panelStore.mode === 'routine' &&
+        round.value > panelStore.routine.routineToTimer.length
       )
     ) {
       endRoundPush(nextTimerInfo);

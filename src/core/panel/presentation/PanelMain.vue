@@ -2,17 +2,17 @@
   <q-space style="height: 1rem" />
   <div class="row wrap justify-center q-pt-lg">
     <div class="col-9 q-pt-lg">
-      <ControllerCore class="area" />
+      <PanelCore class="area" />
     </div>
     <div class="col-9 q-pt-md">
-      <ControllerQueue class="area" style="height: 15vh" />
+      <PanelQueue class="area" style="height: 15vh" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import ControllerCore  from 'src/core/controller/presentation/component/ControllerCore.vue';
-import ControllerQueue from 'src/core/controller/presentation/component/ControllerQueue.vue';
+import PanelCore  from 'src/core/panel/presentation/component/PanelCore.vue';
+import PanelQueue from 'src/core/panel/presentation/component/PanelQueue.vue';
 
 </script>
 
