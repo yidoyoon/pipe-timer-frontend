@@ -232,7 +232,7 @@ const editTimerSchema = toFormValidator(
     })
     .refine((data) => +data.hours + +data.minutes + +data.seconds > 0, {
       path: ['seconds'],
-      message: '타이머는 최소 1초 이상으로 설정되어야 합니다.',
+      message: '총 시간은 최소 1초 이상으로 설정되어야 합니다.',
     })
 );
 

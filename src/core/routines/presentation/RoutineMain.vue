@@ -37,14 +37,12 @@
 import { storeToRefs } from 'pinia';
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
 import BuilderMain from 'src/core/builder/presentation/BuilderMain.vue';
-import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
 import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
 import RoutineLoader from 'src/core/routines/presentation/components/RoutineLoader.vue';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 
 const routineStore = useRoutineStore();
 const routineStoreRefs = storeToRefs(routineStore);
-const selectorStore = useSelectorStore();
 const builderStore = useBuilderStore();
 const builderStoreRefs = storeToRefs(builderStore);
 const { routineInBuilder } = builderStoreRefs;
