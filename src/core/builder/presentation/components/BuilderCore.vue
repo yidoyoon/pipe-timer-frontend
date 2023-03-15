@@ -73,7 +73,7 @@
                   <div>{{ element.timer.name }}</div>
                   <div>
                     <q-icon name="timer" />
-                    {{ timeFormatter(element.timer.duration) }}
+                    {{ timeFormatter(element.timer.duration).value }}
                   </div>
                 </q-card-section>
               </q-card>

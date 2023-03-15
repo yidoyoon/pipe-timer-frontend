@@ -45,8 +45,8 @@
           </q-menu>
 
           <q-card-section>
-            {{ element.name }} <br />
-            <q-icon name="timer" /> {{ timeFormatter(element.duration) }}
+            {{ element.name }} <br/>
+            <q-icon name="timer" /> {{ timeFormatter(element.duration).value }}
           </q-card-section>
         </q-card>
 
@@ -177,7 +177,7 @@ import * as zod from 'zod';
 import draggable from 'vuedraggable';
 
 const timerStore = useTimerStore();
-const pomodoroStore = usePomodoroStore();
+const pomodoroStore = usePanelStore();
 const routineStore = useRoutineStore();
 const userStore = useUserStore();
 const builderStore = useBuilderStore();
