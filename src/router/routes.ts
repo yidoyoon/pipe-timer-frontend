@@ -11,7 +11,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         component: () =>
-          import('../core/controller/presentation/ControllerMain.vue'),
+          import('../core/panel/presentation/PanelMain.vue'),
         name: 'controller',
       },
       {
