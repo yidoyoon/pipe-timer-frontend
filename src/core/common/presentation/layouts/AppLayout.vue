@@ -24,8 +24,8 @@
     <RightDrawer :rightDrawerOpen="rightDrawerOpen" />
 
     <q-footer style="background-color: transparent">
-      <BottomDrawer class="gt-sm" />
-      <q-tabs class="lt-md text-teal" v-model="tab" vertical>
+      <BottomDrawer v-if=$q.platform.is.desktop />
+      <q-tabs v-else class="text-teal" v-model="tab" vertical>
         <q-route-tab name="timers" icon="alarm" label="timers" to="/" />
       </q-tabs>
     </q-footer>
