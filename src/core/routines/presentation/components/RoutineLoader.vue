@@ -20,14 +20,37 @@
         >
           <q-menu touch-position context-menu>
             <q-list dense style="min-width: 100px">
-              <q-item clickable v-close-popup @click="toBuilder(props.routine)">
+              <q-item
+                clickable
+                v-close-popup
+                @click="toBuilder(props.routine)"
+                :disable="
+                  panelStore.state === 'start' || panelStore.state === 'pause'
+                "
+              >
                 <q-item-section>수정</q-item-section>
               </q-item>
-              <q-separator></q-separator>
-              <q-item clickable v-close-popup @click="remove">
+              <q-separator />
+              <q-item
+                clickable
+                v-close-popup
+                @click="remove"
+                :disable="
+                  panelStore.state === 'start' || panelStore.state === 'pause'
+                "
+              >
                 <q-item-section style="color: #8b1c00">삭제</q-item-section>
               </q-item>
             </q-list>
+            <q-tooltip
+              v-if="
+                panelStore.state === 'start' || panelStore.state === 'pause'
+              "
+              anchor="top middle"
+              self="top middle"
+            >
+              타이머 혹은 루틴 작동 중엔 삭제가 불가능 합니다.<br>'Stop'을 눌러 완전히 정지한 후 진행해 주세요.
+            </q-tooltip>
           </q-menu>
 
           <q-card
@@ -94,8 +117,8 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
 import { storeToRefs } from 'pinia';
+
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
-import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
 import { usePanelStore } from 'src/core/panel/infra/store/panel.store';
 import { IRoutine } from 'src/core/routines/domain/routine.model';
 import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
@@ -108,7 +131,7 @@ const $q = useQuasar();
 
 const routineStore = useRoutineStore();
 const builderStore = useBuilderStore();
-const pomodoroStore = usePanelStore();
+const panelStore = usePanelStore();
 const { isLoadingRoutine } = storeToRefs(routineStore);
 
 const toBuilderPrompt = ref(false);
@@ -163,10 +186,10 @@ const toPomodoro = (routine: IRoutine) => {
   // Session storage for saving initial state of routines, timers
   try {
     $q.sessionStorage.set('panel-data', routine);
-    pomodoroStore.routine = _.cloneDeep(routine);
-    pomodoroStore.mode = 'routine';
-    pomodoroStore.state = 'pause';
-    pomodoroStore.round = 0;
+    panelStore.routine = _.cloneDeep(routine);
+    panelStore.mode = 'routine';
+    panelStore.state = 'pause';
+    panelStore.round = 0;
   } catch (e) {
     // console.log(e);
   }
