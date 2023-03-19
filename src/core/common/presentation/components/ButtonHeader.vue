@@ -1,9 +1,22 @@
 <template>
-  <!--    Login button-->
-  <q-page-sticky position="top-right" :offset="[50, 10]" class="z-top">
-    <q-btn v-if="!user" to="/login" label="login" outline color="black" />
-    <q-btn v-else @click="handleLogout" label="logout" outline color="black" />
-  </q-page-sticky>
+  <div class="row justify-end q-gutter-md q-py-sm">
+    <div class="q-pr-sm">
+      <q-btn
+        v-if="!userStoreRefs.user.value"
+        to="/login"
+        label="login"
+        outline
+        color="black"
+      />
+      <q-btn
+        v-else
+        @click="handleLogout"
+        label="logout"
+        outline
+        color="black"
+      />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
