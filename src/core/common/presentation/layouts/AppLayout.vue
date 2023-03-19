@@ -1,9 +1,9 @@
 <template>
   <q-layout view="lHr lpR lFr">
     <!--    Right drawer button-->
-    <q-page-sticky position="top-right" class="z-top">
-      <q-btn @click="toggleRightDrawer" icon="menu" flat color="black" dense />
-    </q-page-sticky>
+    <!--    <q-page-sticky position="top-right" class="z-top">-->
+    <!--      <q-btn @click="toggleRightDrawer" icon="menu" flat color="black" dense />-->
+    <!--    </q-page-sticky>-->
 
     <!--    Invisible header-->
     <q-header>
