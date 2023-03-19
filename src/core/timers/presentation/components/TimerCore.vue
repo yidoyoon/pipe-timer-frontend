@@ -18,14 +18,17 @@
           v-ripple
           @dblclick="toPomodoro(element)"
         >
-          <!--          TODO: 루틴 생성 및 수정 중 타이머 수정 및 삭제 못하도록 제어-->
-          <q-menu touch-position context-menu>
+          <q-menu touch-position context-menu :disable="!!isEdit">
             <q-list dense style="min-width: 100px">
               <q-item
                 clickable
                 v-close-popup
                 @click="editTimer(element)"
-                :disable="!!isEdit"
+                :disable="
+                  !!isEdit ||
+                  panelStore.state === 'start' ||
+                  panelStore.state === 'pause'
+                "
               >
                 <q-item-section>수정</q-item-section>
               </q-item>
@@ -34,18 +37,29 @@
                 clickable
                 v-close-popup
                 @click="remove(index)"
-                :disable="!!isEdit"
+                :disable="
+                  !!isEdit ||
+                  panelStore.state === 'start' ||
+                  panelStore.state === 'pause'
+                "
               >
                 <q-item-section style="color: #8b1c00">삭제</q-item-section>
               </q-item>
             </q-list>
             <q-tooltip v-if="!!isEdit" anchor="top middle" self="top middle">
-              루틴 생성 및 수정 시, 타이머를 삭제 및 수정이 불가능합니다.
+              루틴 생성 및 수정 시, 타이머 삭제 및 수정이 불가능합니다.
+            </q-tooltip>
+            <q-tooltip
+              v-if="panelStore.state === 'start' || panelStore.state === 'pause'"
+              anchor="top middle"
+              self="top middle"
+            >
+              타이머 혹은 루틴 작동 중엔 삭제가 불가능 합니다.<br>'Stop'을 눌러 완전히 정지한 후 진행해 주세요.
             </q-tooltip>
           </q-menu>
 
           <q-card-section>
-            {{ element.name }} <br/>
+            {{ element.name }} <br />
             <q-icon name="timer" /> {{ timeFormatter(element.duration).value }}
           </q-card-section>
         </q-card>
@@ -165,7 +179,7 @@ import _ from 'lodash-es';
 import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
 import { useBuilderStore } from 'src/core/builder/infra/store/builder.store';
-import { usePanelStore }   from 'src/core/panel/infra/store/panel.store';
+import { usePanelStore } from 'src/core/panel/infra/store/panel.store';
 import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
 import { IRoutineToTimer, ITimer } from 'src/core/timers/domain/timer.model';
 import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
@@ -181,6 +195,7 @@ const pomodoroStore = usePanelStore();
 const routineStore = useRoutineStore();
 const userStore = useUserStore();
 const builderStore = useBuilderStore();
+const panelStore = usePanelStore();
 const builderStoreRefs = storeToRefs(builderStore);
 const { isLoadingTimer } = storeToRefs(timerStore);
 
