@@ -203,7 +203,7 @@ import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { useField, useForm } from 'vee-validate';
-import { computed, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import TimerCore from 'src/core/timers/presentation/components/TimerCore.vue';
 import * as zod from 'zod';
 
