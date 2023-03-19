@@ -70,6 +70,9 @@ const { mutate: logoutUser } = useMutation(() => logoutUserFn(), {
 
 const handleLogout = () => {
   userStore.$reset();
+  timerStore.$reset();
+  routineStore.$reset();
+  panelStore.$reset();
   logoutUser();
 };
 </script>
