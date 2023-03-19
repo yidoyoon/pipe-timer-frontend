@@ -197,10 +197,9 @@ const userStore = useUserStore();
 const builderStore = useBuilderStore();
 const panelStore = usePanelStore();
 const builderStoreRefs = storeToRefs(builderStore);
-const { isLoadingTimer } = storeToRefs(timerStore);
+const timerStoreRefs = storeToRefs(timerStore);
 
-const { listTimers } = storeToRefs(timerStore);
-let rTimers = reactive(listTimers);
+let rTimers = reactive(timerStoreRefs.listTimers);
 const isEdit = computed(() => {
   return builderStoreRefs.isEditBuilder.value;
 });
@@ -284,7 +283,7 @@ const remove = (index: number) => {
             label: '확인',
             color: 'negative',
             handler: () => {
-              isLoadingTimer.value = false;
+              timerStoreRefs.isLoadingTimer.value = false;
               emit('remove', props.timers[index].timerId);
             },
           },
@@ -302,7 +301,7 @@ const remove = (index: number) => {
             label: '확인',
             color: 'negative',
             handler: () => {
-              isLoadingTimer.value = false;
+              timerStoreRefs.isLoadingTimer.value = false;
               emit('removeLocal', props.timers[index].timerId);
             },
           },
@@ -319,7 +318,7 @@ const remove = (index: number) => {
           label: '확인',
           color: 'negative',
           handler: () => {
-            isLoadingTimer.value = false;
+            timerStoreRefs.isLoadingTimer.value = false;
             emit('remove', props.timers[index].timerId);
           },
         },
