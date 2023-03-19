@@ -92,8 +92,7 @@ dayjs.extend(relativeTime);
 
 const panelStore = usePanelStore();
 const pomodoroStoreRefs = storeToRefs(panelStore);
-const { routine } = storeToRefs(usePanelStore());
-let { round } = storeToRefs(usePanelStore());
+const panelStoreRefs = storeToRefs(panelStore);
 const routineStore = useRoutineStore();
 const timerStore = useTimerStore();
 
@@ -101,7 +100,9 @@ const notifOptions: NotificationOptions = {
   requireInteraction: true,
 };
 
-let started: string | number | NodeJS.Timeout | undefined;
+let started: NodeJS.Timeout | null;
+let round = panelStoreRefs.round.value;
+
 
 // TODO: Pinia에 state로 저장
 const endless = ref(false);
@@ -111,8 +112,8 @@ const notification = ref(false);
 const currDuration = computed(() => {
   if (panelStore.mode === 'routine') {
     const data = panelStore.routine;
-    if ('routineToTimer' in data && round.value < data.routineToTimer.length) {
-      return data.routineToTimer[round.value].timer.duration;
+    if (round < data.routineToTimer.length) {
+      return data.routineToTimer[round].timer.duration;
     }
   } else if (panelStore.mode === 'timer') {
     return panelStore.timer.duration;
@@ -134,7 +135,7 @@ const formattedTime = computed(() => {
 
 const start = () => {
   if (panelStore.state === 'start') return;
-  if ('routineToTimer' in panelStore.routine || 'timerId' in panelStore.timer) {
+  if (panelStore.mode !== '') {
     started = setInterval(elapse, 1000);
     panelStore.state = 'start';
   } else {
@@ -143,7 +144,9 @@ const start = () => {
       message: '우선 작동 시킬 타이머 혹은 루틴을 더블클릭하여 셋팅해주세요.',
       textColor: 'black',
     });
-    clearInterval(started);
+    if (started !== null) {
+      clearInterval(started);
+    }
   }
 };
 
@@ -151,9 +154,9 @@ let timer = {} as ITimer | null;
 
 const elapse = () => {
   if (panelStore.mode === 'routine') {
-    timer = _.cloneDeep(panelStore.routine.routineToTimer[round.value].timer);
+    timer = _.cloneDeep(panelStore.routine.routineToTimer[round].timer);
     timer.duration--;
-    panelStore.routine.routineToTimer[round.value].timer = _.cloneDeep(timer);
+    panelStore.routine.routineToTimer[round].timer = _.cloneDeep(timer);
     useMeta({ title: `${formattedTime.value.value}` });
   } else if (panelStore.mode === 'timer') {
     timer = _.cloneDeep(panelStore.timer);
@@ -163,8 +166,10 @@ const elapse = () => {
   }
   if (timer !== null && timer.duration <= 0) {
     if (!!notification.value) {
-      clearInterval(started);
-      notifyRoundEnd();
+      if (started !== null) {
+        clearInterval(started);
+        notifyRoundEnd();
+      }
     }
     panelStore.round++;
     timeEnd();
@@ -176,7 +181,9 @@ const pause = () => {
   if (panelStore.state === 'pause') return;
   panelStore.state = 'pause';
 
-  clearInterval(started);
+  if (started !== null) {
+    clearInterval(started);
+  }
 };
 
 const stop = () => {
@@ -184,7 +191,10 @@ const stop = () => {
   loadSession();
   panelStore.state = 'stop';
   panelStore.round = 0;
-  clearInterval(started);
+
+  if (started !== null) {
+    clearInterval(started);
+  }
 };
 
 const loadSession = () => {
@@ -262,21 +272,25 @@ watch(autoStart, () => {
 const timeEnd = () => {
   if (
     panelStore.mode === 'routine' &&
-    +round.value >= +panelStore.routine.routineToTimer.length
+    +round >= +panelStore.routine.routineToTimer.length
   ) {
     if (endless.value === true) {
-      round.value = 0;
+      round = 0;
     } else {
-      clearInterval(started);
+      if (started !== null) {
+        clearInterval(started);
+      }
       pomodoroStoreRefs.state = ref('');
       pomodoroStoreRefs.round = ref(0);
       $q.notify({ message: '타이머를 종료합니다', color: 'green' });
     }
-  } else if (panelStore.mode === 'timer' && +round.value >= 1) {
+  } else if (panelStore.mode === 'timer' && +round >= 1) {
     if (endless.value) {
-      round.value = 0;
+      round = 0;
     } else {
-      clearInterval(started);
+      if (started !== null) {
+        clearInterval(started);
+      }
       panelStore.state = '';
       panelStore.round = 0;
       $q.notify({ message: '타이머를 종료합니다', color: 'green' });
@@ -291,7 +305,7 @@ function endRoundPush(timerInfo: string) {
     navigator.serviceWorker.ready.then((registration) => {
       if (
         panelStore.mode === 'routine' &&
-        round.value < panelStore.routine.routineToTimer.length - 1
+        round < panelStore.routine.routineToTimer.length - 1
       ) {
         registration.showNotification('Round end notification', {
           ...notifOptions,
@@ -309,7 +323,7 @@ function endRoundPush(timerInfo: string) {
         });
       } else if (
         (panelStore.mode === 'routine' &&
-          round.value === panelStore.routine.routineToTimer.length - 1) ||
+          round === panelStore.routine.routineToTimer.length - 1) ||
         panelStore.mode === 'timer'
       ) {
         new Notification('모든 타이머를 실행했습니다.');
@@ -321,15 +335,22 @@ function endRoundPush(timerInfo: string) {
 const notifyRoundEnd = () => {
   let name = '';
   let duration = 0;
-  const nextRound = round.value + 1;
+  const nextRound = round + 1;
 
   if (
     panelStore.mode === 'routine' &&
     nextRound < panelStore.routine.routineToTimer.length
   ) {
-    const timer = panelStore.routine.routineToTimer[nextRound].timer;
-    name = timer.name;
-    duration = timer.duration;
+    if (nextRound < panelStore.routine.routineToTimer.length) {
+      const timer = panelStore.routine.routineToTimer[nextRound].timer;
+      name = timer.name;
+      duration = timer.duration;
+    } else {
+      const nextRound = 0;
+      const timer = panelStore.routine.routineToTimer[nextRound].timer;
+      name = timer.name;
+      duration = timer.duration;
+    }
   } else if (panelStore.mode === 'timer') {
     const id = panelStore.timer.timerId;
     const timer = timerStore.timers[id];
@@ -340,16 +361,16 @@ const notifyRoundEnd = () => {
   let nextTimerInfo = `타이머 이름: ${name}\n시간: ${duration}`;
 
   if (!!autoStart.value) {
-    new Notification(
-      `다음 타이머를 실행합니다.\n${nextTimerInfo}`,
-      notifOptions
-    );
+    new Notification(`다음 타이머를 실행합니다.\n${nextTimerInfo}`, {
+      ...notifOptions,
+      requireInteraction: false,
+    });
     started = setInterval(elapse, 1000);
   } else {
     if (
       !(
         panelStore.mode === 'routine' &&
-        round.value > panelStore.routine.routineToTimer.length
+        round > panelStore.routine.routineToTimer.length
       )
     ) {
       endRoundPush(nextTimerInfo);

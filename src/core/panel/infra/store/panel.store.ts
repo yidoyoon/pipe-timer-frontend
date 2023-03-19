@@ -41,7 +41,7 @@ export const usePanelStore = defineStore('PanelStore', {
     // TODO: 비동기 타이머 기능 추가(다수의 타이머를 개별적으로 실행시킴)
     getTotalDuration(): number {
       let total = 0;
-      if (this.mode === 'routine' && 'routineToTimer' in this.routine) {
+      if (this.mode === 'routine') {
         this.routine.routineToTimer.forEach((e) => {
           total += e.timer.duration;
         });
@@ -52,14 +52,12 @@ export const usePanelStore = defineStore('PanelStore', {
     },
 
     getCurrentDuration(): number {
-      const round = this.round;
-      let res = 0;
-      if (this.mode === 'routine' && 'routineToTimer' in this.routine) {
-        res = this.routine.routineToTimer[round].timer.duration;
-      } else {
-        res = this.timer.duration;
+      const currentRound = this.round;
+      let duration = this.timer.duration;
+      if (this.routine.routineToTimer?.[currentRound]) {
+        duration = this.routine.routineToTimer[currentRound].timer.duration;
       }
-      return res;
+      return duration;
     },
   },
   actions: {},

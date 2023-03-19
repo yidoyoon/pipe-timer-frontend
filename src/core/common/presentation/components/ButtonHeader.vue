@@ -21,6 +21,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import { usePanelStore } from 'src/core/panel/infra/store/panel.store';
 import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
@@ -36,7 +37,7 @@ const userStore = useUserStore();
 const userStoreRefs = storeToRefs(userStore);
 const timerStore = useTimerStore();
 const routineStore = useRoutineStore();
-const { user } = userStoreRefs;
+const panelStore = usePanelStore();
 
 const { mutate: logoutUser } = useMutation(() => logoutUserFn(), {
   onSuccess: () => {
