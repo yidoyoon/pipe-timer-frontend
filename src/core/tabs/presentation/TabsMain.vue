@@ -29,6 +29,7 @@ import { ref } from 'vue';
 
 const $q = useQuasar();
 
-const drawer = $q.screen.gt.sm ? ref(true) : ref(false);
+// const drawer = $q.screen.gt.sm ? ref(true) : ref(false);
+const drawer = ref(true);
 const tab = ref('timers');
 </script>
