@@ -7,9 +7,14 @@ export interface PomodoroState {
   timer: ITimer;
   routine: IRoutine;
   mode: string; // 'routine', 'timer', ''
-  amount: number;
-  round: number;
   state: string; // 'start', 'pause', 'stop', ''
+  round: number;
+  amount: number;
+  toggle: {
+    endless: boolean;
+    autoStart: boolean;
+    notification: boolean;
+  };
 }
 
 export const usePanelStore = defineStore('PanelStore', {
@@ -18,9 +23,14 @@ export const usePanelStore = defineStore('PanelStore', {
       timer: {} as ITimer,
       routine: {} as IRoutine,
       mode: '',
-      amount: 0,
-      round: 0,
       state: '',
+      round: 0,
+      amount: 0,
+      toggle: {
+        endless: false,
+        autoStart: false,
+        notification: false,
+      },
     };
   },
   persist: {
