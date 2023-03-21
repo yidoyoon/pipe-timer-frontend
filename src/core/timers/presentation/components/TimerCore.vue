@@ -50,11 +50,14 @@
               루틴 생성 및 수정 시, 타이머 삭제 및 수정이 불가능합니다.
             </q-tooltip>
             <q-tooltip
-              v-if="panelStore.state === 'start' || panelStore.state === 'pause'"
+              v-if="
+                panelStore.state === 'start' || panelStore.state === 'pause'
+              "
               anchor="top middle"
               self="top middle"
             >
-              타이머 혹은 루틴 작동 중엔 삭제가 불가능 합니다.<br>'Stop'을 눌러 완전히 정지한 후 진행해 주세요.
+              타이머 혹은 루틴 작동 중엔 삭제가 불가능 합니다.<br />'Stop'을
+              눌러 완전히 정지한 후 진행해 주세요.
             </q-tooltip>
           </q-menu>
 
@@ -199,7 +202,8 @@ const panelStore = usePanelStore();
 const builderStoreRefs = storeToRefs(builderStore);
 const timerStoreRefs = storeToRefs(timerStore);
 
-let rTimers = reactive(timerStoreRefs.listTimers);
+let rTimers = reactive(timerStoreRefs.listTimers.value);
+
 const isEdit = computed(() => {
   return builderStoreRefs.isEditBuilder.value;
 });
