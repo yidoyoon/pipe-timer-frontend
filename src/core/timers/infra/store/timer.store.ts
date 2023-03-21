@@ -15,11 +15,11 @@ export interface TimerState {
 }
 
 const selectorStore = useSelectorStore();
-const pomodoroStore = usePanelStore();
+const panelStore = usePanelStore();
 const userStore = useUserStore();
 const { user } = userStore;
 
-export const useTimerStore = defineStore('timerStore', {
+export const useTimerStore = defineStore('TimerStore', {
   state: (): TimerState => {
     return {
       timers: {},
@@ -107,8 +107,8 @@ export const useTimerStore = defineStore('timerStore', {
       const target = this.timers[timerId];
       if (!!target) {
         delete this.timers[timerId];
-        if (timerId === pomodoroStore.timer.timerId) {
-          pomodoroStore.timer = _.cloneDeep({} as ITimer);
+        if (timerId === panelStore.timer.timerId) {
+          panelStore.timer = _.cloneDeep({} as ITimer);
         }
         const i = this.timerIds.lastIndexOf(timerId);
         if (i > -1) this.timerIds.splice(i, 1);

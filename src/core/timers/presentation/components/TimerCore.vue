@@ -16,7 +16,7 @@
           class="my-card text-white cursor-pointer no-shadow q-ma-sm"
           :style="colorExtractor(element)"
           v-ripple
-          @dblclick="toPomodoro(element)"
+          @dblclick="toPanel(element)"
         >
           <q-menu touch-position context-menu :disable="!!isEdit">
             <q-list dense style="min-width: 100px">
@@ -194,13 +194,14 @@ import * as zod from 'zod';
 import draggable from 'vuedraggable';
 
 const timerStore = useTimerStore();
-const pomodoroStore = usePanelStore();
+const panelStore = usePanelStore();
 const routineStore = useRoutineStore();
 const userStore = useUserStore();
 const builderStore = useBuilderStore();
-const panelStore = usePanelStore();
 const builderStoreRefs = storeToRefs(builderStore);
 const timerStoreRefs = storeToRefs(timerStore);
+
+const $q = useQuasar();
 
 let rTimers = reactive(timerStoreRefs.listTimers.value);
 
@@ -209,19 +210,17 @@ const isEdit = computed(() => {
 });
 
 const props = defineProps<{ timers: ITimer[] }>();
-
 const emit = defineEmits<{
   (e: 'remove', id: string): void;
   (e: 'removeLocal', id: string): void;
 }>();
+
 const drag = ref(false);
 const timerId = ref('');
-
 const duration = ref(0);
 const order = ref(-2);
 const isEditing = ref(false);
 const editPrompt = ref(false);
-const $q = useQuasar();
 
 const editTimerSchema = toFormValidator(
   zod
@@ -432,15 +431,15 @@ const computeInitIdx = (e: any) => {
   drag.value = false;
 };
 
-// Pomodoro related
-const toPomodoro = (timer: ITimer) => {
+// Panel related
+const toPanel = (timer: ITimer) => {
   // Session storage for saving initial state of routines, timers
   try {
     $q.sessionStorage.set('timers-data', timer);
-    pomodoroStore.timer = _.cloneDeep(timer);
-    pomodoroStore.mode = 'timer';
-    pomodoroStore.state = 'pause';
-    pomodoroStore.round = 0;
+    panelStore.timer = _.cloneDeep(timer);
+    panelStore.mode = 'timer';
+    panelStore.state = 'pause';
+    panelStore.round = 0;
   } catch (e) {
     console.log(e);
   }

@@ -3,7 +3,7 @@ import { LocalStorage } from 'quasar';
 import { IRoutine } from 'src/core/routines/domain/routine.model';
 import { ITimer } from 'src/core/timers/domain/timer.model';
 
-export interface PomodoroState {
+export interface PanelState {
   timer: ITimer;
   routine: IRoutine;
   mode: string; // 'routine', 'timer', ''
@@ -18,7 +18,7 @@ export interface PomodoroState {
 }
 
 export const usePanelStore = defineStore('PanelStore', {
-  state: (): PomodoroState => {
+  state: (): PanelState => {
     return {
       timer: {} as ITimer,
       routine: {} as IRoutine,

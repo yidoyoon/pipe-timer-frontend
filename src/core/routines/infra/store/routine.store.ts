@@ -15,7 +15,7 @@ export interface RoutineState {
 }
 
 const userStore = useUserStore();
-const pomodoroStore = usePanelStore();
+const panelStore = usePanelStore();
 const { user } = userStore;
 
 export const useRoutineStore = defineStore('RoutineStore', {
@@ -107,8 +107,8 @@ export const useRoutineStore = defineStore('RoutineStore', {
         delete this.routine[routineId];
         const i = this.routineIds.lastIndexOf(routineId);
         if (i > -1) this.routineIds.splice(i, 1);
-        if (routineId === pomodoroStore.routine.id) {
-          pomodoroStore.routine = _.cloneDeep({} as IRoutine);
+        if (routineId === panelStore.routine.id) {
+          panelStore.routine = _.cloneDeep({} as IRoutine);
         }
         if (!!user) {
           // TODO: 에러처리
