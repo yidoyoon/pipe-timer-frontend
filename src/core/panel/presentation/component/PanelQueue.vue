@@ -9,7 +9,7 @@
           <div class="row justify-center">
             <!--        Routine-->
             <div
-              v-if="pomodoroStore.mode === 'routine'"
+              v-if="panelStore.mode === 'routine'"
               class="row justify-start no-wrap"
               style="height: 5rem; white-space: nowrap"
             >
@@ -47,7 +47,7 @@
 
             <!--        Timer-->
             <div
-              v-else-if="pomodoroStore.mode === 'timer'"
+              v-else-if="panelStore.mode === 'timer'"
               class="row justify-center no-wrap"
               style="height: 5rem; white-space: nowrap"
             >
@@ -56,13 +56,13 @@
                 <q-card
                   class="inner-my-card text-white flat"
                   style="width: 24.8vh"
-                  :style="highlightBorder(pomodoroStore.timer)"
+                  :style="highlightBorder(panelStore.timer)"
                 >
                   <q-card-section class="q-img-container">
-                    <div>{{ pomodoroStore.timer.name }}</div>
+                    <div>{{ panelStore.timer.name }}</div>
                     <div>
                       <q-icon name="timer" />
-                      {{ timeFormatter(pomodoroStore.timer.duration).value }}<br />
+                      {{ timeFormatter(panelStore.timer.duration).value }}<br />
                     </div>
                   </q-card-section>
                 </q-card>
@@ -91,7 +91,7 @@ import { computed } from 'vue';
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
-const pomodoroStore = usePanelStore();
+const panelStore = usePanelStore();
 const { routine, timer } = storeToRefs(usePanelStore());
 let { round } = storeToRefs(usePanelStore());
 

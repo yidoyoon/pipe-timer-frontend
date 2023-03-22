@@ -39,7 +39,7 @@ export class Timer implements ITimer {
       this.color = timer.color || '#000000ff';
       this.duration = timer.duration || 0;
       this.count = timer.count || 0;
-      this.order = timer.order || -2;
+      this.order = timer.order || 0;
       this.isEditing = timer.isEditing || false;
     }
   }

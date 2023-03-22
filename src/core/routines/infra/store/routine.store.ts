@@ -8,6 +8,7 @@ import { useUserStore } from 'src/core/users/infra/store/user.store';
 import _ from 'lodash-es';
 
 export interface RoutineState {
+  // TODO: 자료형 변경(Draggable sort)
   routine: Record<string, IRoutine>;
   routineIds: string[];
   isLoadingRoutine: boolean;
@@ -15,7 +16,7 @@ export interface RoutineState {
 }
 
 const userStore = useUserStore();
-const pomodoroStore = usePanelStore();
+const panelStore = usePanelStore();
 const { user } = userStore;
 
 export const useRoutineStore = defineStore('RoutineStore', {
@@ -107,8 +108,8 @@ export const useRoutineStore = defineStore('RoutineStore', {
         delete this.routine[routineId];
         const i = this.routineIds.lastIndexOf(routineId);
         if (i > -1) this.routineIds.splice(i, 1);
-        if (routineId === pomodoroStore.routine.id) {
-          pomodoroStore.routine = _.cloneDeep({} as IRoutine);
+        if (routineId === panelStore.routine.id) {
+          panelStore.routine = _.cloneDeep({} as IRoutine);
         }
         if (!!user) {
           // TODO: 에러처리

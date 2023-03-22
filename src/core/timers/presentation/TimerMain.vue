@@ -354,7 +354,7 @@ const onSubmit = handleSubmit(() => {
       timerName: '새로운 타이머',
       hours: 0,
       minutes: 0,
-      seconds: 1,
+      seconds: 0,
       color: '#000000ff',
     },
   });

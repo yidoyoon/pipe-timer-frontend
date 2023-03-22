@@ -1,4 +1,3 @@
-import requireAuth from 'src/router/middleware/requireAuth';
 import { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
@@ -38,7 +37,7 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
-    path: '/user',
+    path: '/users',
     children: [
       {
         path: 'verify-email',

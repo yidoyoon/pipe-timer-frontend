@@ -2,7 +2,7 @@
   <q-card
     class="no-shadow my-card flat"
     style="background: transparent"
-    @dblclick="toPomodoro(props.routine)"
+    @dblclick="toPanel(props.routine)"
   >
     <div class="text-subtitle1 text-black q-px-md">
       <b>Name: {{ props.routine.name }}</b>
@@ -181,8 +181,8 @@ const colorExtractor = (timer: ITimer) => {
   };
 };
 
-// Pomodoro related
-const toPomodoro = (routine: IRoutine) => {
+// Panel related
+const toPanel = (routine: IRoutine) => {
   // Session storage for saving initial state of routines, timers
   try {
     $q.sessionStorage.set('panel-data', routine);

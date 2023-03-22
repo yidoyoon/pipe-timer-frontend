@@ -3,12 +3,13 @@
   <!--  TODO: rTimer가 undefined일 경우 에러 문구 표시-->
   <draggable
     :list="rTimers"
-    item-key="timerId"
+    item-key="order"
     :group="{ name: 'timers', pull: clone, put: false }"
     v-bind="dragOptions"
     @start="drag = true"
     @end="computeInitIdx"
     :clone="timerWrapper"
+    :move="orderTimer"
   >
     <template #item="{ element, index }">
       <div>
@@ -16,7 +17,7 @@
           class="my-card text-white cursor-pointer no-shadow q-ma-sm"
           :style="colorExtractor(element)"
           v-ripple
-          @dblclick="toPomodoro(element)"
+          @dblclick="toPanel(element)"
         >
           <q-menu touch-position context-menu :disable="!!isEdit">
             <q-list dense style="min-width: 100px">
@@ -50,11 +51,14 @@
               루틴 생성 및 수정 시, 타이머 삭제 및 수정이 불가능합니다.
             </q-tooltip>
             <q-tooltip
-              v-if="panelStore.state === 'start' || panelStore.state === 'pause'"
+              v-if="
+                panelStore.state === 'start' || panelStore.state === 'pause'
+              "
               anchor="top middle"
               self="top middle"
             >
-              타이머 혹은 루틴 작동 중엔 삭제가 불가능 합니다.<br>'Stop'을 눌러 완전히 정지한 후 진행해 주세요.
+              타이머 혹은 루틴 작동 중엔 삭제가 불가능 합니다.<br />'Stop'을
+              눌러 완전히 정지한 후 진행해 주세요.
             </q-tooltip>
           </q-menu>
 
@@ -191,34 +195,33 @@ import * as zod from 'zod';
 import draggable from 'vuedraggable';
 
 const timerStore = useTimerStore();
-const pomodoroStore = usePanelStore();
+const panelStore = usePanelStore();
 const routineStore = useRoutineStore();
 const userStore = useUserStore();
 const builderStore = useBuilderStore();
-const panelStore = usePanelStore();
 const builderStoreRefs = storeToRefs(builderStore);
-const { isLoadingTimer } = storeToRefs(timerStore);
+const timerStoreRefs = storeToRefs(timerStore);
 
-const { listTimers } = storeToRefs(timerStore);
-let rTimers = reactive(listTimers);
+const $q = useQuasar();
+
+let rTimers = reactive(timerStoreRefs.listTimers);
+
 const isEdit = computed(() => {
   return builderStoreRefs.isEditBuilder.value;
 });
 
 const props = defineProps<{ timers: ITimer[] }>();
-
 const emit = defineEmits<{
   (e: 'remove', id: string): void;
   (e: 'removeLocal', id: string): void;
 }>();
+
 const drag = ref(false);
 const timerId = ref('');
-
 const duration = ref(0);
 const order = ref(-2);
 const isEditing = ref(false);
 const editPrompt = ref(false);
-const $q = useQuasar();
 
 const editTimerSchema = toFormValidator(
   zod
@@ -284,7 +287,7 @@ const remove = (index: number) => {
             label: '확인',
             color: 'negative',
             handler: () => {
-              isLoadingTimer.value = false;
+              timerStoreRefs.isLoadingTimer.value = false;
               emit('remove', props.timers[index].timerId);
             },
           },
@@ -302,7 +305,7 @@ const remove = (index: number) => {
             label: '확인',
             color: 'negative',
             handler: () => {
-              isLoadingTimer.value = false;
+              timerStoreRefs.isLoadingTimer.value = false;
               emit('removeLocal', props.timers[index].timerId);
             },
           },
@@ -319,7 +322,7 @@ const remove = (index: number) => {
           label: '확인',
           color: 'negative',
           handler: () => {
-            isLoadingTimer.value = false;
+            timerStoreRefs.isLoadingTimer.value = false;
             emit('remove', props.timers[index].timerId);
           },
         },
@@ -416,6 +419,11 @@ const editTimer = (timer: ITimer) => {
   isEditing.value = timer.isEditing;
 };
 
+const orderTimer = (e: any) => {
+  const timerId = e.draggedContext.element.timerId;
+  timerStore.timers[timerId].order = e.draggedContext.element.order;
+};
+
 // TODO: 드래그와 동시에 order 계산하도록 구현
 const computeInitIdx = (e: any) => {
   // window.console.log(e.newDraggableIndex);
@@ -429,15 +437,15 @@ const computeInitIdx = (e: any) => {
   drag.value = false;
 };
 
-// Pomodoro related
-const toPomodoro = (timer: ITimer) => {
+// Panel related
+const toPanel = (timer: ITimer) => {
   // Session storage for saving initial state of routines, timers
   try {
     $q.sessionStorage.set('timers-data', timer);
-    pomodoroStore.timer = _.cloneDeep(timer);
-    pomodoroStore.mode = 'timer';
-    pomodoroStore.state = 'pause';
-    pomodoroStore.round = 0;
+    panelStore.timer = _.cloneDeep(timer);
+    panelStore.mode = 'timer';
+    panelStore.state = 'pause';
+    panelStore.round = 0;
   } catch (e) {
     console.log(e);
   }
@@ -470,9 +478,10 @@ const dragOptions = {
 };
 </script>
 
-<style lang="sass" scoped>
-.my-input
-  max-width: 250px
+<style lang="scss" scoped>
+.my-input {
+  max-width: 250px;
+}
 </style>
 
 <!--TODO: Font 컬러 설정 추가, 입력값 필터링 추가-->
