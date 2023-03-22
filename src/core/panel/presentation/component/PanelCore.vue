@@ -324,8 +324,9 @@ const endRoundPush = (timerInfo: string) => {
     navigator.serviceWorker.ready.then((registration) => {
       if (
         panelStore.mode === 'routine' &&
-        round.value < panelStore.routine.routineToTimer.length
+        round.value < panelStore.routine.routineToTimer.length - 1
       ) {
+        panelStore.state = 'pause';
         registration.showNotification('Round end notification', {
           ...notifOptions,
           body: `다음 타이머를 실행하시겠습니까?\n${timerInfo}`,
@@ -342,14 +343,26 @@ const endRoundPush = (timerInfo: string) => {
         });
       } else if (
         (panelStore.mode === 'routine' &&
-          round.value === panelStore.routine.routineToTimer.length) ||
+          round.value === panelStore.routine.routineToTimer.length - 1) ||
         panelStore.mode === 'timer'
       ) {
         new Notification('모든 타이머를 실행했습니다.');
+        panelStore.state = 'pause';
+        stop();
       }
     });
   }
 };
+
+onMounted(() => {
+  if (navigator.serviceWorker) {
+    navigator.serviceWorker.addEventListener('message', (e) => {
+      if (e.data === 'confirm') {
+        started = setInterval(elapse, 1000);
+      }
+    });
+  }
+});
 
 // Dummy data
 if (process.env.DEV && timerStore.listTimers.length === 0) {
@@ -366,16 +379,6 @@ if (process.env.DEV && timerStore.listTimers.length === 0) {
   createTimer(5);
   createTimer(3);
 }
-
-onMounted(() => {
-  if (navigator.serviceWorker) {
-    navigator.serviceWorker.addEventListener('message', (e) => {
-      if (e.data === 'confirm') {
-        started = setInterval(elapse, 1000);
-      }
-    });
-  }
-});
 
 const highlightBorder = (timer: ITimer) => {
   return {
