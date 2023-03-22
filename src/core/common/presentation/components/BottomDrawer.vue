@@ -122,7 +122,7 @@
           <q-dialog v-model="builderPrompt" persistent>
             <q-card style="min-width: 350px">
               <q-card-section>
-                <div class="text-h6">Routine name</div>
+                <div class="text-h6">새로운 루틴 이름</div>
               </q-card-section>
 
               <q-card-section class="q-pt-none">
