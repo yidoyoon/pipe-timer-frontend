@@ -472,9 +472,10 @@ const dragOptions = {
 };
 </script>
 
-<style lang="sass" scoped>
-.my-input
-  max-width: 250px
+<style lang="scss" scoped>
+.my-input {
+  max-width: 250px;
+}
 </style>
 
 <!--TODO: Font 컬러 설정 추가, 입력값 필터링 추가-->
