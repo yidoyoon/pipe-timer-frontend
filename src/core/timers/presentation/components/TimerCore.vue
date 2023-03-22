@@ -203,7 +203,7 @@ const timerStoreRefs = storeToRefs(timerStore);
 
 const $q = useQuasar();
 
-let rTimers = reactive(timerStoreRefs.listTimers.value);
+let rTimers = reactive(timerStoreRefs.listTimers);
 
 const isEdit = computed(() => {
   return builderStoreRefs.isEditBuilder.value;
