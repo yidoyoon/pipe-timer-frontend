@@ -3,12 +3,13 @@
   <!--  TODO: rTimer가 undefined일 경우 에러 문구 표시-->
   <draggable
     :list="rTimers"
-    item-key="timerId"
+    item-key="order"
     :group="{ name: 'timers', pull: clone, put: false }"
     v-bind="dragOptions"
     @start="drag = true"
     @end="computeInitIdx"
     :clone="timerWrapper"
+    :move="orderTimer"
   >
     <template #item="{ element, index }">
       <div>
@@ -416,6 +417,11 @@ const editTimer = (timer: ITimer) => {
   color.value = timer.color;
   order.value = timer.order;
   isEditing.value = timer.isEditing;
+};
+
+const orderTimer = (e: any) => {
+  const timerId = e.draggedContext.element.timerId;
+  timerStore.timers[timerId].order = e.draggedContext.element.order;
 };
 
 // TODO: 드래그와 동시에 order 계산하도록 구현
