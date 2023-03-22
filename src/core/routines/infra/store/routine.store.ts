@@ -8,6 +8,7 @@ import { useUserStore } from 'src/core/users/infra/store/user.store';
 import _ from 'lodash-es';
 
 export interface RoutineState {
+  // TODO: 자료형 변경(Draggable sort)
   routine: Record<string, IRoutine>;
   routineIds: string[];
   isLoadingRoutine: boolean;
