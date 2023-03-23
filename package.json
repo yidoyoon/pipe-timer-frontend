@@ -1,8 +1,8 @@
 {
-  "name": "flexible-pomodoro-front",
+  "name": "pipe-timer-front",
   "version": "0.0.1",
   "description": "A Time-stackable Pomodoro Timer",
-  "productName": "Flexible Pomodoro",
+  "productName": "Pipe Timer",
   "author": "Yi Byeongyong <ybyo@yibyeongyong.com>",
   "private": true,
   "scripts": {
