@@ -16,9 +16,9 @@
               <!--        Add routines button-->
               <div>
                 <q-btn
-                  v-if="!routineInBuilder.routineToTimer"
+                  v-if="!builderStoreRefs.routineInBuilder.value.routineToTimer"
                   @click="createRoutineBtn"
-                  :disable="!listTimerRefs.length"
+                  :disable="!timerStoreRefs.listTimers.value.length"
                   dense
                   icon="add"
                   flat
@@ -27,16 +27,17 @@
                   size="0.6rem"
                 />
                 <q-tooltip anchor="top middle" self="top middle">
-                  <div v-if="listTimerRefs.length">루틴을 생성합니다.</div>
+                  <div v-if="timerStoreRefs.listTimers.value.length">
+                    루틴을 생성합니다.
+                  </div>
                   <div v-else>
                     루틴을 생성하려면 최소 1개의 타이머가 필요합니다.
                   </div>
                 </q-tooltip>
               </div>
               <!--        Save routines button-->
-              <div v-if="routineInBuilder.routineToTimer">
+              <div v-if="builderStore.routineInBuilder.routineToTimer">
                 <q-btn
-                  v-if="routineInBuilder.routineToTimer"
                   @click="saveRoutineBtn"
                   dense
                   icon="save"
@@ -54,7 +55,7 @@
             <div class="cursor-pointer open-dash" @click="cycleDrawer"></div>
 
             <!--        Cancel routines button-->
-            <div v-if="routineInBuilder.routineToTimer">
+            <div v-if="builderStore.routineInBuilder.routineToTimer">
               <q-btn
                 @click="resetBuilder"
                 dense
@@ -68,7 +69,7 @@
                 루틴 생성 혹은 수정을 취소합니다.
               </q-tooltip>
             </div>
-            <div v-if="!routineInBuilder.routineToTimer" />
+            <div v-if="!builderStore.routineInBuilder.routineToTimer" />
           </q-card-section>
 
           <!--            Routine list-->
@@ -167,24 +168,33 @@ import RoutineMain from 'src/core/routines/presentation/RoutineMain.vue';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 const selectorStore = useSelectorStore();
 const routineStore = useRoutineStore();
 const timerStore = useTimerStore();
 const builderStore = useBuilderStore();
 const userStore = useUserStore();
-const { editNow } = storeToRefs(selectorStore);
-const { user } = userStore;
-const { listTimers: listTimerRefs } = storeToRefs(timerStore);
+
+const timerStoreRefs = storeToRefs(timerStore);
+const builderStoreRefs = storeToRefs(builderStore);
+const selectorStoreRefs = storeToRefs(selectorStore);
+const routineStoreRefs = storeToRefs(routineStore);
+
 const cancelBtnPrompt = ref(false);
 
-const { routineInBuilder } = storeToRefs(useBuilderStore());
-
 const $q = useQuasar();
+const $route = useRoute();
 
 const builderPrompt = ref(false);
 const builderWarn = ref(false);
 const routineName = ref('');
+
+const drawerMinHeight = 36;
+const drawerTopOffset = 100;
+const drawerOpenRatioHalf = 50;
+
+let animateTimeout: number;
 
 const createRoutineBtn = () => {
   if (isEmptyObj(builderStore.getBuilder)) {
@@ -197,7 +207,7 @@ const createRoutineBtn = () => {
 const createRoutine = () => {
   builderStore.createRoutine(routineName.value);
   builderPrompt.value = false;
-  editNow.value = 'builder';
+  selectorStoreRefs.editNow.value = 'builder';
 };
 
 const saveRoutineBtn = () => {
@@ -212,12 +222,12 @@ const saveRoutineBtn = () => {
   } else {
     saveRoutine(routine);
     resetBuilder();
-    editNow.value = '';
+    selectorStoreRefs.editNow.value = '';
   }
 };
 
 const saveRoutine = async (routine: IRoutine) => {
-  if (user !== null) {
+  if (userStore.user !== null) {
     await timerStore.saveTimer();
     await builderStore.saveRoutine(routine);
     await routineStore.fetchAll();
@@ -225,22 +235,15 @@ const saveRoutine = async (routine: IRoutine) => {
     routineStore.routineIds.push(routine.id);
     routineStore.routine[routine.id] = routine;
   }
-  editNow.value = '';
+  selectorStoreRefs.editNow.value = '';
 };
 
 const resetBuilder = () => {
   builderStore.$reset();
   cancelBtnPrompt.value = false;
-  editNow.value = '';
+  selectorStoreRefs.editNow.value = '';
   builderStore.routineInBuilder = _.cloneDeep({} as IRoutine);
 };
-
-const drawerMinHeight = 36;
-const drawerTopOffset = 100;
-const drawerOpenRatioHalf = 50;
-
-const drawerPos = ref(drawerMinHeight);
-let animateTimeout: number;
 
 const drawerMaxHeight = computed(() => {
   return Math.max(0, window.innerHeight - drawerTopOffset);
@@ -248,7 +251,7 @@ const drawerMaxHeight = computed(() => {
 
 const drawerOpenRatio = computed(() => {
   return Math.round(
-    (Math.max(0, drawerPos.value - drawerMinHeight) /
+    (Math.max(0, routineStoreRefs.bottomDrawerHeight.value - drawerMinHeight) /
       Math.max(1, drawerMaxHeight.value - drawerMinHeight)) *
       100
   );
@@ -257,7 +260,7 @@ const drawerOpenRatio = computed(() => {
 const drawerStyle = computed(() => {
   return {
     height: `${drawerMaxHeight.value}px`,
-    transform: `translateY(${-drawerPos.value}px)`,
+    transform: `translateY(${-routineStoreRefs.bottomDrawerHeight.value}px)`,
   };
 });
 
@@ -275,9 +278,12 @@ const slideDrawer = (ev: {
   isFinal: boolean;
 }) => {
   const { direction, delta, isFinal } = ev;
-  drawerPos.value = Math.max(
+  routineStoreRefs.bottomDrawerHeight.value = Math.max(
     drawerMinHeight,
-    Math.min(drawerMaxHeight.value, drawerPos.value - delta.y)
+    Math.min(
+      drawerMaxHeight.value,
+      routineStoreRefs.bottomDrawerHeight.value - delta.y
+    )
   );
 
   if (isFinal) {
@@ -309,10 +315,11 @@ const cycleDrawer = () => {
 const animateDrawerTo = (height: number) => {
   clearTimeout(animateTimeout);
 
-  const diff = height - drawerPos.value;
+  const diff = height - routineStoreRefs.bottomDrawerHeight.value;
 
   if (diff !== 0) {
-    drawerPos.value += Math.abs(diff) < 2 ? diff : Math.round(diff / 2);
+    routineStoreRefs.bottomDrawerHeight.value +=
+      Math.abs(diff) < 2 ? diff : Math.round(diff / 2);
 
     animateTimeout = window.setTimeout(() => {
       animateDrawerTo(height);
@@ -322,7 +329,7 @@ const animateDrawerTo = (height: number) => {
 
 onMounted(() => {
   window.addEventListener('resize', () => {
-    drawerPos.value = drawerMinHeight;
+    routineStoreRefs.bottomDrawerHeight.value = drawerMinHeight;
   });
 });
 
