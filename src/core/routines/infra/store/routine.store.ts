@@ -13,6 +13,7 @@ export interface RoutineState {
   routineIds: string[];
   isLoadingRoutine: boolean;
   isEditingRoutine: boolean;
+  bottomDrawerHeight: number;
 }
 
 const userStore = useUserStore();
@@ -26,6 +27,7 @@ export const useRoutineStore = defineStore('RoutineStore', {
       routineIds: [],
       isLoadingRoutine: false,
       isEditingRoutine: false,
+      bottomDrawerHeight: 36,
     };
   },
   persist: {

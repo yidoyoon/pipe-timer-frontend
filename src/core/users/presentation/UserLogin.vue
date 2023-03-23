@@ -51,11 +51,12 @@
 </template>
 
 <script setup lang="ts">
+import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
 import { CHECK_EMPTY, userMsg } from 'src/core/users/domain/user.const';
-import * as zod                 from 'zod';
+import * as zod from 'zod';
 import { ILoginInput } from 'src/type-defs/userTypes';
 import { getMeFn, loginUserFn } from 'src/core/users/infra/http/user.api';
-import { onBeforeUpdate, ref } from 'vue';
+import { onBeforeMount, onBeforeUpdate, ref } from 'vue';
 import { toFormValidator } from '@vee-validate/zod';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { useField, useForm } from 'vee-validate';
@@ -68,7 +69,13 @@ const isPwd = ref(true);
 const router = useRouter();
 
 const userStore = useUserStore();
+const routineStore = useRoutineStore();
+
 const userData = userStore.user;
+
+onBeforeMount(() => {
+  routineStore.bottomDrawerHeight = 36;
+});
 
 const loginSchema = toFormValidator(
   zod.object({
