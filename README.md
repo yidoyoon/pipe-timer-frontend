@@ -1,4 +1,4 @@
-# Flexible Pomodoro (flexible-pomodoro-front)
+# Pipe Timer (pipe-timer-front)
 
 A Time-stackable Pomodoro Timer
 

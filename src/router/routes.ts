@@ -11,7 +11,7 @@ const routes: RouteRecordRaw[] = [
         path: '',
         component: () =>
           import('../core/panel/presentation/PanelMain.vue'),
-        name: 'controller',
+        name: 'panel',
       },
       {
         path: 'login',
