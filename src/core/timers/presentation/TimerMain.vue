@@ -12,9 +12,18 @@
           <q-item class="justify-center q-pa-sm q-pr-md">
             <q-item-label v-if="isLoggedIn"
               >Logged in as
-              <b>{{ userStoreRefs.user.value.userName }}</b></q-item-label
-            >
-            <div v-else>
+              <span>
+                <b>{{ userStoreRefs.user.value.userName }}</b>
+                <q-menu>
+                  <q-list style="min-width: 100px">
+                    <q-item clickable v-close-popup to="/users/setting">
+                      <q-item-section>Setting</q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </span>
+            </q-item-label>
+            <div v-if="!isLoggedIn">
               <q-item-label class="lt-md fontsize-11"
                 >타이머, 루틴 정보를 서버에<br />저장하려면 로그인
                 해주세요.</q-item-label

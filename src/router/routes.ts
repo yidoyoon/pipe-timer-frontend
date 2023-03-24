@@ -47,6 +47,18 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  {
+    path: '/users',
+    component: () =>
+      import('../core/common/presentation/layouts/AppLayout.vue'),
+    children: [
+      {
+        path: 'setting',
+        component: () => import('../core/users/presentation/UserSetting.vue'),
+        name: 'user-setting',
+      },
+    ],
+  },
 
   // Always leave this as last one,
   // but you can also remove it
