@@ -67,7 +67,7 @@ export const loginUserFn = async (user: ILoginInput) => {
 // TODO: 이메일 인증 시, 로그인까지 진행하도록 구현
 export const verifyEmailFn = async (signupVerifyToken: string) => {
   const response = await api.get(
-    `user/verify-email?signupVerifyToken=${signupVerifyToken}`
+    `users/verify-email?signupVerifyToken=${signupVerifyToken}`
   );
   return response.data ? response.data : response;
 };
