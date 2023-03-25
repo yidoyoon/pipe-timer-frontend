@@ -81,3 +81,8 @@ export const getMeFn = async () => {
   const response = await api.get('auth/me');
   return response.data;
 };
+
+export const resetPassFn = async (email: ICheckEmailInput) => {
+  const response = await api.post('users/reset-password', email);
+  return response.data;
+};
