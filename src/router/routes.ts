@@ -42,8 +42,16 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'verify-email',
         component: () =>
-          import('../core/users/presentation/UserSignupVerify.vue'),
+          import('../core/users/presentation/components/UserSignupVerify.vue'),
         name: 'verify-email',
+      },
+      {
+        path: 'verify-reset-password',
+        component: () =>
+          import(
+            '../core/users/presentation/components/ResetPasswordVerify.vue'
+          ),
+        name: 'verify-reset-password',
       },
     ],
   },

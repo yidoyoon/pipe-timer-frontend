@@ -41,4 +41,10 @@ export const userMsg = {
   VERIFY_COMPLETE: '인증 되었습니다. 서비스를 이용하시려면 로그인해주세요.',
   INVALID_EMAIL_VERIFICATION_CODE: '유효하지 않은 인증정보 입니다.',
   ALREADY_VERIFIED_EMAIL: '이미 인증된 계정입니다.',
+
+  // Password reset verification
+  VERIFY_RESET_PASSWORD_SUCCESS:
+    '인증 되었습니다. 변경할 비밀번호를 입력해주세요.',
+  RESET_PASSWORD_SUCCESS:
+    '비밀번호 재설정을 완료했습니다. 변경한 비밀번호로 로그인해주세요.',
 };
