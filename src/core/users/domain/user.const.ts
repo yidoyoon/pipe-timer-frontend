@@ -24,6 +24,7 @@ export const userMsg = {
   // Authorization
   INVALID_TOKEN:
     '로그인 정보가 없어 타이머와 루틴을 불러올 수 없습니다.<br>타이머와 루틴 정보를 저장하시려면 로그인 후 이용해주세요.',
+  INVALID_LOGIN_DATA: '로그인 정보가 유효하지 않습니다. 다시 로그인 해주세요.',
 
   // Signup
   INVALID_USER_EMAIL: '유효하지 않은 이메일 형식입니다.',
