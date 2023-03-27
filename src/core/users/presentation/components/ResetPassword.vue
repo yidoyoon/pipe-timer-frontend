@@ -121,7 +121,8 @@ const { isLoading, mutate } = useMutation(
             icon: 'warning',
           });
         });
-      } else {
+      }
+      if (responseMsg === 'The password updated successfully.') {
         $q.notify({
           type: 'negative',
           message: responseMsg,
@@ -132,9 +133,10 @@ const { isLoading, mutate } = useMutation(
     onSuccess: () => {
       $q.notify({
         type: 'positive',
-        message: userMsg.SEND_USER_SIGNUP_VERIFICATION_EMAIL,
+        message: userMsg.RESET_PASSWORD_SUCCESS,
+        icon: 'done',
       });
-      router.push({ name: 'login' });
+      router.push({ name: 'panel' });
     },
   }
 );
