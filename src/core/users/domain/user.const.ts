@@ -24,6 +24,7 @@ export const userMsg = {
   // Authorization
   INVALID_TOKEN:
     '로그인 정보가 없어 타이머와 루틴을 불러올 수 없습니다.<br>타이머와 루틴 정보를 저장하시려면 로그인 후 이용해주세요.',
+  INVALID_LOGIN_DATA: '로그인 정보가 유효하지 않습니다. 다시 로그인 해주세요.',
 
   // Signup
   INVALID_USER_EMAIL: '유효하지 않은 이메일 형식입니다.',
@@ -40,4 +41,10 @@ export const userMsg = {
   VERIFY_COMPLETE: '인증 되었습니다. 서비스를 이용하시려면 로그인해주세요.',
   INVALID_EMAIL_VERIFICATION_CODE: '유효하지 않은 인증정보 입니다.',
   ALREADY_VERIFIED_EMAIL: '이미 인증된 계정입니다.',
+
+  // Password reset verification
+  VERIFY_RESET_PASSWORD_SUCCESS:
+    '인증 되었습니다. 변경할 비밀번호를 입력해주세요.',
+  RESET_PASSWORD_SUCCESS:
+    '비밀번호 재설정을 완료했습니다. 변경한 비밀번호로 로그인해주세요.',
 };

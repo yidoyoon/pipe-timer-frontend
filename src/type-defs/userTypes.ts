@@ -27,6 +27,11 @@ export interface ISignupInput {
   passwordConfirm: string;
 }
 
+export interface IResetPasswordInput {
+  password: string;
+  passwordConfirm: string;
+}
+
 export interface ICheckEmailInput {
   email: string;
 }

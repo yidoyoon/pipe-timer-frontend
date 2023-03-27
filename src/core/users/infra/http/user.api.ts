@@ -3,7 +3,7 @@ import {
   ICheckEmailInput,
   IErrorResponse,
   IGeneralResponse,
-  ILoginInput,
+  ILoginInput, IResetPasswordInput,
   ISignupInput,
   IUser,
 } from 'src/type-defs/userTypes';
@@ -32,7 +32,6 @@ api.interceptors.response.use(
       return await refreshAccessTokenFn().catch(() => {
         Notify.create({
           color: 'negative',
-          html: true,
           message: userMsg.INVALID_TOKEN,
           icon: 'error',
         });
@@ -79,5 +78,24 @@ export const logoutUserFn = async () => {
 
 export const getMeFn = async () => {
   const response = await api.get('auth/me');
+  return response.data;
+};
+
+export const resetPassFn = async (email: ICheckEmailInput) => {
+  const response = await api.post('users/reset-password', email);
+  return response.data;
+};
+
+export const verifyResetPasswordTokenFn = async (
+  resetPasswordVerifyToken: string
+) => {
+  const response = await api.get(
+    `users/verify-reset-password?resetPasswordVerifyToken=${resetPasswordVerifyToken}`
+  );
+  return response.data ? response.data : response;
+};
+
+export const resetPass = async (passwords: IResetPasswordInput) => {
+  const response = await api.post('users/reset-password-input', passwords);
   return response.data;
 };

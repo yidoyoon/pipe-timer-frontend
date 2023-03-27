@@ -57,6 +57,7 @@
           class="col-4"
           text-color="black"
           label="Change Password"
+          @click="resetPass"
         />
       </div>
 
@@ -89,6 +90,22 @@ if (userStore.user !== null) {
   email = userStore.user.email;
   userName = userStore.user.userName;
 }
+
+const resetPass = (): void => {
+  const data = {} as ICheckEmailInput;
+
+  if (userStore.user !== null) {
+    data.email = userStore.user.email;
+    resetPassFn(data);
+  } else {
+    $q.notify({
+      color: 'negative',
+      message: userMsg.INVALID_LOGIN_DATA,
+      icon: 'error',
+    });
+    $router.push({ name: 'login' });
+  }
+};
 </script>
 
 <style lang="scss" scoped>
