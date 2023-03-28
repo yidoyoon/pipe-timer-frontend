@@ -1,3 +1,5 @@
+import requireAuth from 'src/router/middleware/requireAuth';
+import skipAuth from 'src/router/middleware/skipAuth';
 import { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
@@ -9,25 +11,45 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        component: () =>
-          import('../core/panel/presentation/PanelMain.vue'),
+        component: () => import('../core/panel/presentation/PanelMain.vue'),
         name: 'panel',
       },
       {
         path: 'login',
-        component: () => import('../core/users/presentation/UserLogin.vue'),
+        component: () =>
+          import('../core/users/presentation/components/UserLogin.vue'),
         name: 'login',
+        meta: {
+          middleware: [skipAuth],
+        },
       },
       {
         path: 'check-email',
         component: () =>
-          import('../core/users/presentation/UserCheckEmail.vue'),
+          import('../core/users/presentation/components/UserCheckEmail.vue'),
         name: 'check-email',
+        meta: {
+          middleware: [skipAuth],
+        },
+        beforeEnter: (to, from) => {
+          if (from.name !== 'login') {
+            return false;
+          }
+        },
       },
       {
         path: 'signup',
-        component: () => import('../core/users/presentation/UserSignup.vue'),
+        component: () =>
+          import('../core/users/presentation/components/UserSignup.vue'),
         name: 'signup',
+        meta: {
+          middleware: [skipAuth],
+        },
+        beforeEnter: (to, from) => {
+          if (from.name !== 'check-email') {
+            return false;
+          }
+        },
       },
       // {
       //   path: 'guide',
@@ -44,6 +66,9 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import('../core/users/presentation/components/UserSignupVerify.vue'),
         name: 'verify-email',
+        meta: {
+          middleware: [skipAuth],
+        },
       },
       {
         path: 'verify-reset-password',
@@ -62,14 +87,23 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: 'setting',
-        component: () => import('../core/users/presentation/UserSetting.vue'),
+        component: () =>
+          import('../core/users/presentation/components/UserSetting.vue'),
         name: 'user-setting',
+        meta: {
+          middleware: [requireAuth],
+        },
       },
       {
         path: 'reset-password',
         component: () =>
           import('../core/users/presentation/components/ResetPassword.vue'),
         name: 'reset-password',
+        beforeEnter: (to, from) => {
+          if (from.name !== 'verify-reset-password') {
+            return false;
+          }
+        },
       },
     ],
   },
