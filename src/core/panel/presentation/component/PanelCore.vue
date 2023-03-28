@@ -79,9 +79,16 @@ import { useMeta, useQuasar } from 'quasar';
 import { usePanelStore } from 'src/core/panel/infra/store/panel.store';
 import { IRoutine } from 'src/core/routines/domain/routine.model';
 import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
-import { ITimer, Timer }   from 'src/core/timers/domain/timer.model';
-import { useTimerStore }   from 'src/core/timers/infra/store/timer.store';
-import { computed, onMounted, ref, watch } from 'vue';
+import { ITimer, Timer } from 'src/core/timers/domain/timer.model';
+import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
+import {
+  computed,
+  onBeforeMount,
+  onMounted,
+  ref,
+  watch,
+  watchEffect,
+} from 'vue';
 
 const $q = useQuasar();
 
@@ -91,7 +98,6 @@ const timerStore = useTimerStore();
 
 const panelStoreRefs = storeToRefs(panelStore);
 
-let started: string | number | NodeJS.Timeout | undefined;
 let round = panelStoreRefs.round;
 let timer = {} as ITimer | null;
 
@@ -143,7 +149,6 @@ const formattedTime = computed(() => {
 });
 
 const start = () => {
-  if (panelStore.state === 'start') return;
   if ('routineToTimer' in panelStore.routine || 'timerId' in panelStore.timer) {
     panelStore.intervalId = setInterval(elapse, 1000);
     panelStore.state = 'start';
@@ -158,6 +163,7 @@ const start = () => {
 };
 
 const elapse = () => {
+  panelStore.state = 'start';
   if (panelStore.mode === 'routine') {
     timer = _.cloneDeep(panelStore.routine.routineToTimer[round.value].timer);
     timer.duration--;
@@ -312,7 +318,7 @@ const notifyRoundEnd = () => {
     duration = timer.duration;
   }
 
-  let nextTimerInfo = `타이머 이름: ${name}\n시간: ${duration}`;
+  let nextTimerInfo = `타이머 이름: ${name}\n시간: ${duration}초`;
 
   if (!!autoStart.value) {
     new Notification(
@@ -339,7 +345,7 @@ const endRoundPush = (timerInfo: string) => {
     navigator.serviceWorker.ready.then((registration) => {
       if (
         panelStore.mode === 'routine' &&
-        round.value < panelStore.routine.routineToTimer.length - 1
+        round.value < panelStore.routine.routineToTimer.length
       ) {
         panelStore.state = 'pause';
         registration.showNotification('Round end notification', {
@@ -357,12 +363,10 @@ const endRoundPush = (timerInfo: string) => {
           ],
         });
       } else if (
-        (panelStore.mode === 'routine' &&
-          round.value === panelStore.routine.routineToTimer.length - 1) ||
-        panelStore.mode === 'timer'
+        panelStore.mode === 'routine' &&
+        round.value === panelStore.routine.routineToTimer.length
       ) {
         new Notification('모든 타이머를 실행했습니다.');
-        panelStore.state = 'pause';
         stop();
       }
     });
@@ -416,7 +420,7 @@ const colorExtractor = (timer: ITimer) => {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .flex-break {
   flex: 1 0 100% !important;
   height: 0;
