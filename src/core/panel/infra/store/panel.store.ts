@@ -10,11 +10,10 @@ export interface PanelState {
   state: string; // 'start', 'pause', 'stop', ''
   round: number;
   amount: number;
-  toggle: {
-    endless: boolean;
-    autoStart: boolean;
-    notification: boolean;
-  };
+  endless: boolean;
+  autoStart: boolean;
+  notification: boolean;
+  intervalId: string | number | NodeJS.Timeout | undefined;
 }
 
 export const usePanelStore = defineStore('PanelStore', {
@@ -26,11 +25,10 @@ export const usePanelStore = defineStore('PanelStore', {
       state: '',
       round: 0,
       amount: 0,
-      toggle: {
-        endless: false,
-        autoStart: false,
-        notification: false,
-      },
+      endless: false,
+      autoStart: false,
+      notification: false,
+      intervalId: undefined,
     };
   },
   persist: {

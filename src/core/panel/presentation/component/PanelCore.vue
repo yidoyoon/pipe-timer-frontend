@@ -99,9 +99,24 @@ const notifOptions: NotificationOptions = {
   requireInteraction: true,
 };
 
-const endless = ref(panelStore.toggle.endless);
-const autoStart = ref(panelStore.toggle.autoStart);
-const notification = ref(panelStore.toggle.notification);
+const endless = ref(panelStore.endless);
+const autoStart = ref(panelStore.autoStart);
+const notification = ref(panelStore.notification);
+
+watchEffect(() => {
+  panelStore.endless = endless.value;
+  panelStore.autoStart = autoStart.value;
+  panelStore.notification = notification.value;
+});
+
+onBeforeMount(() => {
+  if (panelStore.intervalId !== undefined) {
+    clearInterval(panelStore.intervalId);
+  }
+  if (panelStore.state === 'start') {
+    start();
+  }
+});
 
 const currDuration = computed(() => {
   if (panelStore.mode === 'routine') {
@@ -130,7 +145,7 @@ const formattedTime = computed(() => {
 const start = () => {
   if (panelStore.state === 'start') return;
   if ('routineToTimer' in panelStore.routine || 'timerId' in panelStore.timer) {
-    started = setInterval(elapse, 1000);
+    panelStore.intervalId = setInterval(elapse, 1000);
     panelStore.state = 'start';
   } else {
     $q.notify({
@@ -138,7 +153,7 @@ const start = () => {
       message: '우선 작동 시킬 타이머 혹은 루틴을 더블클릭하여 셋팅해주세요.',
       textColor: 'black',
     });
-    clearInterval(started);
+    clearInterval(panelStore.intervalId);
   }
 };
 
@@ -156,7 +171,7 @@ const elapse = () => {
   }
   if (timer !== null && timer.duration <= 0) {
     if (!!notification.value) {
-      clearInterval(started);
+      clearInterval(panelStore.intervalId);
       notifyRoundEnd();
     }
     panelStore.round++;
@@ -169,7 +184,7 @@ const pause = () => {
   if (panelStore.state === 'pause') return;
   panelStore.state = 'pause';
 
-  clearInterval(started);
+  clearInterval(panelStore.intervalId);
 };
 
 const stop = () => {
@@ -177,7 +192,7 @@ const stop = () => {
   loadSession();
   panelStore.state = 'stop';
   panelStore.round = 0;
-  clearInterval(started);
+  clearInterval(panelStore.intervalId);
 };
 
 const loadSession = () => {
@@ -260,7 +275,7 @@ const timeEnd = () => {
     if (endless.value === true) {
       round.value = 0;
     } else {
-      clearInterval(started);
+      clearInterval(panelStore.intervalId);
       panelStoreRefs.state = ref('');
       panelStoreRefs.round = ref(0);
       $q.notify({ message: '타이머를 종료합니다', color: 'green' });
@@ -269,7 +284,7 @@ const timeEnd = () => {
     if (endless.value) {
       round.value = 0;
     } else {
-      clearInterval(started);
+      clearInterval(panelStore.intervalId);
       panelStore.state = '';
       panelStore.round = 0;
       $q.notify({ message: '타이머를 종료합니다', color: 'green' });
@@ -304,7 +319,7 @@ const notifyRoundEnd = () => {
       `다음 타이머를 실행합니다.\n${nextTimerInfo}`,
       notifOptions
     );
-    started = setInterval(elapse, 1000);
+    panelStore.intervalId = setInterval(elapse, 1000);
   } else {
     if (
       !(
@@ -358,7 +373,7 @@ onMounted(() => {
   if (navigator.serviceWorker) {
     navigator.serviceWorker.addEventListener('message', (e) => {
       if (e.data === 'confirm') {
-        started = setInterval(elapse, 1000);
+        panelStore.intervalId = setInterval(elapse, 1000);
       }
     });
   }
