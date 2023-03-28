@@ -143,7 +143,6 @@ const formattedTime = computed(() => {
 });
 
 const start = () => {
-  if (panelStore.state === 'start') return;
   if ('routineToTimer' in panelStore.routine || 'timerId' in panelStore.timer) {
     panelStore.intervalId = setInterval(elapse, 1000);
     panelStore.state = 'start';
@@ -158,6 +157,7 @@ const start = () => {
 };
 
 const elapse = () => {
+  panelStore.state = 'start';
   if (panelStore.mode === 'routine') {
     timer = _.cloneDeep(panelStore.routine.routineToTimer[round.value].timer);
     timer.duration--;
