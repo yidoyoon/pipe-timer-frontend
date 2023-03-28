@@ -339,7 +339,7 @@ const endRoundPush = (timerInfo: string) => {
     navigator.serviceWorker.ready.then((registration) => {
       if (
         panelStore.mode === 'routine' &&
-        round.value < panelStore.routine.routineToTimer.length - 1
+        round.value < panelStore.routine.routineToTimer.length
       ) {
         panelStore.state = 'pause';
         registration.showNotification('Round end notification', {
