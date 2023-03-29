@@ -12,7 +12,7 @@
           <q-item class="justify-center q-pa-sm q-pr-md">
             <q-item-label v-if="isLoggedIn"
               >Logged in as
-              <span>
+              <span class="cursor-pointer">
                 <b>{{ userStoreRefs.user.value.userName }}</b>
                 <q-menu>
                   <q-list style="min-width: 100px">
@@ -212,7 +212,7 @@ import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { useField, useForm } from 'vee-validate';
-import { ref, watch } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 import TimerCore from 'src/core/timers/presentation/components/TimerCore.vue';
 import * as zod from 'zod';
 
@@ -224,15 +224,18 @@ const timerStore = useTimerStore();
 const timerStoreRef = storeToRefs(timerStore);
 const userStore = useUserStore();
 const routineStore = useRoutineStore();
-const { user } = userStore;
 
 const userStoreRefs = storeToRefs(userStore);
 const isLoggedIn = userStoreRefs.user;
 
 const rightDrawerOpen = ref(props.rightDrawerOpen);
 
-timerStore.fetchAll();
-routineStore.fetchAll();
+onBeforeMount(() => {
+  if (!!userStore.user) {
+    timerStore.fetchAll();
+    routineStore.fetchAll();
+  }
+});
 
 const $q = useQuasar();
 
@@ -329,7 +332,7 @@ const createTimer = () => {
 };
 
 const saveTimersBtn = () => {
-  if (!!user) {
+  if (!!userStore.user) {
     saveTimers();
   } else {
     $q.notify({
@@ -339,7 +342,7 @@ const saveTimersBtn = () => {
 };
 
 const saveTimers = () => {
-  if (!!user) {
+  if (!!userStore.user) {
     const res = api.post('timer/save', timerStore.listTimers);
     if (!res) {
       $q.notify({
