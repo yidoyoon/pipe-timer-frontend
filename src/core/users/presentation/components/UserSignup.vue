@@ -162,7 +162,7 @@ const { isLoading, mutate } = useMutation(
         type: 'positive',
         message: variables.email + userMsg.SEND_USER_SIGNUP_VERIFICATION_EMAIL,
       });
-      router.push({ name: 'controller' });
+      router.push({ name: 'panel' });
       userStore.verifiedEmail = null;
     },
   }

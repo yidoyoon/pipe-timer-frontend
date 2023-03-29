@@ -11,7 +11,7 @@
 
   <div class="row">
     <div class="col-2"></div>
-    <div class="col-7 q-gutter-lg">
+    <div class="col-9 q-gutter-lg">
       <div class="row justify-start items-end">
         <div class="text-h6 col-8">
           Email
@@ -23,7 +23,13 @@
             </template>
           </q-field>
         </div>
-        <q-btn outline class="col-4" text-color="black" label="Change Email" />
+        <q-btn
+          outline
+          class="col-3 text-no-wrap"
+          text-color="black"
+          :size="$q.screen.lt.md ? '0.7rem' : '0.8rem'"
+          label="Change Email"
+        />
       </div>
 
       <div class="row justify-start items-end">
@@ -39,8 +45,9 @@
         </div>
         <q-btn
           outline
-          class="col-4"
+          class="col-3 text-no-wrap"
           text-color="black"
+          :size="$q.screen.lt.md ? '0.7rem' : '0.8rem'"
           label="Change Username"
         />
       </div>
@@ -54,14 +61,15 @@
         </div>
         <q-btn
           outline
-          class="col-4"
+          class="col-3 text-no-wrap"
           text-color="black"
+          :size="$q.screen.lt.md ? '0.7rem' : '0.8rem'"
           label="Change Password"
-          @click="resetPass"
+          @click="resetPasswordBtn"
         />
       </div>
 
-      <div class="row justify-between q-pt-lg items-end">
+      <div class="row justify-start q-pt-lg items-end">
         <div class="text-h6 col-8">
           Delete Account
           <div class="text-caption q-pt-xs">
@@ -69,20 +77,31 @@
           </div>
         </div>
         <q-btn
-          class="col-4"
+          class="col-3 text-no-wrap"
           color="negative"
           text-color="white"
+          :size="$q.screen.lt.md ? '0.7rem' : '0.8rem'"
           label="Delete Account"
         />
       </div>
     </div>
   </div>
+
+  <PasswordResetPrompt />
+
+  <!--  Prompts-->
 </template>
 
 <script setup lang="ts">
+import { useQuasar } from 'quasar';
+import { useRouter } from 'vue-router';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
+import PasswordResetPrompt from 'src/core/users/presentation/components/prompts/PasswordResetPrompt.vue';
 
 const userStore = useUserStore();
+const $q = useQuasar();
+const $router = useRouter();
+
 let email = 'undefined';
 let userName = 'undefined';
 
@@ -91,25 +110,13 @@ if (userStore.user !== null) {
   userName = userStore.user.userName;
 }
 
-const resetPass = (): void => {
-  const data = {} as ICheckEmailInput;
-
-  if (userStore.user !== null) {
-    data.email = userStore.user.email;
-    resetPassFn(data);
-  } else {
-    $q.notify({
-      color: 'negative',
-      message: userMsg.INVALID_LOGIN_DATA,
-      icon: 'error',
-    });
-    $router.push({ name: 'login' });
-  }
+const resetPasswordBtn = () => {
+  userStore.resetPasswordPrompt = !userStore.resetPasswordPrompt;
 };
 </script>
 
 <style lang="scss" scoped>
 .q-separator--horizontal {
-  margin-inline: 11rem;
+  margin-inline: 10.5rem;
 }
 </style>

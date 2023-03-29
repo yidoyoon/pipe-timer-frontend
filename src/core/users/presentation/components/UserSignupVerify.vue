@@ -26,7 +26,7 @@ onMounted(async () => {
     } else {
       $q.notify({
         type: 'positive',
-        message: userMsg.VERIFY_COMPLETE,
+        message: userMsg.VERIFY_EMAIL_SUCCESS,
         icon: 'done',
       });
     }
