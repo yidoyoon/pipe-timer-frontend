@@ -4,7 +4,7 @@ export interface IUser {
   email: string;
 }
 
-export interface IGeneralResponse<T> {
+export interface IGeneralResponse<T = void> {
   success: boolean;
   data?: T;
 }

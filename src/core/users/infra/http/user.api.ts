@@ -3,7 +3,8 @@ import {
   ICheckEmailInput,
   IErrorResponse,
   IGeneralResponse,
-  ILoginInput, IResetPasswordInput,
+  ILoginInput,
+  IResetPasswordInput,
   ISignupInput,
   IUser,
 } from 'src/type-defs/userTypes';
@@ -24,6 +25,7 @@ api.interceptors.response.use(
   // 토큰 만료로 인한 에러 메시지 발생
   // TODO: 서버 자체가 열려있지 않을 때 로그인 비활성화
   // TODO: 에러메시지를 각 서비스로 분산
+  // TODO: 미들웨어에서 router.push 수행하도록 수정
   async (err) => {
     // const originalRequest = error.config;
     const errMsg = err.response.data?.message as string;
@@ -31,6 +33,7 @@ api.interceptors.response.use(
     if (errMsg === 'Unauthorized') {
       return await refreshAccessTokenFn().catch(() => {
         Notify.create({
+          html: true,
           color: 'negative',
           message: userMsg.INVALID_TOKEN,
           icon: 'error',
@@ -43,7 +46,6 @@ api.interceptors.response.use(
         icon: 'error',
       });
     }
-
     return Promise.reject(err);
   }
 );
@@ -96,6 +98,6 @@ export const verifyResetPasswordTokenFn = async (
 };
 
 export const resetPass = async (passwords: IResetPasswordInput) => {
-  const response = await api.post('users/reset-password-input', passwords);
+  const response = await api.post('users/post-password-reset', passwords);
   return response.data;
 };
