@@ -44,7 +44,7 @@
       </div>
       <div class="text-body2">
         계정이 없다면 회원가입 해주세요.
-        <a href="/check-email">회원가입</a>
+        <a class="cursor-pointer" @click="router.push({ name: 'check-email' })"><b>회원가입</b></a>
       </div>
     </q-form>
   </div>
