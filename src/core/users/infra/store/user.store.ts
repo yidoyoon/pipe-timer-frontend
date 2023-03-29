@@ -6,6 +6,7 @@ interface UserState {
   user: IUser | null;
   verifiedEmail: string | null;
   resetPasswordPrompt: boolean;
+  changeEmailPrompt: boolean;
 }
 
 export const useUserStore = defineStore('userStore', {
@@ -13,6 +14,7 @@ export const useUserStore = defineStore('userStore', {
     user: null,
     verifiedEmail: '',
     resetPasswordPrompt: false,
+    changeEmailPrompt: false,
   }),
   persist: {
     key: 'user-data',
