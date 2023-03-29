@@ -219,7 +219,7 @@ const emit = defineEmits<{
 const drag = ref(false);
 const timerId = ref('');
 const duration = ref(0);
-const order = ref(-2);
+const order = ref(0);
 const isEditing = ref(false);
 const editPrompt = ref(false);
 
