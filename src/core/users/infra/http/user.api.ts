@@ -101,3 +101,8 @@ export const resetPass = async (passwords: IResetPasswordInput) => {
   const response = await api.post('users/post-password-reset', passwords);
   return response.data;
 };
+
+export const changeEmailFn = async (email: ICheckEmailInput) => {
+  const response = await api.post('users/change-email', email);
+  return response.data;
+};
