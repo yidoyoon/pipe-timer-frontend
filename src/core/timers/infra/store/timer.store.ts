@@ -1,8 +1,8 @@
 import { api } from 'boot/axios';
 import { defineStore } from 'pinia';
 import { useSelectorStore } from 'src/core/common/infra/store/selector.store';
-import { usePanelStore }    from 'src/core/panel/infra/store/panel.store';
-import { ITimer }           from 'src/core/timers/domain/timer.model';
+import { usePanelStore } from 'src/core/panel/infra/store/panel.store';
+import { ITimer } from 'src/core/timers/domain/timer.model';
 import { LocalStorage } from 'quasar';
 import { Notify } from 'quasar';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
@@ -79,7 +79,7 @@ export const useTimerStore = defineStore('TimerStore', {
   actions: {
     async fetchAll() {
       if (!!user) {
-        if (this.loadedTimers) return;
+        if (this.loadedTimers) this.$reset();
         this.isLoadingTimer = true;
         // TODO: 에러 처리 필요
         const res = await api.get('timer/fetch');

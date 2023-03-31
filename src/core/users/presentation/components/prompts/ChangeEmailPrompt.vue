@@ -90,6 +90,7 @@ const { isLoading, mutate } = useMutation(
     },
     onSuccess: (response) => {
       try {
+        userStore.changeEmailPrompt = false;
         sendNewEmail({ email: newEmail.value });
       } catch (err) {
         console.log(err);
@@ -103,7 +104,7 @@ const sendNewEmail = async (newEmail: ICheckEmailInput): Promise<void> => {
 
   if (userStore.user !== null) {
     if (userStore.user.email !== newEmail.email) {
-      changeEmailFn;
+      await changeEmailFn(newEmail);
     } else {
       $q.notify({
         color: 'negative',
@@ -122,16 +123,9 @@ const sendNewEmail = async (newEmail: ICheckEmailInput): Promise<void> => {
   }
 };
 
-resetForm({
-  values: {
-    newEmail: '',
-  },
-});
-
 const onSubmit = handleSubmit((values) => {
   mutate({
     email: values.newEmail,
   });
-  resetForm();
 });
 </script>
