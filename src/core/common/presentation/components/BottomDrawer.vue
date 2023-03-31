@@ -338,7 +338,7 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .area {
   background-color: #f2f2f2;
   border-radius: 30px;
