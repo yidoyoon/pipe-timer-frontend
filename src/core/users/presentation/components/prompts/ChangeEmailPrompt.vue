@@ -90,6 +90,7 @@ const { isLoading, mutate } = useMutation(
     },
     onSuccess: (response) => {
       try {
+        userStore.changeEmailPrompt = false;
         sendNewEmail({ email: newEmail.value });
       } catch (err) {
         console.log(err);
