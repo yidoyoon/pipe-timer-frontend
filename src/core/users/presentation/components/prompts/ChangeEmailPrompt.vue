@@ -91,8 +91,9 @@ const { isLoading, mutate } = useMutation(
     onSuccess: (response) => {
       try {
         sendNewEmail({ email: newEmail.value });
-        alert('this');
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+      }
     },
   }
 );

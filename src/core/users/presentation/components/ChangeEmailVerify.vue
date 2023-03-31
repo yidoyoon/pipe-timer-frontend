@@ -16,27 +16,27 @@ onMounted(async () => {
   await router.isReady();
   const { changeEmailVerifyToken } = route.query;
 
-  const response = await verifyChangeEmailTokenFn(
-    changeEmailVerifyToken as string
-  );
-
-  if (response.success === true) {
-    $q.notify({
-      type: 'positive',
-      message: userMsg.CHANGE_EMAIL_SUCCESS,
-      icon: 'done',
-    });
-    await router.push({ name: 'setting' });
-  } else {
-    if (response.message === 'Invalid change email verification code') {
+  try {
+    const response = await verifyChangeEmailTokenFn(
+      changeEmailVerifyToken as string
+    );
+    if (response.success === true) {
       $q.notify({
-        color: 'warning',
-        textColor: 'black',
-        message: '잘못된 인증코드입니다.',
-        icon: 'warning',
+        type: 'positive',
+        message: userMsg.CHANGE_EMAIL_SUCCESS,
+        icon: 'done',
       });
+      await router.push({ name: 'user-setting' });
     }
-    await router.push({ name: 'panel' });
+  } catch (err) {
+    $q.notify({
+      color: 'warning',
+      textColor: 'black',
+      message:
+        '이메일 변경 중 오류가 발생했습니다. 이메일 변경을 다시 진행해주세요. 문제가 반복된다면 이메일 문의 바랍니다.',
+      icon: 'warning',
+    });
+    await router.push({ name: 'user-setting' });
   }
 });
 </script>
