@@ -1,4 +1,5 @@
 import { userMsg } from 'src/core/users/domain/user.const';
+import { useUserStore } from 'src/core/users/infra/store/user.store';
 import {
   ICheckEmailInput,
   IErrorResponse,
@@ -29,8 +30,9 @@ api.interceptors.response.use(
   async (err) => {
     // const originalRequest = error.config;
     const errMsg = err.response.data?.message as string;
+    const userStore = useUserStore();
 
-    if (errMsg === 'Unauthorized') {
+    if (errMsg === 'Unauthorized' || errMsg === 'User not found') {
       return await refreshAccessTokenFn().catch(() => {
         Notify.create({
           html: true,
@@ -38,6 +40,7 @@ api.interceptors.response.use(
           message: userMsg.INVALID_TOKEN,
           icon: 'error',
         });
+        userStore.$reset();
       });
     } else if (errMsg.includes('regular expression')) {
       Notify.create({
