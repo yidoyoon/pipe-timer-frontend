@@ -27,8 +27,9 @@
           outline
           class="col-3 text-no-wrap"
           text-color="black"
-          :size="$q.screen.lt.md ? '0.7rem' : '0.8rem'"
+          :size="$q.screen.lt.md ? '0.8rem' : '0.9rem'"
           label="Change Email"
+          @click="changeEmailBtn"
         />
       </div>
 
@@ -47,7 +48,7 @@
           outline
           class="col-3 text-no-wrap"
           text-color="black"
-          :size="$q.screen.lt.md ? '0.7rem' : '0.8rem'"
+          :size="$q.screen.lt.md ? '0.8rem' : '0.9rem'"
           label="Change Username"
         />
       </div>
@@ -63,7 +64,7 @@
           outline
           class="col-3 text-no-wrap"
           text-color="black"
-          :size="$q.screen.lt.md ? '0.7rem' : '0.8rem'"
+          :size="$q.screen.lt.md ? '0.8rem' : '0.9rem'"
           label="Change Password"
           @click="resetPasswordBtn"
         />
@@ -80,23 +81,24 @@
           class="col-3 text-no-wrap"
           color="negative"
           text-color="white"
-          :size="$q.screen.lt.md ? '0.7rem' : '0.8rem'"
+          :size="$q.screen.lt.md ? '0.8rem' : '0.9rem'"
           label="Delete Account"
         />
       </div>
     </div>
   </div>
 
+  <!-- Dialogs-->
   <PasswordResetPrompt />
-
-  <!--  Prompts-->
+  <ChangeEmailPrompt />
 </template>
 
 <script setup lang="ts">
+import ChangeEmailPrompt from 'src/core/users/presentation/components/prompts/ChangeEmailPrompt.vue';
+import PasswordResetPrompt from 'src/core/users/presentation/components/prompts/PasswordResetPrompt.vue';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
-import PasswordResetPrompt from 'src/core/users/presentation/components/prompts/PasswordResetPrompt.vue';
 
 const userStore = useUserStore();
 const $q = useQuasar();
@@ -112,6 +114,10 @@ if (userStore.user !== null) {
 
 const resetPasswordBtn = () => {
   userStore.resetPasswordPrompt = !userStore.resetPasswordPrompt;
+};
+
+const changeEmailBtn = () => {
+  userStore.changeEmailPrompt = !userStore.changeEmailPrompt;
 };
 </script>
 

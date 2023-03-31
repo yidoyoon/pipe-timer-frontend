@@ -46,6 +46,11 @@ export const userMsg = {
   // Password reset verification
   VERIFY_RESET_PASSWORD_SUCCESS:
     '인증 되었습니다. 변경할 비밀번호를 입력해주세요.',
-  RESET_PASSWORD_SUCCESS:
-    '비밀번호 재설정을 완료했습니다.',
+  RESET_PASSWORD_SUCCESS: '비밀번호 재설정을 완료했습니다.',
+
+  // Change email verification
+  SAME_NEW_EMAIL:
+    '입력한 이메일이 현재 사용 중인 이메일과 일치합니다. 다른 이메일을 입력해주세요.',
+  CHANGE_EMAIL_SUCCESS:
+    '이메일이 변경됐습니다.',
 };
