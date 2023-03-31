@@ -123,7 +123,7 @@
           dense
           autofocus
           debounce="300"
-          @keyup.enter.prevent="createTimer"
+          @keyup.enter.prevent="onSubmit"
           @keyup.esc.prevent="timerPrompt = false"
           :error="!!nameError"
           :error-message="nameError"
@@ -288,16 +288,6 @@ const { value: seconds, errorMessage: secondsError } =
 const { value: color, errorMessage: colorError } = useField<string>('color');
 
 timerStore.fetchAll();
-
-resetForm({
-  values: {
-    timerName: '새로운 타이머',
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-    color: '#000000ff',
-  },
-});
 
 watch(props, () => {
   rightDrawerOpen.value = props.rightDrawerOpen;
