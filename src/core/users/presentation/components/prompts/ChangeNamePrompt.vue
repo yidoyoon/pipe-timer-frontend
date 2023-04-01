@@ -51,21 +51,22 @@ const $router = useRouter();
 const userStore = useUserStore();
 
 const changeNameSchema = toFormValidator(
-  zod.object({
-    newName: zod
-      .string({ description: '유저네임을 입력해주세요' })
-      .nonempty('유저네임을 입력해주세요.')
-      .regex(/^[A-Za-z0-9]+$/, { message: '영문과 숫자만 입력 가능합니다.' })
-      .max(39),
-  })
-  // .refine((data) => data.newName !== userStore.user?.userName, {
-  //   path: ['newName'],
-  //   message: userMsg.SAME_NEW_USERNAME,
-  // })
-  // .refine((data) => !filter.check(data.newName), {
-  //   path: ['newName'],
-  //   message: userMsg.PROFANE_WORDS,
-  // })
+  zod
+    .object({
+      newName: zod
+        .string({ description: '유저네임을 입력해주세요' })
+        .nonempty('유저네임을 입력해주세요.')
+        .regex(/^[A-Za-z0-9]+$/, { message: '영문과 숫자만 입력 가능합니다.' })
+        .max(39),
+    })
+    .refine((data) => data.newName !== userStore.user?.userName, {
+      path: ['newName'],
+      message: userMsg.SAME_NEW_USERNAME,
+    })
+    .refine((data) => !filter.check(data.newName), {
+      path: ['newName'],
+      message: userMsg.PROFANE_WORDS,
+    })
 );
 
 const { handleSubmit, resetForm, errors } = useForm({
