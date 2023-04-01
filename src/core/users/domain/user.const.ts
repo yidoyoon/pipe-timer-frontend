@@ -51,6 +51,10 @@ export const userMsg = {
   // Change email verification
   SAME_NEW_EMAIL:
     '입력한 이메일이 현재 사용 중인 이메일과 일치합니다. 다른 이메일을 입력해주세요.',
-  CHANGE_EMAIL_SUCCESS:
-    '이메일이 변경됐습니다.',
+  CHANGE_EMAIL_SUCCESS: '이메일이 변경됐습니다.',
+
+  // Change username verification
+  SAME_NEW_USERNAME:
+    '입력한 유저네임이 현재 사용 중인 유저네임과 일치합니다. 다른 유저네임을 입력해주세요.',
+  PROFANE_WORDS: '사용 불가능한 단어가 포함되어 있습니다.',
 };

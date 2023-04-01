@@ -35,3 +35,7 @@ export interface IResetPasswordInput {
 export interface ICheckEmailInput {
   email: string;
 }
+
+export interface ICheckNameInput {
+  newName: string;
+}

@@ -2,6 +2,7 @@ import { userMsg } from 'src/core/users/domain/user.const';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import {
   ICheckEmailInput,
+  ICheckNameInput,
   IErrorResponse,
   IGeneralResponse,
   ILoginInput,
@@ -117,4 +118,9 @@ export const verifyChangeEmailTokenFn = async (
     `users/verify-change-email?changeEmailVerifyToken=${changeEmailVerifyToken}`
   );
   return response.data ? response.data : response;
+};
+
+export const changeNameFn = async (name: ICheckNameInput) => {
+  const response = await api.post('users/change-name', name);
+  return response.data;
 };
