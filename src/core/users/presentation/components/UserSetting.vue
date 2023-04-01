@@ -50,6 +50,7 @@
           text-color="black"
           :size="$q.screen.lt.md ? '0.8rem' : '0.9rem'"
           label="Change Username"
+          @click="changeNameBtn"
         />
       </div>
 
@@ -91,10 +92,12 @@
   <!-- Dialogs-->
   <PasswordResetPrompt />
   <ChangeEmailPrompt />
+  <ChangeNamePrompt />
 </template>
 
 <script setup lang="ts">
 import ChangeEmailPrompt from 'src/core/users/presentation/components/prompts/ChangeEmailPrompt.vue';
+import ChangeNamePrompt from 'src/core/users/presentation/components/prompts/ChangeNamePrompt.vue';
 import PasswordResetPrompt from 'src/core/users/presentation/components/prompts/PasswordResetPrompt.vue';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
@@ -118,6 +121,10 @@ const resetPasswordBtn = () => {
 
 const changeEmailBtn = () => {
   userStore.changeEmailPrompt = !userStore.changeEmailPrompt;
+};
+
+const changeNameBtn = () => {
+  userStore.changeNamePrompt = !userStore.changeNamePrompt;
 };
 </script>
 

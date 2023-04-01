@@ -9,6 +9,9 @@ export const userVar = {
 };
 
 export const userMsg = {
+  UNKNOWN_ERROR:
+    '알 수 없는 오류로 유저네임 변경이 불가능합니다. 증상이 반복되면 관리자에게 이메일로 문의하거나 Github Issue에 증상을 남겨주세요.',
+
   // Login
   EMPTY_USER_EMAIL: '이메일 주소를 입력해주세요.',
   EMPTY_USER_PASSWORD: '비밀번호를 입력해주세요.',
@@ -51,6 +54,11 @@ export const userMsg = {
   // Change email verification
   SAME_NEW_EMAIL:
     '입력한 이메일이 현재 사용 중인 이메일과 일치합니다. 다른 이메일을 입력해주세요.',
-  CHANGE_EMAIL_SUCCESS:
-    '이메일이 변경됐습니다.',
+  CHANGE_EMAIL_SUCCESS: '이메일이 변경됐습니다.',
+
+  // Change username verification
+  SAME_NEW_USERNAME:
+    '입력한 유저네임이 현재 사용 중인 유저네임과 일치합니다. 다른 유저네임을 입력해주세요.',
+  PROFANE_WORDS: '사용 불가능한 단어가 포함되어 있습니다.',
+  CHANGE_USERNAME_SUCCESS: '유저네임을 변경했습니다.',
 };
