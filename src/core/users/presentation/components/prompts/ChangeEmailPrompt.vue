@@ -81,10 +81,9 @@ const { isLoading, mutate } = useMutation(
   (credentials: ICheckEmailInput) => checkEmailFn(credentials),
   {
     onError: (err: any) => {
-      const errMsg = err.response.data.message as string;
-      const response = err.response.data;
+      console.log(err);
 
-      if (errMsg === 'Duplicate email') {
+      if (err.message === 'Duplicate email') {
         setErrors('이미 사용중인 이메일 입니다.');
       }
     },

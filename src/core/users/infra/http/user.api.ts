@@ -120,7 +120,7 @@ export const verifyChangeEmailTokenFn = async (
   return response.data ? response.data : response;
 };
 
-export const changeNameFn = async (name: ICheckNameInput) => {
-  const response = await api.post('users/change-name', name);
+export const changeNameFn = async (userName: ICheckNameInput) => {
+  const response = await api.post('users/change-name', userName);
   return response.data;
 };
