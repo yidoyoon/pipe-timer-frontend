@@ -58,6 +58,9 @@ import * as zod from 'zod';
 const $q = useQuasar();
 const $router = useRouter();
 const userStore = useUserStore();
+const timerStore = useTimerStore();
+const routineStore = useRoutineStore();
+const panelStore = usePanelStore();
 
 const deleteAccountSchema = toFormValidator(
   zod
@@ -108,7 +111,11 @@ const { isLoading, mutate } = useMutation(
         message: userMsg.DELETE_ACCOUNT_SUCCESS,
         icon: 'done',
       });
-      $router.go(0);
+      userStore.$reset();
+      timerStore.$reset();
+      routineStore.$reset();
+      panelStore.$reset();
+      $router.push({ name: 'panel' });
     },
   }
 );
