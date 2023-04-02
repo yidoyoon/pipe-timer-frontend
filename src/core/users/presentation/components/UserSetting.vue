@@ -84,6 +84,7 @@
           text-color="white"
           :size="$q.screen.lt.md ? '0.8rem' : '0.9rem'"
           label="Delete Account"
+          @click="deleteAccountBtn"
         />
       </div>
     </div>
@@ -93,11 +94,13 @@
   <PasswordResetPrompt />
   <ChangeEmailPrompt />
   <ChangeNamePrompt />
+  <DeleteAccountPrompt />
 </template>
 
 <script setup lang="ts">
 import ChangeEmailPrompt from 'src/core/users/presentation/components/prompts/ChangeEmailPrompt.vue';
 import ChangeNamePrompt from 'src/core/users/presentation/components/prompts/ChangeNamePrompt.vue';
+import DeleteAccountPrompt from 'src/core/users/presentation/components/prompts/DeleteAccountPrompt.vue';
 import PasswordResetPrompt from 'src/core/users/presentation/components/prompts/PasswordResetPrompt.vue';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
@@ -125,6 +128,10 @@ const changeEmailBtn = () => {
 
 const changeNameBtn = () => {
   userStore.changeNamePrompt = !userStore.changeNamePrompt;
+};
+
+const deleteAccountBtn = () => {
+  userStore.deleteAccountPrompt = !userStore.deleteAccountPrompt;
 };
 </script>
 
