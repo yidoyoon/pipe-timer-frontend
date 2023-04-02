@@ -39,3 +39,7 @@ export interface ICheckEmailInput {
 export interface ICheckNameInput {
   newName: string;
 }
+
+export interface ICheckValidationInput {
+  validation: string;
+}
