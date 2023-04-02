@@ -61,4 +61,7 @@ export const userMsg = {
     '입력한 유저네임이 현재 사용 중인 유저네임과 일치합니다. 다른 유저네임을 입력해주세요.',
   PROFANE_WORDS: '사용 불가능한 단어가 포함되어 있습니다.',
   CHANGE_USERNAME_SUCCESS: '유저네임을 변경했습니다.',
+
+  // Delete account success
+  DELETE_ACCOUNT_SUCCESS: '회원 탈퇴되었습니다.'
 };

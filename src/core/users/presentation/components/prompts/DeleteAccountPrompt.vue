@@ -18,7 +18,7 @@
           dense
           autofocus
           debounce="300"
-          @keyup.enter.prevent=""
+          @keyup.enter.prevent="onSubmit"
           @keyup.esc.prevent="userStore.changeEmailPrompt = false"
           :error="!!nameError"
           :error-message="nameError"
@@ -31,7 +31,7 @@
           label="Confirm"
           color="green"
           type="submit"
-          @click=""
+          @click="onSubmit"
           :disable="!isEmptyObj(errors)"
         />
       </q-card-actions>
@@ -48,6 +48,7 @@ import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { ICheckValidationInput } from 'src/type-defs/userTypes';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { useField, useForm } from 'vee-validate';
+import { userMsg } from 'src/core/users/domain/user.const';
 import { useRouter } from 'vue-router';
 import * as zod from 'zod';
 
@@ -65,6 +66,8 @@ const deleteAccountSchema = toFormValidator(
     })
     .refine((data) => data.validation === 'Delete account', {
       path: ['validation'],
+      message:
+        "계정 삭제를 진행하시려면 'Delete account'를 정확하게 입력해주세요. ",
     })
 );
 
@@ -79,15 +82,36 @@ const {
 } = useField<string>('validation');
 
 const { isLoading, mutate } = useMutation(
-  (credentials: ICheckNameInput) => changeNameFn(credentials),
+  (credentials: ICheckValidationInput) => deleteAccountFn(credentials),
   {
     onError: (err: any) => {
       const response = err.response.data;
       console.log(response);
+
+      $q.notify({
+        color: 'negative',
+        message: userMsg.UNKNOWN_ERROR,
+        icon: 'warning',
+      });
+      setErrors(
+        '알 수 없는 오류로 회원 탈퇴가 불가능합니다. 증상이 반복되면 관리자에게 이메일로 문의하거나 Github Issue에 증상을 남겨주세요.'
+      );
     },
     onSuccess: (response) => {
       userStore.deleteAccountPrompt = false;
+      $q.notify({
+        color: 'positive',
+        message: userMsg.DELETE_ACCOUNT_SUCCESS,
+        icon: 'done',
+      });
+      $router.go(0);
     },
   }
 );
+
+const onSubmit = handleSubmit((values) => {
+  mutate({
+    validation: values.validation,
+  });
+});
 </script>
