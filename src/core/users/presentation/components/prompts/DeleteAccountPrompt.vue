@@ -43,6 +43,9 @@
 import { useMutation } from '@tanstack/vue-query';
 import { toFormValidator } from '@vee-validate/zod';
 import { useQuasar } from 'quasar';
+import { usePanelStore } from 'src/core/panel/infra/store/panel.store';
+import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
+import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
 import { deleteAccountFn } from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { ICheckValidationInput } from 'src/type-defs/userTypes';
@@ -88,14 +91,15 @@ const { isLoading, mutate } = useMutation(
       const response = err.response.data;
       console.log(response);
 
-      $q.notify({
-        color: 'negative',
-        message: userMsg.UNKNOWN_ERROR,
-        icon: 'warning',
-      });
-      setErrors(
-        '알 수 없는 오류로 회원 탈퇴가 불가능합니다. 증상이 반복되면 관리자에게 이메일로 문의하거나 Github Issue에 증상을 남겨주세요.'
-      );
+      if (response.message === 'Wrong input value') {
+        $q.notify({
+          color: 'negative',
+          message: userMsg.UNKNOWN_ERROR,
+          icon: 'warning',
+        });
+      } else {
+        setErrors(userMsg.UNKNOWN_ERROR);
+      }
     },
     onSuccess: (response) => {
       userStore.deleteAccountPrompt = false;
