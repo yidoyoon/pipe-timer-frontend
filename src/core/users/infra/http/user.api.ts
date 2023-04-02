@@ -3,6 +3,7 @@ import { useUserStore } from 'src/core/users/infra/store/user.store';
 import {
   ICheckEmailInput,
   ICheckNameInput,
+  ICheckValidationInput,
   IErrorResponse,
   IGeneralResponse,
   ILoginInput,
@@ -122,5 +123,10 @@ export const verifyChangeEmailTokenFn = async (
 
 export const changeNameFn = async (userName: ICheckNameInput) => {
   const response = await api.post('users/change-name', userName);
+  return response.data;
+};
+
+export const deleteAccountFn = async (validation: ICheckValidationInput) => {
+  const response = await api.post('users/delete-account', validation);
   return response.data;
 };

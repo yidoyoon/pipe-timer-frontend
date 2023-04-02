@@ -43,9 +43,9 @@
 import { useMutation } from '@tanstack/vue-query';
 import { toFormValidator } from '@vee-validate/zod';
 import { useQuasar } from 'quasar';
-import { changeNameFn } from 'src/core/users/infra/http/user.api';
+import { deleteAccountFn } from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
-import { ICheckNameInput } from 'src/type-defs/userTypes';
+import { ICheckValidationInput } from 'src/type-defs/userTypes';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { useField, useForm } from 'vee-validate';
 import { useRouter } from 'vue-router';
