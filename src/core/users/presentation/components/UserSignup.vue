@@ -121,7 +121,11 @@ const email = computed(() => {
   return userStore.verifiedEmail;
 });
 
-const { value: name, errorMessage: nameError } = useField<string>('name');
+const {
+  value: name,
+  errorMessage: nameError,
+  setErrors,
+} = useField<string>('name');
 const { value: password, errorMessage: passwordError } =
   useField<string>('password');
 const { value: passwordConfirm, errorMessage: passwordConfirmError } =
@@ -131,8 +135,7 @@ const { isLoading, mutate } = useMutation(
   (credentials: ISignupInput) => signUpUserFn(credentials),
   {
     onError: (error) => {
-      const errorMsg = (error as any).response.data.error;
-      const responseMsg = (error as any).response.data.message;
+      const responseMsg = (error as any).response.data;
 
       if ((error as any).response === undefined) {
         $q.notify({
@@ -141,14 +144,10 @@ const { isLoading, mutate } = useMutation(
           icon: 'warning',
         });
       }
-      if (Array.isArray(errorMsg)) {
-        errorMsg.forEach((el: any) => {
-          $q.notify({
-            type: 'negative',
-            message: el.message,
-            icon: 'warning',
-          });
-        });
+      if (responseMsg.message === 'Duplicate username') {
+        setErrors('이미 사용 중인 유저네임입니다.');
+      } else if (responseMsg.message === 'Contains some prohibited words') {
+        setErrors('사용 불가능한 단어가 포함되어 있습니다.');
       } else {
         $q.notify({
           type: 'negative',
