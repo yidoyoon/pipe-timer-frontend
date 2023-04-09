@@ -23,11 +23,7 @@ export default async function requireAuth({
   }
   try {
     const response = await getMeFn();
-    const { id, userName, email } = response;
-    const user = _.cloneDeep({} as IUser);
-    user.id = id;
-    user.userName = userName;
-    user.email = email;
+    const user = response.passport.user;
     userStore.setUser(user);
 
     if (!user) {
