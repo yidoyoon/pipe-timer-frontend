@@ -17,8 +17,8 @@
     </q-page-container>
 
     <!--    TODO: 미니모드 적용-->
-    <!--    LeftDrawer-->
-    <LeftDrawer :leftDrawerOpen="leftDrawerOpen" />
+    <!--    TabsMain-->
+    <TabsMain :TabsOpen="TabsOpen" />
 
     <!--    RightDrawer-->
     <RightDrawer :rightDrawerOpen="rightDrawerOpen" />
@@ -37,15 +37,15 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 
 import BottomDrawer from 'src/core/common/presentation/components/BottomDrawer.vue';
-import LeftDrawer from 'src/core/tabs/presentation/TabsMain.vue';
-import RightDrawer from 'src/core/timers/presentation/TimerMain.vue';
+import TabsMain     from 'src/core/tabs/presentation/TabsMain.vue';
+import RightDrawer  from 'src/core/timers/presentation/TimerMain.vue';
 import ButtonHeader from 'src/core/common/presentation/components/ButtonHeader.vue';
 
 const $q = useQuasar();
 
 const tab = ref('');
 const rightDrawerOpen = $q.platform.is.desktop ? ref(true) : ref(false);
-const leftDrawerOpen = $q.platform.is.desktop ? ref(true) : ref(false);
+const TabsOpen = $q.platform.is.desktop ? ref(true) : ref(false);
 
 const toggleRightDrawer = () => {
   rightDrawerOpen.value = !rightDrawerOpen.value;
