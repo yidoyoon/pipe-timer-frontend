@@ -1,5 +1,8 @@
 <template>
-  <q-drawer v-model="drawer" :width="220">
+  <q-drawer v-model="drawer" side="left" bordered
+            :width="$q.platform.is.desktop ? 220 : 170"
+            :breakpoint="600"
+  >
     <q-scroll-area
       style="
         height: calc(100% - 33px);
@@ -10,7 +13,7 @@
       <q-list padding>
         <q-tabs v-model="tab" vertical class="text-teal">
           <q-space style="height: 250px"></q-space>
-          <q-route-tab name="timers" icon="alarm" label="timers" to="/" />
+          <q-route-tab name="timers" icon="alarm" label="timers" to="/"/>
         </q-tabs>
       </q-list>
     </q-scroll-area>
@@ -30,7 +33,7 @@
         size="1rem"
         flat
         dense
-        href="https://github.com/ybyo"
+        href="https://github.com/yidoyoon"
         class="q-pa-none q-ma-none"
       />
     </div>
@@ -38,8 +41,8 @@
 </template>
 
 <script setup lang="ts">
-import { useQuasar } from 'quasar';
-import { ref } from 'vue';
+import {useQuasar} from 'quasar';
+import {ref}       from 'vue';
 
 const $q = useQuasar();
 
