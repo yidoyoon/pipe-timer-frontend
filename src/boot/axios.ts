@@ -63,14 +63,10 @@ export default boot(({ app }) => {
     Expires: '0',
   };
   api.defaults.headers.post['Access-Control-Allow-Origin'] = [
-    'https://127.0.0.1:3000',
-    'https://127.0.0.1:4000',
-    'https://127.0.0.1',
-    'https://localhost:3000',
-    'https://localhost',
-    'https://pomo.yibyeongyong.com',
-    'https://api.yibyeongyong.com:3000',
-    'https://api.yibyeongyong.com',
+    process.env.DEV
+      ? 'https://127.0.0.1:3000'
+      : 'https://api.pipetimer.com:3000',
+    'https://pipetimer.com',
   ];
 });
 
