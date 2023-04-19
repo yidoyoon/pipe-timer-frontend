@@ -10,7 +10,7 @@ export const userVar = {
 
 export const userMsg = {
   UNKNOWN_ERROR:
-    '알 수 없는 오류로 유저네임 변경이 불가능합니다. 증상이 반복되면 관리자에게 이메일로 문의하거나 Github Issue에 증상을 남겨주세요.',
+    '알 수 없는 오류로 요청을 처리할 수 없습니다. 증상이 반복되면 관리자에게 이메일로 문의하거나 Github Issue에 증상을 남겨주세요.',
 
   // Login
   EMPTY_USER_EMAIL: '이메일 주소를 입력해주세요.',
