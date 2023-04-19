@@ -41,11 +41,11 @@ const panelStore = usePanelStore();
 
 const { mutate: logoutUser } = useMutation(() => logoutUserFn(), {
   onSuccess: () => {
-    userStore.setUser(null);
-    router.push({ name: 'login' });
     userStore.$reset();
     timerStore.$reset();
     routineStore.$reset();
+    panelStore.$reset();
+    router.push({ name: 'login' });
   },
   onError: (error) => {
     const errMsg = (error as any).response.data.error;
@@ -70,10 +70,6 @@ const { mutate: logoutUser } = useMutation(() => logoutUserFn(), {
 });
 
 const handleLogout = () => {
-  userStore.$reset();
-  timerStore.$reset();
-  routineStore.$reset();
-  panelStore.$reset();
   logoutUser();
 };
 </script>
