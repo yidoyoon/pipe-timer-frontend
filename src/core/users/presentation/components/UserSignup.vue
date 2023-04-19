@@ -20,12 +20,8 @@
       <q-input
         filled
         v-model="name"
-        label="User name"
-        :hint="
-          !nameError
-            ? '유저네임을 설정해주세요. 추후 변경할 수 있도록 구현할 예정입니다.'
-            : ''
-        "
+        label="Username"
+        :hint="!nameError ? '유저네임을 설정해주세요.' : ''"
         :error-message="nameError"
         :error="!!nameError"
         debounce="500"
