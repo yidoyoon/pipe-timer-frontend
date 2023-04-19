@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "A Time-stackable Pomodoro Timer",
   "productName": "Pipe Timer",
-  "author": "Yi Byeongyong <ybyo@yibyeongyong.com>",
+  "author": "Yi Doyoon <yidoyoon@yidoyoon.com>",
   "private": true,
   "scripts": {
     "start:dev": "cross-env ENV_NAME=development quasar dev -m pwa",

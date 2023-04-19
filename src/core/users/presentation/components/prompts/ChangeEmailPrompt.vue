@@ -59,7 +59,8 @@ const changeEmailSchema = toFormValidator(
       newEmail: zod
         .string({ description: '이메일을 입력해주세요' })
         .nonempty('이메일을 입력해주세요.')
-        .email('이메일 형식이 올바르지 않습니다.'),
+        .email('이메일 형식이 올바르지 않습니다.')
+        .max(320),
     })
     .refine((data) => data.newEmail !== userStore.user?.email, {
       path: ['newEmail'],

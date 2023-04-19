@@ -13,19 +13,15 @@
         filled
         v-model="email"
         label="Email"
-        hint="로그인에 사용될 이메일 입니다."
+        hint="로그인에 사용될 이메일입니다."
         debounce="500"
         disable
       />
       <q-input
         filled
         v-model="name"
-        label="User name"
-        :hint="
-          !nameError
-            ? '유저네임을 설정해주세요. 추후 변경할 수 있도록 구현할 예정입니다.'
-            : ''
-        "
+        label="Username"
+        :hint="!nameError ? '유저네임을 설정해주세요.' : ''"
         :error-message="nameError"
         :error="!!nameError"
         debounce="500"
@@ -73,24 +69,27 @@
 </template>
 
 <script setup lang="ts">
-import { CHECK_EMPTY, userMsg, userVar } from 'src/core/users/domain/user.const';
-import { useUserStore }                  from 'src/core/users/infra/store/user.store';
-import { isEmptyObj } from 'src/util/is-empty-object.util';
 import * as zod from 'zod';
+import {
+  CHECK_EMPTY,
+  userMsg,
+  userVar,
+} from 'src/core/users/domain/user.const';
 import { ISignupInput } from 'src/type-defs/userTypes';
 import { computed, ref } from 'vue';
+import { isEmptyObj } from 'src/util/is-empty-object.util';
+import { signUpUserFn } from 'src/core/users/infra/http/user.api';
 import { toFormValidator } from '@vee-validate/zod';
 import { useField, useForm } from 'vee-validate';
 import { useMutation } from '@tanstack/vue-query';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
-import { signUpUserFn } from 'src/core/users/infra/http/user.api';
+import { useUserStore } from 'src/core/users/infra/store/user.store';
 
 const $q = useQuasar();
-const router = useRouter();
 const isPwd = ref(true);
+const router = useRouter();
 const userStore = useUserStore();
-const { verifiedEmail } = userStore;
 
 const registerSchema = toFormValidator(
   zod
@@ -175,7 +174,6 @@ const onSubmit = handleSubmit((values) => {
       password: values.password,
       passwordConfirm: values.passwordConfirm,
     });
-    resetForm();
   } else {
     $q.notify({
       type: 'negative',

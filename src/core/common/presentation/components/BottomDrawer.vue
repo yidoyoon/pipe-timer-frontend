@@ -5,7 +5,7 @@
         <q-card
           class="slide-drawer slide-drawer--bottom text-black column no-wrap"
           :class="`slide-drawer--open-${drawerMode}`"
-          style="position: fixed; bottom: 0; right: 15rem; left: 15rem"
+          style="position: fixed; bottom: 0; right: 20%; left: 20%"
           :style="drawerStyle"
         >
           <q-card-section
@@ -73,7 +73,7 @@
           </q-card-section>
 
           <!--            Routine list-->
-          <q-card style="width: 100%; height: 47vh">
+          <q-card style="height: 47vh">
             <q-card-section class="row wrap justify-between q-py-none">
               <div class="col">
                 <RoutineMain></RoutineMain>
@@ -168,7 +168,7 @@ import RoutineMain from 'src/core/routines/presentation/RoutineMain.vue';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 const selectorStore = useSelectorStore();
 const routineStore = useRoutineStore();
@@ -184,7 +184,7 @@ const routineStoreRefs = storeToRefs(routineStore);
 const cancelBtnPrompt = ref(false);
 
 const $q = useQuasar();
-const $route = useRoute();
+const $router = useRouter();
 
 const builderPrompt = ref(false);
 const builderWarn = ref(false);
@@ -236,6 +236,7 @@ const saveRoutine = async (routine: IRoutine) => {
     routineStore.routine[routine.id] = routine;
   }
   selectorStoreRefs.editNow.value = '';
+  $router.go(0);
 };
 
 const resetBuilder = () => {
