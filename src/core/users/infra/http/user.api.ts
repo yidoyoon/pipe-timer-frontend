@@ -18,6 +18,7 @@ export const refreshAccessTokenFn = () => {
   const response = api.get<IGeneralResponse<IUser> | IErrorResponse>(
     'auth/refresh'
   );
+
   return response;
 };
 
@@ -51,6 +52,7 @@ api.interceptors.response.use(
         icon: 'error',
       });
     }
+
     return Promise.reject(err);
   }
 );

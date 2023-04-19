@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 import { CHECK_EMPTY, userMsg } from 'src/core/users/domain/user.const';
-import { useUserStore }         from 'src/core/users/infra/store/user.store';
+import { useUserStore } from 'src/core/users/infra/store/user.store';
 import * as zod from 'zod';
 import { ICheckEmailInput } from 'src/type-defs/userTypes';
 import { toFormValidator } from '@vee-validate/zod';
