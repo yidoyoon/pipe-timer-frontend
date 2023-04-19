@@ -31,10 +31,9 @@ const routes: RouteRecordRaw[] = [
         meta: {
           middleware: [skipAuth],
         },
-        beforeEnter: (to, from) => {
-          if (from.name !== 'login') {
-            return false;
-          }
+        beforeEnter: (to, from, next) => {
+          if (from.name !== 'login') next('/');
+          else next();
         },
       },
       {
@@ -45,10 +44,9 @@ const routes: RouteRecordRaw[] = [
         meta: {
           middleware: [skipAuth],
         },
-        beforeEnter: (to, from) => {
-          if (from.name !== 'check-email') {
-            return false;
-          }
+        beforeEnter: (to, from, next) => {
+          if (from.name !== 'login') next('/');
+          else next();
         },
       },
       // {
@@ -81,9 +79,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'verify-change-email',
         component: () =>
-          import(
-            '../core/users/presentation/components/ChangeEmailVerify.vue'
-          ),
+          import('../core/users/presentation/components/ChangeEmailVerify.vue'),
         name: 'verify-change-email',
       },
     ],
@@ -107,10 +103,9 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import('../core/users/presentation/components/ResetPassword.vue'),
         name: 'reset-password',
-        beforeEnter: (to, from) => {
-          if (from.name !== 'verify-reset-password') {
-            return false;
-          }
+        beforeEnter: (to, from, next) => {
+          if (from.name !== 'verify-reset-password') next('/');
+          else next();
         },
       },
     ],
