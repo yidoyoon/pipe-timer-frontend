@@ -451,11 +451,21 @@ const toPanel = (timer: ITimer) => {
   }
 };
 
+resetForm({
+  values: {
+    timerName: '새로운 타이머',
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+    color: '#000000ff',
+  },
+});
+
 const onSubmit = handleSubmit(() => {
   update();
   resetForm({
     values: {
-      timerName: '',
+      timerName: '새로운 타이머',
       hours: 0,
       minutes: 0,
       seconds: 0,
