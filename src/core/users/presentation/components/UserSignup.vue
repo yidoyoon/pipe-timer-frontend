@@ -13,7 +13,7 @@
         filled
         v-model="email"
         label="Email"
-        hint="로그인에 사용될 이메일 입니다."
+        hint="로그인에 사용될 이메일입니다."
         debounce="500"
         disable
       />
