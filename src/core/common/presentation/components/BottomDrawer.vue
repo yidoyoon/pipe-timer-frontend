@@ -5,7 +5,7 @@
         <q-card
           class="slide-drawer slide-drawer--bottom text-black column no-wrap"
           :class="`slide-drawer--open-${drawerMode}`"
-          style="position: fixed; bottom: 0; right: 15rem; left: 15rem"
+          style="position: fixed; bottom: 0; right: 20%; left: 20%"
           :style="drawerStyle"
         >
           <q-card-section
@@ -73,7 +73,7 @@
           </q-card-section>
 
           <!--            Routine list-->
-          <q-card style="width: 100%; height: 47vh">
+          <q-card style="height: 47vh">
             <q-card-section class="row wrap justify-between q-py-none">
               <div class="col">
                 <RoutineMain></RoutineMain>
