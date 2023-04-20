@@ -85,18 +85,20 @@ const { isLoading, mutate } = useMutation(
           message: '알 수 없는 오류가 발생했습니다. 관리자에게 문의해주세요.',
           icon: 'warning',
         });
-      } else {
+      }
+    },
+    onSuccess: (res) => {
+      if (res.success === false) {
         setFieldError(
           'email',
           '중복된 이메일입니다. 다른 메일을 사용해주세요.'
         );
-      }
-    },
-    onSuccess: (res) => {
-      const verifiedEmail = res.message;
-      userStore.verifiedEmail = verifiedEmail;
+      } else {
+        const verifiedEmail = res.message;
 
-      router.push({ name: 'signup' });
+        userStore.verifiedEmail = verifiedEmail;
+        router.push({ name: 'signup' });
+      }
     },
   }
 );
