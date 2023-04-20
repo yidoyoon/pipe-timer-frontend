@@ -45,6 +45,9 @@ api.interceptors.response.use(
         });
         userStore.$reset();
       });
+    } else if (errMsg === 'Already verified email') {
+      alert('이미 인증된 메일이거나 토큰 정보가 잘못됐습니다.');
+      window.location.replace('/');
     } else if (errMsg.includes('regular expression')) {
       Notify.create({
         color: 'negative',
