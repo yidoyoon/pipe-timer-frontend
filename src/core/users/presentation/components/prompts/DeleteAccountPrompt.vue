@@ -48,7 +48,7 @@ import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
 import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
 import { deleteAccountFn } from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
-import { ICheckValidationInput } from 'src/type-defs/userTypes';
+import { IValidationInput } from 'src/type-defs/userTypes';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { useField, useForm } from 'vee-validate';
 import { userMsg } from 'src/core/users/domain/user.const';
@@ -88,7 +88,7 @@ const {
 } = useField<string>('validation');
 
 const { isLoading, mutate } = useMutation(
-  (credentials: ICheckValidationInput) => deleteAccountFn(credentials),
+  (credentials: IValidationInput) => deleteAccountFn(credentials),
   {
     onError: (err: any) => {
       const response = err.response.data;

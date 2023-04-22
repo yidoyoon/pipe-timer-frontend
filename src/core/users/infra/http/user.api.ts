@@ -1,9 +1,9 @@
 import { userMsg } from 'src/core/users/domain/user.const';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import {
-  ICheckEmailInput,
-  ICheckNameInput,
-  ICheckValidationInput,
+  IEmailInput,
+  INameInput,
+  IValidationInput,
   IErrorResponse,
   IGeneralResponse,
   ILoginInput,
@@ -60,7 +60,7 @@ api.interceptors.response.use(
   }
 );
 
-export const checkEmailFn = async (email: ICheckEmailInput) => {
+export const checkEmailFn = async (email: IEmailInput) => {
   const response = await api.post('auth/check-email', email);
   return response.data;
 };
@@ -75,7 +75,6 @@ export const loginUserFn = async (user: ILoginInput) => {
   return response.data;
 };
 
-// TODO: 이메일 인증 시, 로그인까지 진행하도록 구현
 export const verifyEmailFn = async (signupVerifyToken: string) => {
   const response = await api.get(
     `users/verify-email?signupVerifyToken=${signupVerifyToken}`
@@ -93,7 +92,7 @@ export const getMeFn = async () => {
   return response.data;
 };
 
-export const resetPassFn = async (email: ICheckEmailInput) => {
+export const resetPassFn = async (email: IEmailInput) => {
   const response = await api.post('users/reset-password', email);
   return response.data;
 };
@@ -112,7 +111,7 @@ export const resetPass = async (passwords: IResetPasswordInput) => {
   return response.data;
 };
 
-export const changeEmailFn = async (email: ICheckEmailInput) => {
+export const changeEmailFn = async (email: IEmailInput) => {
   const response = await api.post('users/change-email', email);
   return response.data;
 };
@@ -126,12 +125,12 @@ export const verifyChangeEmailTokenFn = async (
   return response.data ? response.data : response;
 };
 
-export const changeNameFn = async (userName: ICheckNameInput) => {
+export const changeNameFn = async (userName: INameInput) => {
   const response = await api.post('users/change-name', userName);
   return response.data;
 };
 
-export const deleteAccountFn = async (validation: ICheckValidationInput) => {
+export const deleteAccountFn = async (validation: IValidationInput) => {
   const response = await api.post('users/delete-account', validation);
   return response.data;
 };

@@ -37,7 +37,7 @@
 import { CHECK_EMPTY, userMsg } from 'src/core/users/domain/user.const';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import * as zod from 'zod';
-import { ICheckEmailInput } from 'src/type-defs/userTypes';
+import { IEmailInput } from 'src/type-defs/userTypes';
 import { toFormValidator } from '@vee-validate/zod';
 import { useField, useForm } from 'vee-validate';
 import { useMutation } from '@tanstack/vue-query';
@@ -66,7 +66,7 @@ const { handleSubmit, resetForm, setFieldError } = useForm({
 const { value: email, errorMessage: emailError } = useField('email');
 
 const { isLoading, mutate } = useMutation(
-  (email: ICheckEmailInput) => checkEmailFn(email),
+  (email: IEmailInput) => checkEmailFn(email),
   {
     onError: (error: any) => {
       const errorMsg = error.response.data.error;
