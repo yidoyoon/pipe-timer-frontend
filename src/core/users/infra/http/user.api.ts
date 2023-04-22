@@ -101,15 +101,15 @@ export const sendResetPasswordEmail = async (
 
 export const verifyResetPasswordTokenFn = async (
   resetPasswordVerifyToken: string
-) => {
+): Promise<IGeneralResponse> => {
   const response = await api.get(
-    `users/verify-reset-password?resetPasswordVerifyToken=${resetPasswordVerifyToken}`
+    `users/verify-reset-password-token?resetPasswordVerifyToken=${resetPasswordVerifyToken}`
   );
   return response.data ? response.data : response;
 };
 
-export const resetPass = async (passwords: IResetPasswordInput) => {
-  const response = await api.post('users/post-password-reset', passwords);
+export const resetPassword = async (password: IResetPasswordInput) => {
+  const response = await api.post('users/reset-password', password);
   return response.data;
 };
 
