@@ -1,5 +1,3 @@
-import _ from 'lodash-es';
-import { IUser } from 'src/type-defs/userTypes';
 import { NavigationGuardNext } from 'vue-router';
 import { Notify } from 'quasar';
 import { Router } from 'src/router';
@@ -12,7 +10,7 @@ export default async function requireAuth({
 }: {
   next: NavigationGuardNext;
   userStore: any;
-}) {
+}): Promise<void> {
   if (!useUserStore().user) {
     await Router.push({ name: 'login' });
     Notify.create({
@@ -21,15 +19,14 @@ export default async function requireAuth({
     });
     return next();
   }
+
   try {
     const response = await getMeFn();
     const user = response.passport.user;
     userStore.setUser(user);
 
     if (!user) {
-      return next({
-        name: 'login',
-      });
+      return next({ name: 'login' });
     }
   } catch (error) {
     await Router.push({ name: 'login' });

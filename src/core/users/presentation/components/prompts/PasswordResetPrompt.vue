@@ -24,7 +24,7 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { userMsg } from 'src/core/users/domain/user.const';
-import { resetPassFn } from 'src/core/users/infra/http/user.api';
+import { sendResetPasswordEmail } from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { IEmailInput } from 'src/type-defs/userTypes';
 import { useRouter } from 'vue-router';
@@ -42,7 +42,7 @@ const resetPass = (): void => {
 
   if (userStore.user !== null) {
     data.email = userStore.user.email;
-    resetPassFn(data);
+    sendResetPasswordEmail(data);
   } else {
     $q.notify({
       color: 'negative',
