@@ -94,7 +94,7 @@ const { isLoading, mutate } = useMutation(
           '중복된 이메일입니다. 다른 메일을 사용해주세요.'
         );
       } else {
-        const verifiedEmail = res.message;
+        const verifiedEmail = res.data;
 
         userStore.verifiedEmail = verifiedEmail;
         router.push({ name: 'signup' });
