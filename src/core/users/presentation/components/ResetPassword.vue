@@ -56,9 +56,9 @@ import {
   CHECK_EMPTY,
   userMsg,
   userVar,
-} from 'src/core/users/domain/user.const';
-import { resetPass } from 'src/core/users/infra/http/user.api';
-import { isEmptyObj } from 'src/util/is-empty-object.util';
+}                        from 'src/core/users/domain/user.const';
+import { resetPassword } from 'src/core/users/infra/http/user.api';
+import { isEmptyObj }    from 'src/util/is-empty-object.util';
 import * as zod from 'zod';
 import { IResetPasswordInput } from 'src/type-defs/userTypes';
 import { ref } from 'vue';
@@ -100,7 +100,7 @@ const { value: passwordConfirm, errorMessage: passwordConfirmError } =
   useField<string>('passwordConfirm');
 
 const { isLoading, mutate } = useMutation(
-  (credentials: IResetPasswordInput) => resetPass(credentials),
+  (credentials: IResetPasswordInput) => resetPassword(credentials),
   {
     onError: (error) => {
       const errorMsg = (error as any).response.data.error;
