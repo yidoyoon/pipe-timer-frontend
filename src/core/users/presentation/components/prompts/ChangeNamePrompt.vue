@@ -39,7 +39,7 @@ import { useQuasar } from 'quasar';
 import { userMsg } from 'src/core/users/domain/user.const';
 import { changeNameFn } from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
-import { ICheckNameInput } from 'src/type-defs/userTypes';
+import { INameInput } from 'src/type-defs/userTypes';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { useField, useForm } from 'vee-validate';
 import { useRouter } from 'vue-router';
@@ -80,7 +80,7 @@ const {
 } = useField<string>('newName');
 
 const { isLoading, mutate } = useMutation(
-  (credentials: ICheckNameInput) => changeNameFn(credentials),
+  (credentials: INameInput) => changeNameFn(credentials),
   {
     onError: (err: any) => {
       const response = err.response.data;

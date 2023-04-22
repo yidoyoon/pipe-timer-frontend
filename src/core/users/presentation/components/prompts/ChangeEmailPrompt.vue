@@ -43,7 +43,7 @@ import {
   checkEmailFn,
 } from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
-import { ICheckEmailInput, ILoginInput } from 'src/type-defs/userTypes';
+import { IEmailInput } from 'src/type-defs/userTypes';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { useField, useForm } from 'vee-validate';
 import { useRouter } from 'vue-router';
@@ -79,7 +79,7 @@ const {
 } = useField<string>('newEmail');
 
 const { isLoading, mutate } = useMutation(
-  (credentials: ICheckEmailInput) => checkEmailFn(credentials),
+  (credentials: IEmailInput) => checkEmailFn(credentials),
   {
     onError: (err: any) => {
       console.log(err);
@@ -99,8 +99,8 @@ const { isLoading, mutate } = useMutation(
   }
 );
 
-const sendNewEmail = async (newEmail: ICheckEmailInput): Promise<void> => {
-  const data = {} as ICheckEmailInput;
+const sendNewEmail = async (newEmail: IEmailInput): Promise<void> => {
+  const data = {} as IEmailInput;
 
   if (userStore.user !== null) {
     if (userStore.user.email !== newEmail.email) {

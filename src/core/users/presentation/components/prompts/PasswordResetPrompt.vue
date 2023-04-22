@@ -26,7 +26,7 @@ import { useQuasar } from 'quasar';
 import { userMsg } from 'src/core/users/domain/user.const';
 import { resetPassFn } from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
-import { ICheckEmailInput } from 'src/type-defs/userTypes';
+import { IEmailInput } from 'src/type-defs/userTypes';
 import { useRouter } from 'vue-router';
 
 const $q = useQuasar();
@@ -38,7 +38,7 @@ const sendResetPasswordEmailBtn = () => {
 };
 
 const resetPass = (): void => {
-  const data = {} as ICheckEmailInput;
+  const data = {} as IEmailInput;
 
   if (userStore.user !== null) {
     data.email = userStore.user.email;

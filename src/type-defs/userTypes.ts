@@ -32,14 +32,14 @@ export interface IResetPasswordInput {
   passwordConfirm: string;
 }
 
-export interface ICheckEmailInput {
+export interface IEmailInput {
   email: string;
 }
 
-export interface ICheckNameInput {
+export interface INameInput {
   newName: string;
 }
 
-export interface ICheckValidationInput {
+export interface IValidationInput {
   validation: string;
 }
