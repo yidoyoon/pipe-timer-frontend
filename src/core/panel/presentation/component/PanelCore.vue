@@ -196,9 +196,12 @@ const pause = () => {
 const stop = () => {
   if (panelStore.state === 'stop') return;
   loadSession();
+
   panelStore.state = 'stop';
   panelStore.round = 0;
+
   clearInterval(panelStore.intervalId);
+  useMeta({ title: 'Pipe Timer' });
 };
 
 const loadSession = () => {
@@ -302,7 +305,7 @@ const timeEnd = () => {
 const notifyRoundEnd = () => {
   let name = '';
   let duration = 0;
-  const nextRound = round.value + 1;
+  let nextRound = round.value + 1;
 
   if (
     panelStore.mode === 'routine' &&
@@ -311,6 +314,29 @@ const notifyRoundEnd = () => {
     const timer = panelStore.routine.routineToTimer[nextRound].timer;
     name = timer.name;
     duration = timer.duration;
+  } else if (
+    panelStore.mode === 'routine' &&
+    nextRound === panelStore.routine.routineToTimer.length
+  ) {
+    nextRound = 0;
+    const timer = panelStore.routine.routineToTimer[nextRound].timer;
+    name = timer.name;
+    duration = timer.duration;
+    alert(timer);
+  } else if (panelStore.mode === 'timer') {
+    const id = panelStore.timer.timerId;
+    const timer = timerStore.timers[id];
+    name = timer.name;
+    duration = timer.duration;
+  }
+
+  if (
+    panelStore.mode === 'routine' &&
+    nextRound < panelStore.routine.routineToTimer.length
+  ) {
+    if (nextRound === panelStore.routine.routineToTimer.length) nextRound = 0;
+    name = panelStore.routine.routineToTimer[nextRound].timer.name;
+    duration = panelStore.routine.routineToTimer[nextRound].timer.duration;
   } else if (panelStore.mode === 'timer') {
     const id = panelStore.timer.timerId;
     const timer = timerStore.timers[id];
