@@ -322,7 +322,6 @@ const notifyRoundEnd = () => {
     const timer = panelStore.routine.routineToTimer[nextRound].timer;
     name = timer.name;
     duration = timer.duration;
-    alert(timer);
   } else if (panelStore.mode === 'timer') {
     const id = panelStore.timer.timerId;
     const timer = timerStore.timers[id];
