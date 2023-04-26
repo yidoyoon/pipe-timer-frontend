@@ -79,6 +79,7 @@ const { isLoading, mutate } = useMutation(
           icon: 'warning',
         });
       }
+
       if (Array.isArray(errorMsg)) {
         $q.notify({
           type: 'negative',
@@ -95,7 +96,6 @@ const { isLoading, mutate } = useMutation(
         );
       } else {
         const verifiedEmail = res.data;
-
         userStore.verifiedEmail = verifiedEmail;
         router.push({ name: 'signup' });
       }
