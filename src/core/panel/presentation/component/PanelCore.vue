@@ -55,18 +55,18 @@
         color="green-7"
         text-color="white"
         @click="start"
-        >start</q-btn
-      >
+        >start
+      </q-btn>
       <q-btn
         v-else-if="panelStore.state === 'start'"
         color="yellow"
         text-color="black"
         @click="pause"
-        >pause</q-btn
-      >
+        >pause
+      </q-btn>
       <q-btn class="q-ml-lg" color="red" text-color="white" @click="stop"
-        >stop</q-btn
-      >
+        >stop
+      </q-btn>
     </div>
   </div>
 </template>
@@ -322,7 +322,6 @@ const notifyRoundEnd = () => {
     const timer = panelStore.routine.routineToTimer[nextRound].timer;
     name = timer.name;
     duration = timer.duration;
-    alert(timer);
   } else if (panelStore.mode === 'timer') {
     const id = panelStore.timer.timerId;
     const timer = timerStore.timers[id];

@@ -45,7 +45,9 @@ api.interceptors.response.use(
         });
         userStore.$reset();
       });
-    } else if (errMsg === 'Already verified email') {
+    } else if (
+      errMsg === 'signupVerifyToken is already used or invalid token'
+    ) {
       alert('이미 인증된 메일이거나 토큰 정보가 잘못됐습니다.');
       window.location.replace('/');
     } else if (errMsg.includes('regular expression')) {
@@ -75,7 +77,9 @@ export const loginUserFn = async (user: ILoginInput) => {
   return response.data;
 };
 
-export const verifyEmailFn = async (signupVerifyToken: string) => {
+export const verifyEmailFn = async (
+  signupVerifyToken: string
+): Promise<IGeneralResponse> => {
   const response = await api.get(
     `users/verify-email?signupVerifyToken=${signupVerifyToken}`
   );
@@ -95,7 +99,7 @@ export const getMeFn = async () => {
 export const sendResetPasswordEmail = async (
   email: IEmailInput
 ): Promise<IGeneralResponse> => {
-  const response = await api.post('users/reset-password', email);
+  const response = await api.post('users/send-reset-password-email', email);
   return response.data;
 };
 

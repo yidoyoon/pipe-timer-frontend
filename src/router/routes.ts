@@ -45,7 +45,7 @@ const routes: RouteRecordRaw[] = [
           middleware: [skipAuth],
         },
         beforeEnter: (to, from, next) => {
-          if (from.name !== 'login') next('/');
+          if (from.name !== 'check-email') next('/');
           else next();
         },
       },

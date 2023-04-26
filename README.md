@@ -1,4 +1,4 @@
-# Pipe Timer (pipe-timer-front)
+# Pipe Timer
 
 A Time-stackable Pomodoro Timer
 

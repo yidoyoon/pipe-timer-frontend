@@ -57,7 +57,6 @@ export const useBuilderStore = defineStore('BuilderStore', {
   actions: {
     orderRoutine() {
       if ('routineToTimer' in this.routineInBuilder) {
-        alert('passed');
         return this.routineInBuilder.routineToTimer.map((timer, index) => {
           timer.order = index;
           timer.timer.order = index;
