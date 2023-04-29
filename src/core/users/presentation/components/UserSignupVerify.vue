@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { userMsg } from 'src/core/users/domain/user.const';
 import { onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import { useRoute, useRouter } from 'vue-router';
@@ -9,37 +8,46 @@ const router = useRouter();
 const route = useRoute();
 const $q = useQuasar();
 
-// TODO: 잘못된 인증 토큰(만료, 위조)이 전송되면 404 페이지로 라우팅
 onMounted(async () => {
   await router.isReady();
   const { signupVerifyToken } = route.query;
 
-  const response = await verifyEmailFn(signupVerifyToken as string);
+  await verifyEmailFn(signupVerifyToken as string)
+    .then(async (response) => {
+      if (response.success) {
+        if (response.message === 'Already verified email') {
+          $q.notify({
+            type: 'warning',
+            message: '이미 인증된 이메일이거나 유효하지 않은 토큰입니다.',
+            icon: 'warning',
+          });
+        } else {
+          $q.notify({
+            type: 'positive',
+            message: '인증되었습니다. 서비스를 이용하시려면 로그인 해주세요.',
+            icon: 'done',
+          });
+        }
+      } else {
+        $q.notify({
+          type: 'warning',
+          message: '이미 인증된 이메일이거나 유효하지 않은 토큰입니다.',
+          icon: 'warning',
+        });
+      }
 
-  if (response.success === true) {
-    if (response.message === 'Already verified email') {
-      $q.notify({
-        type: 'positive',
-        message: '이미 인증된 이메일입니다. 로그인 후 서비스를 이용해주세요.',
-        icon: 'warning',
-      });
-    } else {
-      $q.notify({
-        type: 'positive',
-        message: userMsg.VERIFY_EMAIL_SUCCESS,
-        icon: 'done',
-      });
-    }
-  } else {
-    if (response.message === 'Invalid email verification code') {
-      $q.notify({
-        color: 'warning',
-        textColor: 'black',
-        message: '잘못된 인증코드입니다.',
-        icon: 'warning',
-      });
-    }
-  }
-  await router.push({ name: 'login' });
+      await router.push({ name: 'login' });
+    })
+    .catch((err) => {
+      if (err === 'Cannot verify token') {
+        $q.notify({
+          type: 'negative',
+          message:
+            '인증 과정에서 오류가 발생했습니다. 오류가 계속되면 관리자에게 문의해주세요.',
+          icon: 'error',
+        });
+      }
+      router.push({ name: 'panel' });
+    });
 });
 </script>

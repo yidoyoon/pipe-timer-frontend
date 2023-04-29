@@ -22,14 +22,26 @@ export default async function requireAuth({
 
   try {
     const response = await getMeFn();
-    const user = response.passport.user;
+    const user = {
+      id: response.id,
+      userName: response.userName,
+      email: response.email,
+    };
     userStore.setUser(user);
 
     if (!user) {
       return next({ name: 'login' });
     }
   } catch (error) {
-    await Router.push({ name: 'login' });
+    Notify.create({
+      type: 'warning',
+      textColor: 'black',
+      message: '회원인증 절차에 오류가 발생했습니다.',
+      closeBtn: true,
+    });
+    return next({
+      name: 'panel',
+    });
   }
 
   return next();

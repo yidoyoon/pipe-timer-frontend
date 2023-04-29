@@ -155,10 +155,10 @@ const { isLoading, mutate } = useMutation(
         });
       }
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (res, user) => {
       $q.notify({
         type: 'positive',
-        message: variables.email + userMsg.SEND_USER_SIGNUP_VERIFICATION_EMAIL,
+        message: user.email + userMsg.SEND_USER_SIGNUP_VERIFICATION_EMAIL,
       });
       router.push({ name: 'panel' });
       userStore.verifiedEmail = null;

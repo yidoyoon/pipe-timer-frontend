@@ -31,9 +31,9 @@ api.interceptors.response.use(
   // TODO: 에러메시지를 각 서비스로 분산
   // TODO: 미들웨어에서 router.push 수행하도록 수정
   async (err) => {
-    // const originalRequest = error.config;
-    const errMsg = err.response.data?.message as string;
     const userStore = useUserStore();
+    const errMsg = err.response.data?.message as string;
+    // const originalRequest = error.config;
 
     if (errMsg === 'Unauthorized' || errMsg === 'User not found') {
       return await refreshAccessTokenFn().catch(() => {
@@ -45,20 +45,9 @@ api.interceptors.response.use(
         });
         userStore.$reset();
       });
-    } else if (
-      errMsg === 'signupVerifyToken is already used or invalid token'
-    ) {
-      alert('이미 인증된 메일이거나 토큰 정보가 잘못됐습니다.');
-      window.location.replace('/');
-    } else if (errMsg.includes('regular expression')) {
-      Notify.create({
-        color: 'negative',
-        message: '비밀번호로 사용 불가능한 문자가 포함되어 있습니다.',
-        icon: 'error',
-      });
     }
 
-    return Promise.reject(err);
+    return Promise.reject(errMsg);
   }
 );
 

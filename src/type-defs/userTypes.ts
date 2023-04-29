@@ -6,6 +6,7 @@ export interface IUser {
 
 export interface IGeneralResponse<T = void> {
   success: boolean;
+  message?: string;
   data?: T;
 }
 
