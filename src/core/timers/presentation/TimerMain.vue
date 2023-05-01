@@ -3,7 +3,7 @@
     v-model="rightDrawerOpen"
     side="right"
     borderd
-    :width="$q.platform.is.desktop ? 220 : 170"
+    :width="$q.platform.is.desktop ? 170 : 120"
     :breakpoint="600"
   >
     <q-scroll-area style="height: 100%; border-left: 1px solid #ddd">
@@ -44,13 +44,9 @@
 
         <q-separator />
 
-        <div class="gt-sm q-pa-md fontsize-10 row justify-center items-center">
-          <q-icon name="timer" class="fontsize-12" />
-          <span style="margin-left: 0.2rem">타이머 리스트</span>
-        </div>
-        <div class="lt-md q-pa-md fontsize-14 row justify-center items-center">
-          <q-icon name="timer" class="fontsize-16" />
-          <span style="margin-left: 0.2rem">타이머 리스트</span>
+        <div class="q-pa-md fontsize-10 row justify-center items-center">
+          <q-icon name="timer" class="fontsize-11" />
+          <span style="margin-left: 0.2em">타이머 리스트</span>
         </div>
 
         <q-separator />
@@ -136,6 +132,8 @@
             dense
             autofocus
             debounce="300"
+            @keyup.enter.prevent="onSubmit"
+            @keyup.esc.prevent="timerPrompt = false"
             :input-style="{ width: '4rem' }"
             :error="!!hoursError"
             :error-message="hoursError"
@@ -147,6 +145,8 @@
             dense
             autofocus
             debounce="300"
+            @keyup.enter.prevent="onSubmit"
+            @keyup.esc.prevent="timerPrompt = false"
             :input-style="{ width: '4rem' }"
             :error="!!minutesError"
             :error-message="minutesError"
@@ -158,6 +158,8 @@
             dense
             autofocus
             debounce="300"
+            @keyup.enter.prevent="onSubmit"
+            @keyup.esc.prevent="timerPrompt = false"
             :input-style="{ width: '4rem' }"
             :error="!!secondsError"
             :error-message="secondsError"
@@ -169,6 +171,8 @@
           :rules="['anyColor']"
           hint="타이머 구분에 사용할 색상을 선택합니다."
           debounce="500"
+          @keyup.enter.prevent="onSubmit"
+          @keyup.esc.prevent="timerPrompt = false"
           :error="!!colorError"
           :error-message="colorError"
           dense
