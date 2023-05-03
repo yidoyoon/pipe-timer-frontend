@@ -9,11 +9,10 @@
     <q-scroll-area style="height: 100%; border-left: 1px solid #ddd">
       <q-list padding>
         <q-item-section>
-          <q-item class="justify-center q-pa-sm q-pr-md">
-            <q-item-label v-if="isLoggedIn"
-              >Logged in as
+          <q-item class="justify-center text-no-wrap q-pa-sm q-pr-md">
+            <q-item-label v-if="isLoggedIn">
               <span class="cursor-pointer">
-                <b>{{ userStoreRefs.user.value.userName }}</b>
+                logged in as <b>{{ userStoreRefs.user.value.userName }}</b>
                 <q-menu>
                   <q-list style="min-width: 100px">
                     <q-item clickable v-close-popup to="/users/setting">
@@ -22,6 +21,20 @@
                   </q-list>
                 </q-menu>
               </span>
+              <div
+                v-show="!userStoreRefs.user.value?.isVerified"
+                class="row justify-center q-my-none q-py-none"
+              >
+                <q-btn
+                  color="blue"
+                  flat
+                  size="0.8rem"
+                  dense
+                  @click="resendSignupEmail"
+                  class="q-my-none q-py-none"
+                  >인증 메일 재전송</q-btn
+                >
+              </div>
             </q-item-label>
             <div v-if="!isLoggedIn">
               <q-item-label class="lt-md fontsize-11"
@@ -213,6 +226,7 @@ import { useQuasar } from 'quasar';
 import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
 import { Timer } from 'src/core/timers/domain/timer.model';
 import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
+import { resendSignupEmailFn } from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { useField, useForm } from 'vee-validate';
@@ -242,7 +256,6 @@ onBeforeMount(() => {
 });
 
 const $q = useQuasar();
-
 const timerPrompt = ref(false);
 
 const addTimerSchema = toFormValidator(
@@ -349,6 +362,18 @@ const saveTimers = () => {
         color: 'positive',
       });
       timerStore.fetchAll();
+    }
+  }
+};
+
+const resendSignupEmail = async () => {
+  if (userStore.user !== null) {
+    const result = await resendSignupEmailFn(userStore.user.email);
+    if (result.success === true) {
+      $q.notify({
+        message: '인증 메일을 재전송했습니다.',
+        color: 'positive',
+      });
     }
   }
 };
