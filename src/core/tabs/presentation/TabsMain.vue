@@ -1,6 +1,6 @@
 <template>
   <q-drawer v-model="drawer" side="left" bordered
-            :width="$q.platform.is.desktop ? 220 : 170"
+            :width="$q.platform.is.desktop ? 170 : 120"
             :breakpoint="600"
   >
     <q-scroll-area

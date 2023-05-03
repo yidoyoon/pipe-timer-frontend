@@ -20,7 +20,7 @@
               >
                 <q-card
                   class="inner-my-card text-white flat"
-                  style="background: black; width: 12vw"
+                  style="background: black; width: 150px"
                   :style="
                     index === round
                       ? highlightBorder(t.timer)
