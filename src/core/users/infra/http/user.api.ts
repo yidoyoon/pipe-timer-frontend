@@ -129,3 +129,8 @@ export const deleteAccountFn = async (validation: IValidationInput) => {
   const response = await api.post('users/delete-account', validation);
   return response.data;
 };
+
+export const resendSignupEmailFn = async (email: string): Promise<IRes> => {
+  const response = await api.post('auth/resend-signup-email', { email });
+  return response.data;
+};
