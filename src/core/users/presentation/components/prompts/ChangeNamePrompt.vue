@@ -63,10 +63,18 @@ const changeNameSchema = toFormValidator(
       path: ['newName'],
       message: userMsg.SAME_NEW_USERNAME,
     })
-    .refine((data) => !filter.check(data.newName), {
-      path: ['newName'],
-      message: userMsg.PROFANE_WORDS,
-    })
+    .refine(
+      (data) => {
+        filter.add(['admin', 'webmaster', 'yidoyoon']);
+        const formatted = data.newName.replace(/[0-9\s]/g, '');
+
+        return !filter.check(formatted);
+      },
+      {
+        path: ['newName'],
+        message: userMsg.PROFANE_WORDS,
+      }
+    )
 );
 
 const { handleSubmit, resetForm, errors } = useForm({
@@ -83,12 +91,11 @@ const { isLoading, mutate } = useMutation(
   (credentials: INameInput) => changeNameFn(credentials),
   {
     onError: (err: any) => {
-      const response = err.response.data;
-      console.log(response);
+      const errMsg = err.response.data.message;
 
-      if (err.message === 'Duplicate username') {
+      if (errMsg === 'Duplicate username') {
         setErrors('이미 사용중인 유저네임 입니다.');
-      } else if (err.message === 'Contains some prohibited words') {
+      } else if (errMsg === 'Contains some prohibited words') {
         setErrors('사용 불가능한 단어가 포함되어 있습니다.');
       } else {
         $q.notify({
