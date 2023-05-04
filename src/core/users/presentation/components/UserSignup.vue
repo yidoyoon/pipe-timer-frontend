@@ -69,6 +69,7 @@
 </template>
 
 <script setup lang="ts">
+import * as filter from 'leo-profanity';
 import * as zod from 'zod';
 import {
   CHECK_EMPTY,
@@ -106,6 +107,18 @@ const registerSchema = toFormValidator(
         .string()
         .min(CHECK_EMPTY, userMsg.EMPTY_CONFIRM_PASSWORD),
     })
+    .refine(
+      (data) => {
+        filter.add(['admin', 'webmaster', 'yidoyoon']);
+        const formatted = data.name.replace(/[0-9\s]/g, '');
+
+        return !filter.check(formatted);
+      },
+      {
+        path: ['name'],
+        message: userMsg.PROFANE_WORDS,
+      }
+    )
     .refine((data) => data.password === data.passwordConfirm, {
       path: ['passwordConfirm'],
       message: userMsg.MISMATCH_PASSWORD,
