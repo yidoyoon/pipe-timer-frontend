@@ -5,9 +5,9 @@ import {
   INameInput,
   IValidationInput,
   IErrorResponse,
-  IGeneralResponse,
+  IRes,
   ILoginInput,
-  IResetPasswordInput,
+  IChangePasswordInput,
   ISignupInput,
   IUser,
 } from 'src/type-defs/userTypes';
@@ -15,9 +15,7 @@ import { Notify } from 'quasar';
 import { api } from 'boot/axios';
 
 export const refreshAccessTokenFn = () => {
-  const response = api.get<IGeneralResponse<IUser> | IErrorResponse>(
-    'auth/refresh'
-  );
+  const response = api.get<IRes<IUser> | IErrorResponse>('auth/refresh');
 
   return response;
 };
@@ -43,6 +41,7 @@ api.interceptors.response.use(
           message: userMsg.INVALID_TOKEN,
           icon: 'error',
         });
+
         userStore.$reset();
       });
     }
@@ -66,11 +65,9 @@ export const loginUserFn = async (user: ILoginInput) => {
   return response.data;
 };
 
-export const verifyEmailFn = async (
-  signupVerifyToken: string
-): Promise<IGeneralResponse> => {
+export const verifyEmailFn = async (signupToken: string): Promise<IRes> => {
   const response = await api.get(
-    `users/verify-email?signupVerifyToken=${signupVerifyToken}`
+    `users/verify-email?signupToken=${signupToken}`
   );
   return response.data ? response.data : response;
 };
@@ -85,37 +82,35 @@ export const getMeFn = async () => {
   return response.data;
 };
 
-export const sendResetPasswordEmail = async (
+export const sendResetPasswordEmailFn = async (
   email: IEmailInput
-): Promise<IGeneralResponse> => {
+): Promise<IRes> => {
   const response = await api.post('users/send-reset-password-email', email);
   return response.data;
 };
 
 export const verifyResetPasswordTokenFn = async (
-  resetPasswordVerifyToken: string
-): Promise<IGeneralResponse> => {
+  resetPasswordToken: string
+): Promise<IRes> => {
   const response = await api.get(
-    `users/verify-reset-password-token?resetPasswordVerifyToken=${resetPasswordVerifyToken}`
+    `users/verify-reset-password-token?resetPasswordToken=${resetPasswordToken}`
   );
   return response.data ? response.data : response;
 };
 
-export const resetPassword = async (password: IResetPasswordInput) => {
-  const response = await api.post('users/reset-password', password);
+export const changePassword = async (password: IChangePasswordInput) => {
+  const response = await api.post('users/change-password', password);
   return response.data;
 };
 
-export const changeEmailFn = async (email: IEmailInput) => {
-  const response = await api.post('users/change-email', email);
+export const sendChangeMailFn = async (email: IEmailInput) => {
+  const response = await api.post('users/send-change-mail', email);
   return response.data;
 };
 
-export const verifyChangeEmailTokenFn = async (
-  changeEmailVerifyToken: string
-) => {
+export const verifyChangeEmailTokenFn = async (changeEmailToken: string) => {
   const response = await api.get(
-    `users/verify-change-email?changeEmailVerifyToken=${changeEmailVerifyToken}`
+    `users/verify-change-email?changeEmailToken=${changeEmailToken}`
   );
   return response.data ? response.data : response;
 };

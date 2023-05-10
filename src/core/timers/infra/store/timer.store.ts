@@ -14,11 +14,6 @@ export interface TimerState {
   isLoadingTimer: boolean;
 }
 
-const selectorStore = useSelectorStore();
-const panelStore = usePanelStore();
-const userStore = useUserStore();
-const { user } = userStore;
-
 export const useTimerStore = defineStore('TimerStore', {
   state: (): TimerState => {
     return {
@@ -78,7 +73,9 @@ export const useTimerStore = defineStore('TimerStore', {
   // TODO: URL timer에서 timer로 변경
   actions: {
     async fetchAll() {
-      if (!!user) {
+      const userStore = useUserStore();
+
+      if (userStore.user !== null) {
         if (this.loadedTimers) this.$reset();
         this.isLoadingTimer = true;
         // TODO: 에러 처리 필요
@@ -104,7 +101,10 @@ export const useTimerStore = defineStore('TimerStore', {
     },
 
     async remove(timerId: string) {
+      const userStore = useUserStore();
+      const panelStore = usePanelStore();
       const target = this.timers[timerId];
+
       if (!!target) {
         delete this.timers[timerId];
         if (timerId === panelStore.timer.timerId) {
@@ -113,7 +113,7 @@ export const useTimerStore = defineStore('TimerStore', {
         const i = this.timerIds.lastIndexOf(timerId);
         if (i > -1) this.timerIds.splice(i, 1);
       }
-      if (!!user) {
+      if (userStore.user !== null) {
         await this.saveTimer().catch(() => {
           Notify.create({
             message: '타이머 삭제 중 오류가 발생했습니다.',
@@ -152,7 +152,9 @@ export const useTimerStore = defineStore('TimerStore', {
     // },
 
     async saveTimer() {
+      const selectorStore = useSelectorStore();
       const res = await api.post('timer/save', this.listTimers);
+
       if (!res) {
         Notify.create({
           message:

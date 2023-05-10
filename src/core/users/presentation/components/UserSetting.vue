@@ -18,7 +18,7 @@
           <q-field outlined style="width: 17rem" dense class="q-pt-xs">
             <template v-slot:control>
               <div class="self-center full-width no-outline" tabindex="0">
-                {{ userStore.user?.email }}
+                {{ userStoreRefs.user?.value.email }}
               </div>
             </template>
           </q-field>
@@ -35,11 +35,11 @@
 
       <div class="row justify-start items-end">
         <div class="text-h6 col-8">
-          User name
+          Username
           <q-field outlined style="width: 17rem" dense class="q-pt-xs">
             <template v-slot:control>
               <div class="self-center full-width no-outline" tabindex="0">
-                {{ userStore.user?.userName }}
+                {{ userStoreRefs.user.value?.userName }}
               </div>
             </template>
           </q-field>
@@ -98,6 +98,7 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import ChangeEmailPrompt from 'src/core/users/presentation/components/prompts/ChangeEmailPrompt.vue';
 import ChangeNamePrompt from 'src/core/users/presentation/components/prompts/ChangeNamePrompt.vue';
 import DeleteAccountPrompt from 'src/core/users/presentation/components/prompts/DeleteAccountPrompt.vue';
@@ -107,6 +108,7 @@ import { useRouter } from 'vue-router';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 
 const userStore = useUserStore();
+const userStoreRefs = storeToRefs(userStore);
 const $q = useQuasar();
 const $router = useRouter();
 

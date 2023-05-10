@@ -39,7 +39,7 @@ import { useQuasar } from 'quasar';
 import { userMsg } from 'src/core/users/domain/user.const';
 import { changeNameFn } from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
-import { INameInput } from 'src/type-defs/userTypes';
+import { INameInput, IUser } from 'src/type-defs/userTypes';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { useField, useForm } from 'vee-validate';
 import { useRouter } from 'vue-router';
@@ -110,12 +110,13 @@ const { isLoading, mutate } = useMutation(
     },
     onSuccess: (response) => {
       userStore.changeNamePrompt = false;
+      userStore.user = { ...userStore.user, userName: newName.value } as IUser;
+
       $q.notify({
         color: 'positive',
         message: userMsg.CHANGE_USERNAME_SUCCESS,
         icon: 'done',
       });
-      $router.go(0);
     },
   }
 );

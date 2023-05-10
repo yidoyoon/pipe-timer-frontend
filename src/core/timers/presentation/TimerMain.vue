@@ -230,7 +230,7 @@ import { resendSignupEmailFn } from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { useField, useForm } from 'vee-validate';
-import { onBeforeMount, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import TimerCore from 'src/core/timers/presentation/components/TimerCore.vue';
 import * as zod from 'zod';
 
@@ -238,22 +238,15 @@ const props = withDefaults(defineProps<{ rightDrawerOpen: boolean }>(), {
   rightDrawerOpen: true,
 });
 
+const routineStore = useRoutineStore();
 const timerStore = useTimerStore();
 const timerStoreRef = storeToRefs(timerStore);
 const userStore = useUserStore();
-const routineStore = useRoutineStore();
 
 const userStoreRefs = storeToRefs(userStore);
 const isLoggedIn = userStoreRefs.user;
 
 const rightDrawerOpen = ref(props.rightDrawerOpen);
-
-onBeforeMount(() => {
-  if (!!userStore.user) {
-    timerStore.fetchAll();
-    routineStore.fetchAll();
-  }
-});
 
 const $q = useQuasar();
 const timerPrompt = ref(false);
@@ -361,6 +354,7 @@ const saveTimers = () => {
         message: '저장을 완료했습니다.',
         color: 'positive',
       });
+
       timerStore.fetchAll();
     }
   }
@@ -369,7 +363,7 @@ const saveTimers = () => {
 const resendSignupEmail = async () => {
   if (userStore.user !== null) {
     const result = await resendSignupEmailFn(userStore.user.email);
-    if (result.success === true) {
+    if (result.success) {
       $q.notify({
         message: '인증 메일을 재전송했습니다.',
         color: 'positive',

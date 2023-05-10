@@ -1,8 +1,8 @@
 import { api } from 'boot/axios';
 import { defineStore } from 'pinia';
-import { LocalStorage }  from 'quasar';
+import { LocalStorage } from 'quasar';
 import { usePanelStore } from 'src/core/panel/infra/store/panel.store';
-import { IRoutine }      from 'src/core/routines/domain/routine.model';
+import { IRoutine } from 'src/core/routines/domain/routine.model';
 import { IRoutineToTimer } from 'src/core/timers/domain/timer.model';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import _ from 'lodash-es';
@@ -15,10 +15,6 @@ export interface RoutineState {
   isEditingRoutine: boolean;
   bottomDrawerHeight: number;
 }
-
-const userStore = useUserStore();
-const panelStore = usePanelStore();
-const { user } = userStore;
 
 export const useRoutineStore = defineStore('RoutineStore', {
   state: (): RoutineState => {
@@ -80,7 +76,9 @@ export const useRoutineStore = defineStore('RoutineStore', {
 
   actions: {
     async fetchAll() {
-      if (!!user) {
+      const userStore = useUserStore();
+
+      if (userStore.user !== null) {
         this.isLoadingRoutine = true;
         // TODO: 에러 처리 필요
         const res = await api.get('routine/fetch');
@@ -105,7 +103,10 @@ export const useRoutineStore = defineStore('RoutineStore', {
     },
 
     async remove(routineId: string) {
+      const userStore = useUserStore();
+      const panelStore = usePanelStore();
       const target = this.routine[routineId];
+
       if (!!target) {
         delete this.routine[routineId];
         const i = this.routineIds.lastIndexOf(routineId);
@@ -113,7 +114,7 @@ export const useRoutineStore = defineStore('RoutineStore', {
         if (routineId === panelStore.routine.id) {
           panelStore.routine = _.cloneDeep({} as IRoutine);
         }
-        if (!!user) {
+        if (userStore.user !== null) {
           // TODO: 에러처리
           const res = await api.post('routine/remove', target.id);
         }

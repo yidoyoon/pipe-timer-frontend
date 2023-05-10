@@ -24,9 +24,8 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { userMsg } from 'src/core/users/domain/user.const';
-import { sendResetPasswordEmail } from 'src/core/users/infra/http/user.api';
+import { sendResetPasswordEmailFn } from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
-import { IEmailInput } from 'src/type-defs/userTypes';
 import { useRouter } from 'vue-router';
 
 const $q = useQuasar();
@@ -34,22 +33,24 @@ const $router = useRouter();
 const userStore = useUserStore();
 
 const sendResetPasswordEmailBtn = () => {
-  resetPass();
+  resetPassword();
 };
 
-const resetPass = (): void => {
-  const data = {} as IEmailInput;
-
+const resetPassword = async (): Promise<void> => {
   if (userStore.user !== null) {
-    data.email = userStore.user.email;
-    sendResetPasswordEmail(data);
+    const data = {
+      email: userStore.user.email,
+    };
+
+    await sendResetPasswordEmailFn(data);
   } else {
     $q.notify({
       color: 'negative',
       message: userMsg.INVALID_LOGIN_DATA,
       icon: 'error',
     });
-    $router.push({ name: 'login' });
+
+    await $router.push({ name: 'login' });
   }
 };
 </script>

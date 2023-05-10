@@ -9,7 +9,7 @@
     </div>
     <q-card-section class="q-py-none">
       <div
-        v-if="props.routine.routineToTimer !== undefined"
+        v-if="props.routine.routineToTimer.length"
         class="row justify-between no-wrap"
         style="height: 5rem; white-space: nowrap"
       >
@@ -49,13 +49,14 @@
               anchor="top middle"
               self="top middle"
             >
-              타이머 혹은 루틴 작동 중엔 삭제가 불가능 합니다.<br>'Stop'을 눌러 완전히 정지한 후 진행해 주세요.
+              타이머 혹은 루틴 작동 중엔 삭제가 불가능 합니다.<br />'Stop'을
+              눌러 완전히 정지한 후 진행해 주세요.
             </q-tooltip>
           </q-menu>
 
           <q-card
             class="inner-my-card text-white flat"
-            style="display: inline-block; width: 12vw"
+            style="background: black; display: inline-block; width: 116px"
             :style="colorExtractor(t.timer)"
           >
             <q-card-section class="q-img-container">
@@ -184,15 +185,11 @@ const colorExtractor = (timer: ITimer) => {
 // Panel related
 const toPanel = (routine: IRoutine) => {
   // Session storage for saving initial state of routines, timers
-  try {
-    $q.sessionStorage.set('panel-data', routine);
-    panelStore.routine = _.cloneDeep(routine);
-    panelStore.mode = 'routine';
-    panelStore.state = 'pause';
-    panelStore.round = 0;
-  } catch (e) {
-    // console.log(e);
-  }
+  $q.sessionStorage.set('panel-data', routine);
+  panelStore.routine = _.cloneDeep(routine);
+  panelStore.mode = 'routine';
+  panelStore.state = 'pause';
+  panelStore.round = 0;
 };
 
 const timeFormatter = (duration: string | number) => {

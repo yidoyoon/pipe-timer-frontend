@@ -37,7 +37,7 @@
       <q-space v-if="!routineInBuilder.routineToTimer.length" class="q-my-lg" />
 
       <draggable
-        v-if="props.routine.routineToTimer !== undefined"
+        v-if="'routineToTimer' in props.routine"
         :list="rBuilder"
         v-bind="dragOptions"
         :component-data="{
