@@ -56,11 +56,11 @@ import {
   CHECK_EMPTY,
   userMsg,
   userVar,
-}                        from 'src/core/users/domain/user.const';
-import { resetPassword } from 'src/core/users/infra/http/user.api';
-import { isEmptyObj }    from 'src/util/is-empty-object.util';
+} from 'src/core/users/domain/user.const';
+import { changePassword } from 'src/core/users/infra/http/user.api';
+import { isEmptyObj } from 'src/util/is-empty-object.util';
 import * as zod from 'zod';
-import { IResetPasswordInput } from 'src/type-defs/userTypes';
+import { IChangePasswordInput } from 'src/type-defs/userTypes';
 import { ref } from 'vue';
 import { toFormValidator } from '@vee-validate/zod';
 import { useField, useForm } from 'vee-validate';
@@ -100,35 +100,15 @@ const { value: passwordConfirm, errorMessage: passwordConfirmError } =
   useField<string>('passwordConfirm');
 
 const { isLoading, mutate } = useMutation(
-  (credentials: IResetPasswordInput) => resetPassword(credentials),
+  (credentials: IChangePasswordInput) => changePassword(credentials),
   {
-    onError: (error) => {
-      const errorMsg = (error as any).response.data.error;
-      const responseMsg = (error as any).response.data.message;
-
-      if ((error as any).response === undefined) {
-        $q.notify({
-          type: 'negative',
-          message: '서버 점검중입니다.',
-          icon: 'warning',
-        });
-      }
-      if (Array.isArray(errorMsg)) {
-        errorMsg.forEach((el: any) => {
-          $q.notify({
-            type: 'negative',
-            message: el.message,
-            icon: 'warning',
-          });
-        });
-      }
-      if (responseMsg === 'The password updated successfully.') {
-        $q.notify({
-          type: 'negative',
-          message: responseMsg,
-          icon: 'warning',
-        });
-      }
+    onError: () => {
+      $q.notify({
+        type: 'negative',
+        message:
+          '비밀번호를 설정할 수 없습니다. 오류가 반복되면 관리자에게 문의해주세요',
+        icon: 'warning',
+      });
     },
     onSuccess: () => {
       $q.notify({

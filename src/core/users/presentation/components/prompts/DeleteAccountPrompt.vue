@@ -92,7 +92,6 @@ const { isLoading, mutate } = useMutation(
   {
     onError: (err: any) => {
       const response = err.response.data;
-      console.log(response);
 
       if (response.message === 'Wrong input value') {
         $q.notify({
@@ -104,17 +103,20 @@ const { isLoading, mutate } = useMutation(
         setErrors(userMsg.UNKNOWN_ERROR);
       }
     },
-    onSuccess: (response) => {
+    onSuccess: () => {
       userStore.deleteAccountPrompt = false;
+
       $q.notify({
         color: 'positive',
         message: userMsg.DELETE_ACCOUNT_SUCCESS,
         icon: 'done',
       });
+
       userStore.$reset();
       timerStore.$reset();
       routineStore.$reset();
       panelStore.$reset();
+
       $router.push({ name: 'panel' });
     },
   }

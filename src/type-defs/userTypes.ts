@@ -4,7 +4,7 @@ export interface IUser {
   email: string;
 }
 
-export interface IGeneralResponse<T = void> {
+export interface IRes<T = void> {
   success: boolean;
   message?: string;
   data?: T;
@@ -28,7 +28,7 @@ export interface ISignupInput {
   passwordConfirm: string;
 }
 
-export interface IResetPasswordInput {
+export interface IChangePasswordInput {
   password: string;
   passwordConfirm: string;
 }

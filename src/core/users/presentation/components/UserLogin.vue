@@ -58,7 +58,7 @@ import { CHECK_EMPTY, userMsg } from 'src/core/users/domain/user.const';
 import * as zod from 'zod';
 import { ILoginInput } from 'src/type-defs/userTypes';
 import { getMeFn, loginUserFn } from 'src/core/users/infra/http/user.api';
-import { onBeforeMount, onBeforeUpdate, ref } from 'vue';
+import { onBeforeMount, onBeforeUnmount, onBeforeUpdate, ref } from 'vue';
 import { toFormValidator } from '@vee-validate/zod';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { useField, useForm } from 'vee-validate';
@@ -77,6 +77,10 @@ const userData = userStore.user;
 
 onBeforeMount(() => {
   routineStore.bottomDrawerHeight = 36;
+});
+
+onBeforeUnmount(() => {
+  routineStore.bottomDrawerHeight = 348;
 });
 
 const loginSchema = toFormValidator(
@@ -121,13 +125,21 @@ const { isLoading, mutate } = useMutation(
         setErrors('이메일 혹은 비밀번호가 일치하지 않습니다.');
       }
     },
-    onSuccess: (response) => {
-      const user = response.passport.user;
+    onSuccess: async () => {
+      panelStore.$reset();
+      timerStore.$reset();
+      routineStore.$reset();
+
+      const response = await getMeFn();
+      const user = { ...response };
 
       userStore.setUser(user);
-      queryClient.refetchQueries(['user']);
 
-      router.push('/');
+      await timerStore.fetchAll();
+      await routineStore.fetchAll();
+
+      await queryClient.refetchQueries(['user']);
+      await router.push({ name: 'panel' });
     },
   }
 );
@@ -137,13 +149,9 @@ const onSubmit = handleSubmit((values) => {
     email: values.email,
     password: values.password,
   });
+
   resetForm();
 });
 
-onBeforeUpdate(() => {
-  if (authResult.data.value?.userPayload) {
-    const user = Object.assign({}, authResult.data.value?.userPayload);
-    userStore.setUser(user);
-  }
-});
+onBeforeUpdate(() => {});
 </script>

@@ -3,40 +3,38 @@ import { userMsg } from 'src/core/users/domain/user.const';
 import { onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import { useRoute, useRouter } from 'vue-router';
-import {
-  verifyResetPasswordTokenFn,
-} from 'src/core/users/infra/http/user.api';
+import { verifyResetPasswordTokenFn } from 'src/core/users/infra/http/user.api';
 
 const router = useRouter();
 const route = useRoute();
 const $q = useQuasar();
 
-// TODO: 잘못된 인증 토큰(만료, 위조)이 전송되면 404 페이지로 라우팅
 onMounted(async () => {
   await router.isReady();
-  const { resetPasswordVerifyToken } = route.query;
+  const { resetPasswordToken } = route.query;
 
-  const response = await verifyResetPasswordTokenFn(
-    resetPasswordVerifyToken as string
-  );
+  await verifyResetPasswordTokenFn(resetPasswordToken as string)
+    .then(async (res) => {
+      if (res.success === true) {
+        $q.notify({
+          type: 'positive',
+          message: userMsg.VERIFY_RESET_PASSWORD_SUCCESS,
+          icon: 'done',
+        });
 
-  if (response.success === true) {
-    $q.notify({
-      type: 'positive',
-      message: userMsg.VERIFY_RESET_PASSWORD_SUCCESS,
-      icon: 'done',
+        await router.push({ name: 'reset-password' });
+      }
+    })
+    .catch(async () => {
+      {
+        $q.notify({
+          type: 'warning',
+          message: '이미 사용된 토큰이거나 유효하지 않은 토큰입니다.',
+          icon: 'warning',
+        });
+      }
+
+      await router.push({ name: 'panel' });
     });
-    await router.push({ name: 'reset-password' });
-  } else {
-    if (response.message === 'Invalid reset password verification code') {
-      $q.notify({
-        color: 'warning',
-        textColor: 'black',
-        message: '잘못된 인증코드입니다.',
-        icon: 'warning',
-      });
-    }
-    await router.push({ name: 'login' });
-  }
 });
 </script>

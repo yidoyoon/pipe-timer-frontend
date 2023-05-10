@@ -34,16 +34,16 @@
 </template>
 
 <script setup lang="ts">
-import { CHECK_EMPTY, userMsg } from 'src/core/users/domain/user.const';
-import { useUserStore } from 'src/core/users/infra/store/user.store';
-import * as zod from 'zod';
-import { IEmailInput } from 'src/type-defs/userTypes';
-import { toFormValidator } from '@vee-validate/zod';
-import { useField, useForm } from 'vee-validate';
 import { useMutation } from '@tanstack/vue-query';
+import { toFormValidator } from '@vee-validate/zod';
 import { useQuasar } from 'quasar';
-import { useRouter } from 'vue-router';
+import { CHECK_EMPTY, userMsg } from 'src/core/users/domain/user.const';
 import { checkEmailFn } from 'src/core/users/infra/http/user.api';
+import { useUserStore } from 'src/core/users/infra/store/user.store';
+import { IEmailInput } from 'src/type-defs/userTypes';
+import { useField, useForm } from 'vee-validate';
+import { useRouter } from 'vue-router';
+import * as zod from 'zod';
 
 const router = useRouter();
 const $q = useQuasar();
@@ -68,37 +68,13 @@ const { value: email, errorMessage: emailError } = useField('email');
 const { isLoading, mutate } = useMutation(
   (email: IEmailInput) => checkEmailFn(email),
   {
-    onError: (error: any) => {
-      const errorMsg = error.response.data.error;
-      const resMsg = error.response.data.message;
-
-      if (!error.response) {
-        $q.notify({
-          type: 'negative',
-          message: '서버 점검중입니다.',
-          icon: 'warning',
-        });
-      }
-
-      if (Array.isArray(errorMsg)) {
-        $q.notify({
-          type: 'negative',
-          message: '알 수 없는 오류가 발생했습니다. 관리자에게 문의해주세요.',
-          icon: 'warning',
-        });
-      }
+    onError: () => {
+      setFieldError('email', '중복된 이메일입니다. 다른 메일을 사용해주세요.');
     },
     onSuccess: (res) => {
-      if (res.success === false) {
-        setFieldError(
-          'email',
-          '중복된 이메일입니다. 다른 메일을 사용해주세요.'
-        );
-      } else {
-        const verifiedEmail = res.data;
-        userStore.verifiedEmail = verifiedEmail;
-        router.push({ name: 'signup' });
-      }
+      userStore.verifiedEmail = res.data;
+
+      router.push({ name: 'signup' });
     },
   }
 );

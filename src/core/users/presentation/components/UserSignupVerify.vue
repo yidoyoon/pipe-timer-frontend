@@ -10,15 +10,15 @@ const $q = useQuasar();
 
 onMounted(async () => {
   await router.isReady();
-  const { signupVerifyToken } = route.query;
+  const { signupToken } = route.query;
 
-  await verifyEmailFn(signupVerifyToken as string)
+  await verifyEmailFn(signupToken as string)
     .then(async (response) => {
       if (response.success) {
         if (response.message === 'Already verified email') {
           $q.notify({
             type: 'warning',
-            message: '이미 인증된 이메일이거나 유효하지 않은 토큰입니다.',
+            message: '이미 사용된 토큰이거나 유효하지 않은 토큰입니다.',
             icon: 'warning',
           });
         } else {
@@ -31,7 +31,7 @@ onMounted(async () => {
       } else {
         $q.notify({
           type: 'warning',
-          message: '이미 인증된 이메일이거나 유효하지 않은 토큰입니다.',
+          message: '이미 사용된 토큰이거나 유효하지 않은 토큰입니다.',
           icon: 'warning',
         });
       }
@@ -39,12 +39,11 @@ onMounted(async () => {
       await router.push({ name: 'login' });
     })
     .catch((err) => {
-      if (err === 'Cannot verify token') {
+      if (err.response.data.message === 'Invalid token') {
         $q.notify({
-          type: 'negative',
-          message:
-            '인증 과정에서 오류가 발생했습니다. 오류가 계속되면 관리자에게 문의해주세요.',
-          icon: 'error',
+          type: 'warning',
+          message: '이미 인증된 이메일이거나 유효하지 않은 토큰입니다.',
+          icon: 'warning',
         });
       }
       router.push({ name: 'panel' });

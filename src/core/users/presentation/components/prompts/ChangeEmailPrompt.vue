@@ -39,7 +39,7 @@ import { toFormValidator } from '@vee-validate/zod';
 import { useQuasar } from 'quasar';
 import { userMsg } from 'src/core/users/domain/user.const';
 import {
-  changeEmailFn,
+  sendChangeMailFn,
   checkEmailFn,
 } from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
@@ -82,18 +82,27 @@ const { isLoading, mutate } = useMutation(
   (credentials: IEmailInput) => checkEmailFn(credentials),
   {
     onError: (err: any) => {
-      console.log(err);
-
       if (err.message === 'Duplicate email') {
         setErrors('이미 사용중인 이메일 입니다.');
       }
     },
-    onSuccess: (response) => {
+    onSuccess: async () => {
       try {
         userStore.changeEmailPrompt = false;
-        sendNewEmail({ email: newEmail.value });
+        await sendNewEmail({ email: newEmail.value });
+        $q.notify({
+          type: 'positive',
+          message: `이메일 변경을 위한 인증 메일을 ${newEmail.value}로 전송했습니다. 메일함을 확인해주세요.`,
+          icon: 'done',
+        });
       } catch (err) {
         console.log(err);
+        $q.notify({
+          type: 'negative',
+          message:
+            '알 수 없는 오류로 메일을 전송할 수 없습니다. 증상이 반복되면 관리자에게 문의해주세요.',
+          icon: 'error',
+        });
       }
     },
   }
@@ -104,7 +113,7 @@ const sendNewEmail = async (newEmail: IEmailInput): Promise<void> => {
 
   if (userStore.user !== null) {
     if (userStore.user.email !== newEmail.email) {
-      await changeEmailFn(newEmail);
+      await sendChangeMailFn(newEmail);
     } else {
       $q.notify({
         color: 'negative',

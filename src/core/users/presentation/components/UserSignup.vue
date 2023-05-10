@@ -146,24 +146,25 @@ const { value: passwordConfirm, errorMessage: passwordConfirmError } =
 const { isLoading, mutate } = useMutation(
   (credentials: ISignupInput) => signUpUserFn(credentials),
   {
-    onError: (error) => {
-      const responseMsg = (error as any).response.data;
+    onError: (err: any) => {
+      const errMsg = err.response.data.message;
 
-      if ((error as any).response === undefined) {
+      if (err.response === undefined) {
         $q.notify({
           type: 'negative',
           message: '서버 점검중입니다.',
           icon: 'warning',
         });
       }
-      if (responseMsg.message === 'Duplicate username') {
+      if (errMsg === 'Duplicate username') {
         setErrors('이미 사용 중인 유저네임입니다.');
-      } else if (responseMsg.message === 'Contains some prohibited words') {
+      } else if (errMsg === 'Contains some prohibited words') {
         setErrors('사용 불가능한 단어가 포함되어 있습니다.');
-      } else {
+      } else if (errMsg == 'Cannot send email') {
         $q.notify({
           type: 'negative',
-          message: responseMsg,
+          message:
+            '알 수 없는 오류로 인증 메일을 전송할 수 없습니다. 로그인 후 이메일 재전송 버튼을 눌러주세요. 증상이 반복되면 관리자에게 문의바랍니다.',
           icon: 'warning',
         });
       }

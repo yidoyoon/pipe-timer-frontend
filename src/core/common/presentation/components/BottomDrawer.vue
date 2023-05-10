@@ -94,8 +94,7 @@
             <q-card style="min-width: 350px">
               <q-card-section>
                 <div class="text-h6">
-                  <q-icon name="warning"></q-icon>
-                  Confirmation
+                  <q-icon /> name="warning"> Confirmation
                 </div>
               </q-card-section>
 
@@ -235,8 +234,8 @@ const saveRoutine = async (routine: IRoutine) => {
     routineStore.routineIds.push(routine.id);
     routineStore.routine[routine.id] = routine;
   }
+
   selectorStoreRefs.editNow.value = '';
-  $router.go(0);
 };
 
 const resetBuilder = () => {
