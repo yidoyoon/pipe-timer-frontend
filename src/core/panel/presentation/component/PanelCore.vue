@@ -64,6 +64,9 @@
         @click="pause"
         >pause
       </q-btn>
+      <q-btn class="q-ml-lg" color="blue" text-color="white" @click="skip"
+        >skip
+      </q-btn>
       <q-btn class="q-ml-lg" color="red" text-color="white" @click="stop"
         >stop
       </q-btn>
@@ -79,11 +82,12 @@ import { useMeta, useQuasar } from 'quasar';
 import { usePanelStore } from 'src/core/panel/infra/store/panel.store';
 import { IRoutine } from 'src/core/routines/domain/routine.model';
 import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
-import { ITimer, Timer } from 'src/core/timers/domain/timer.model';
+import { ITimer } from 'src/core/timers/domain/timer.model';
 import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
 import {
   computed,
   onBeforeMount,
+  onBeforeUnmount,
   onMounted,
   ref,
   watch,
@@ -100,9 +104,14 @@ const panelStoreRefs = storeToRefs(panelStore);
 
 let round = panelStoreRefs.round;
 let timer = {} as ITimer | null;
+const dts = Math.floor(Date.now());
 
-const notifOptions: NotificationOptions = {
+const notificationOptions: NotificationOptions = {
+  renotify: true,
   requireInteraction: true,
+  tag: 'pipe_timer',
+  vibrate: [200, 200],
+  timestamp: dts,
 };
 
 const endless = ref(panelStore.endless);
@@ -125,11 +134,14 @@ onBeforeMount(() => {
 });
 
 const currDuration = computed(() => {
+  if (panelStore.routine.routineToTimer?.length === 0) {
+    panelStore.$reset();
+  }
+
   if (panelStore.mode === 'routine') {
     const data = panelStore.routine;
-    if ('routineToTimer' in data && round.value < data.routineToTimer.length) {
-      return data.routineToTimer[round.value].timer.duration;
-    }
+
+    return data.routineToTimer[round.value].timer.duration;
   } else if (panelStore.mode === 'timer') {
     return panelStore.timer.duration;
   }
@@ -151,19 +163,51 @@ const formattedTime = computed(() => {
 const start = () => {
   if ('routineToTimer' in panelStore.routine || 'timerId' in panelStore.timer) {
     panelStore.intervalId = setInterval(elapse, 1000);
-    panelStore.state = 'start';
   } else {
     $q.notify({
       color: 'warning',
       message: '우선 작동 시킬 타이머 혹은 루틴을 더블클릭하여 셋팅해주세요.',
       textColor: 'black',
     });
+
     clearInterval(panelStore.intervalId);
   }
 };
 
+const pause = () => {
+  // TODO: 시간 정보 출력 부분이 깜빡이는 트랜지션 추가
+  if (panelStore.state === 'pause') return;
+  panelStore.state = 'pause';
+
+  clearInterval(panelStore.intervalId);
+};
+
+const skip = () => {
+  if (panelStore.round < panelStore.routine.routineToTimer.length - 1) {
+    panelStore.round = panelStore.round + 1;
+  } else {
+    panelStore.round = 0;
+  }
+
+  loadSession();
+  panelStore.state = 'pause';
+  clearInterval(panelStore.intervalId);
+};
+
+const stop = () => {
+  if (panelStore.state === 'stop') return;
+  loadSession();
+
+  panelStore.state = 'stop';
+  panelStore.round = 0;
+
+  clearInterval(panelStore.intervalId);
+  useMeta({ title: 'Pipe Timer' });
+};
+
 const elapse = () => {
   panelStore.state = 'start';
+
   if (panelStore.mode === 'routine') {
     timer = _.cloneDeep(panelStore.routine.routineToTimer[round.value].timer);
     timer.duration--;
@@ -183,25 +227,6 @@ const elapse = () => {
     panelStore.round++;
     timeEnd();
   }
-};
-
-const pause = () => {
-  // TODO: 시간 정보 출력 부분이 깜빡이는 트랜지션 추가
-  if (panelStore.state === 'pause') return;
-  panelStore.state = 'pause';
-
-  clearInterval(panelStore.intervalId);
-};
-
-const stop = () => {
-  if (panelStore.state === 'stop') return;
-  loadSession();
-
-  panelStore.state = 'stop';
-  panelStore.round = 0;
-
-  clearInterval(panelStore.intervalId);
-  useMeta({ title: 'Pipe Timer' });
 };
 
 const loadSession = () => {
@@ -226,6 +251,7 @@ const setNotification = () => {
     Notification.requestPermission();
   }
 };
+
 watch(endless, () => {
   if (endless.value === true) {
     $q.notify({
@@ -247,10 +273,10 @@ watch([notification, Notification.permission], () => {
   if (notification.value === true) {
     setNotification();
     if (Notification.permission === 'granted') {
-      new Notification(
-        '데스크톱 푸시 알림 설정을 활성화합니다.\n타이머 종료 시, 데스크톱 알림을 전송합니다.',
-        notifOptions
-      );
+      new Notification('Pipe Timer', {
+        ...notificationOptions,
+        body: '데스크톱 푸시 알림 설정을 활성화합니다.\n타이머 종료 시, 데스크톱 알림을 전송합니다.',
+      });
     }
   }
   if (notification.value === false) {
@@ -275,32 +301,6 @@ watch(autoStart, () => {
     });
   }
 });
-
-const timeEnd = () => {
-  if (
-    panelStore.mode === 'routine' &&
-    +round.value >= +panelStore.routine.routineToTimer.length
-  ) {
-    if (endless.value === true) {
-      round.value = 0;
-    } else {
-      clearInterval(panelStore.intervalId);
-      panelStoreRefs.state = ref('');
-      panelStoreRefs.round = ref(0);
-      $q.notify({ message: '타이머를 종료합니다', color: 'green' });
-    }
-  } else if (panelStore.mode === 'timer' && +round.value >= 1) {
-    if (endless.value) {
-      round.value = 0;
-    } else {
-      clearInterval(panelStore.intervalId);
-      panelStore.state = '';
-      panelStore.round = 0;
-      $q.notify({ message: '타이머를 종료합니다', color: 'green' });
-    }
-  }
-  loadSession();
-};
 
 const notifyRoundEnd = () => {
   let name = '';
@@ -346,10 +346,10 @@ const notifyRoundEnd = () => {
   let nextTimerInfo = `타이머 이름: ${name}\n시간: ${duration}초`;
 
   if (!!autoStart.value) {
-    new Notification(
-      `다음 타이머를 실행합니다.\n${nextTimerInfo}`,
-      notifOptions
-    );
+    new Notification('Pipe Timer', {
+      ...notificationOptions,
+      body: `다음 타이머를 실행합니다.\n${nextTimerInfo}`,
+    });
     panelStore.intervalId = setInterval(elapse, 1000);
   } else {
     if (
@@ -363,6 +363,32 @@ const notifyRoundEnd = () => {
   }
 };
 
+const timeEnd = () => {
+  if (
+    panelStore.mode === 'routine' &&
+    +round.value >= +panelStore.routine.routineToTimer.length
+  ) {
+    if (endless.value === true) {
+      round.value = 0;
+    } else {
+      clearInterval(panelStore.intervalId);
+      panelStoreRefs.state = ref('');
+      panelStoreRefs.round = ref(0);
+      $q.notify({ message: '타이머를 종료합니다', color: 'green' });
+    }
+  } else if (panelStore.mode === 'timer' && +round.value >= 1) {
+    if (endless.value === true) {
+      round.value = 0;
+    } else {
+      clearInterval(panelStore.intervalId);
+      panelStore.state = '';
+      panelStore.round = 0;
+      $q.notify({ message: '타이머를 종료합니다', color: 'green' });
+    }
+  }
+  loadSession();
+};
+
 const endRoundPush = (timerInfo: string) => {
   panelStore.state = 'pause';
 
@@ -373,8 +399,8 @@ const endRoundPush = (timerInfo: string) => {
         round.value < panelStore.routine.routineToTimer.length
       ) {
         panelStore.state = 'pause';
-        registration.showNotification('Round end notification', {
-          ...notifOptions,
+        registration.showNotification('Pipe Timer', {
+          ...notificationOptions,
           body: `다음 타이머를 실행하시겠습니까?\n${timerInfo}`,
           actions: [
             {
@@ -388,8 +414,9 @@ const endRoundPush = (timerInfo: string) => {
           ],
         });
       } else if (
-        panelStore.mode === 'routine' &&
-        round.value === panelStore.routine.routineToTimer.length
+        (panelStore.mode === 'routine' &&
+          round.value === panelStore.routine.routineToTimer.length) ||
+        panelStore.mode === 'timer'
       ) {
         new Notification('모든 타이머를 실행했습니다.');
         stop();
@@ -408,21 +435,23 @@ onMounted(() => {
   }
 });
 
-// Dummy data
-if (process.env.DEV && timerStore.listTimers.length === 0) {
-  const createTimer = (duration: number) => {
-    timerStore.add(
-      new Timer({
-        name: 'test',
-        duration,
-        color: '#000000ff',
-      })
-    );
-  };
+// Shortcut
 
-  createTimer(5);
-  createTimer(3);
-}
+document.onkeydown = function (e) {
+  const dialogBackdrop = document.querySelector(
+    '.q-dialog__backdrop.fixed-full'
+  );
+  if (dialogBackdrop !== null) return;
+
+  if (e.key === ' ') {
+    if (panelStore.state === 'pause') start();
+    else if (panelStore.state === 'start') pause();
+  }
+};
+
+onBeforeUnmount(() => {
+  clearInterval(panelStore.intervalId);
+});
 
 const highlightBorder = (timer: ITimer) => {
   return {
