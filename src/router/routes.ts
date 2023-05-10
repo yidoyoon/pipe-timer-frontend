@@ -28,9 +28,6 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import('../core/users/presentation/components/UserCheckEmail.vue'),
         name: 'check-email',
-        meta: {
-          middleware: [skipAuth],
-        },
         beforeEnter: (to, from, next) => {
           if (from.name !== 'login') next('/');
           else next();
@@ -64,9 +61,6 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import('../core/users/presentation/components/UserSignupVerify.vue'),
         name: 'verify-email',
-        meta: {
-          middleware: [skipAuth],
-        },
       },
       {
         path: 'verify-reset-password',
