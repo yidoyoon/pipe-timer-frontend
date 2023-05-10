@@ -2,6 +2,7 @@ export interface IUser {
   id: string;
   userName: string;
   email: string;
+  isVerified: boolean;
 }
 
 export interface IRes<T = void> {
