@@ -26,8 +26,7 @@
                 v-close-popup
                 @click="editTimer(element)"
                 :disable="
-                  !!isEdit ||
-                  panelStore.state === 'start' ||
+                  isEdit || panelStore.state === 'start' ||
                   panelStore.state === 'pause'
                 "
               >
@@ -39,8 +38,7 @@
                 v-close-popup
                 @click="remove(index)"
                 :disable="
-                  !!isEdit ||
-                  panelStore.state === 'start' ||
+                  isEdit || panelStore.state === 'start' ||
                   panelStore.state === 'pause'
                 "
               >
