@@ -1,4 +1,6 @@
 import { route } from 'quasar/wrappers';
+import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
+import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
 import {
   createMemoryHistory,
   createRouter,
@@ -45,6 +47,8 @@ export default route((/*{ store, ssrContext }*/) => {
       next: NavigationGuardNext
     ) => {
       const userStore = useUserStore();
+      const timerStore = useTimerStore();
+      const routineStore = useRoutineStore();
 
       if (!to.meta.middleware) {
         return next();
@@ -55,7 +59,9 @@ export default route((/*{ store, ssrContext }*/) => {
         to,
         from,
         next,
-        userStore: userStore,
+        userStore,
+        timerStore,
+        routineStore,
       };
 
       return middleware[0]({

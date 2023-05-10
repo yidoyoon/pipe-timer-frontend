@@ -66,7 +66,7 @@
             >
               <q-card
                 class="inner-my-card text-white cursor-pointer flat justify-between"
-                style="background: black; display: inline-block"
+                style="background: black; display: inline-block; width: 116px"
                 :style="colorExtractor(element.timer)"
               >
                 <q-card-section>
