@@ -2,34 +2,37 @@ import { NavigationGuardNext } from 'vue-router';
 import { Notify } from 'quasar';
 import { Router } from 'src/router';
 import { getMeFn } from 'src/core/users/infra/http/user.api';
-import { useUserStore } from 'src/core/users/infra/store/user.store';
 
 export default async function requireAuth({
   next,
   userStore,
+  timerStore,
+  routineStore,
 }: {
   next: NavigationGuardNext;
   userStore: any;
+  timerStore: any;
+  routineStore: any;
 }): Promise<void> {
-  if (!useUserStore().user) {
+  if (!userStore.user) {
     await Router.push({ name: 'login' });
     Notify.create({
       color: 'blue',
       message: '서비스를 이용하시려면 먼저 로그인 해주세요.',
     });
+
     return next();
   }
 
   try {
     const response = await getMeFn();
-    const user = {
-      id: response.id,
-      userName: response.userName,
-      email: response.email,
-    };
+    const user = { ...response };
     userStore.setUser(user);
 
     if (!user) {
+      timerStore.fetchAll();
+      routineStore.fetchAll();
+
       return next({ name: 'login' });
     }
   } catch (error) {
