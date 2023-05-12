@@ -61,11 +61,15 @@ export const usePanelStore = defineStore('PanelStore', {
 
     getCurrentDuration(): number {
       const currentRound = this.round;
-      let duration = this.timer.duration;
-      if (this.routine.routineToTimer?.[currentRound]) {
+      let duration = 0;
+
+      if (this.mode === 'routine') {
         duration = this.routine.routineToTimer[currentRound].timer.duration;
+      } else {
+        duration = this.timer.duration;
       }
-      return duration;
+
+      return duration !== undefined ? duration : 0;
     },
   },
   actions: {},
