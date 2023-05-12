@@ -141,9 +141,11 @@ const currDuration = computed(() => {
   if (panelStore.mode === 'routine') {
     const data = panelStore.routine;
 
-    return data.routineToTimer[round.value].timer.duration;
+    return data.routineToTimer[round.value].timer.duration < 0
+      ? 0
+      : data.routineToTimer[round.value].timer.duration;
   } else if (panelStore.mode === 'timer') {
-    return panelStore.timer.duration;
+    return panelStore.timer.duration < 0 ? 0 : panelStore.timer.duration;
   }
 
   return 0;
