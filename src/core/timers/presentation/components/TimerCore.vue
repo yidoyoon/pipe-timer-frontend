@@ -2,6 +2,7 @@
 <template>
   <!--  TODO: rTimer가 undefined일 경우 에러 문구 표시-->
   <draggable
+    class="q-pt-sx"
     :list="rTimers"
     item-key="order"
     :group="{ name: 'timers', pull: clone, put: false }"

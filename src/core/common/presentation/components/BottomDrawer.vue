@@ -1,15 +1,15 @@
 <template>
-  <div class="row wrap justify-center q-pa-md">
+  <div class="row wrap justify-center">
     <div id="q-app">
-      <div class="q-pa-md">
+      <div class="q-pt-xs">
         <q-card
-          class="slide-drawer slide-drawer--bottom text-black column no-wrap"
+          class="slide-drawer slide-drawer--bottom text-black column no-wrap q-pt-sm q-px-sm"
           :class="`slide-drawer--open-${drawerMode}`"
           style="position: fixed; bottom: 0; right: 20%; left: 20%"
           :style="drawerStyle"
         >
           <q-card-section
-            class="slide-drawer__handler--horizontal row flex-center justify-between q-pa-sm"
+            class="slide-drawer__handler--horizontal row flex-center justify-between q-pa-none"
             v-touch-pan.mouse.vertical="slideDrawer"
           >
             <div class="row q-px-none">

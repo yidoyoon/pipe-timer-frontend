@@ -1,6 +1,6 @@
 <template>
   <q-scroll-area style="height: 20vh">
-    <div class="row justify-between">
+    <div class="row">
       <BuilderCore :routine="newRoutine" style="height: 30vh" />
     </div>
   </q-scroll-area>

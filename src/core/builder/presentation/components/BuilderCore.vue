@@ -20,6 +20,7 @@
                 flat
                 size="sm"
                 @click="editRoutineBtn"
+                class="q-pl-sm"
                 style="position: relative; bottom: 2px"
               />
             </div>
@@ -38,8 +39,8 @@
 
       <draggable
         v-if="'routineToTimer' in props.routine"
-        :list="rBuilder"
         v-bind="dragOptions"
+        :list="rBuilder"
         :component-data="{
           tag: 'ul',
           type: 'transition-group',
@@ -58,23 +59,34 @@
             <div
               class="row no-wrap flat justify-between"
               style="
-                height: 5rem;
+                height: 6rem;
                 white-space: nowrap;
                 position: relative;
-                bottom: -2rem;
+                bottom: -1.0rem;
               "
             >
               <q-card
-                class="inner-my-card text-white cursor-pointer flat justify-between"
-                style="background: black; display: inline-block; width: 116px"
+                class="inner-my-card cursor-pointer flat justify-between no-shadow"
+                bordered
+                style="
+                  background: transparent;
+                  display: inline-block;
+                  width: 130px;
+                  height: 98px;
+                  border-color: black;
+                "
                 :style="colorExtractor(element.timer)"
               >
-                <q-card-section>
-                  <div>{{ element.timer.name }}</div>
-                  <div>
-                    <q-icon name="timer" />
-                    {{ timeFormatter(element.timer.duration).value }}
-                  </div>
+                <q-card-section
+                  class="q-pa-none"
+                  style="height: 20px"
+                  :style="colorExtractor(element.timer)"
+                >
+                </q-card-section>
+                <q-card-section style="background-color: #fefefe">
+                  {{ element.timer.name }}<br />
+                  <q-icon name="timer" />
+                  {{ timeFormatter(element.timer.duration).value }}
                 </q-card-section>
               </q-card>
               <div class="row items-center">
