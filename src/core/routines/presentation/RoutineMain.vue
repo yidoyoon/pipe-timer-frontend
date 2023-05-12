@@ -6,14 +6,14 @@
     :thumb-style="thumbStyle"
     :content-style="contentStyle"
     :content-active-style="contentActiveStyle"
-    style="height: 40vh"
+    style="height: 100vh"
   >
     <div v-if="listRoutine.length">
       <div
         v-for="routine in listRoutine"
         :key="routine"
-        class="row justify-start wrap q-pa-md"
-        style="border-bottom: solid 0.1rem grey"
+        class="row justify-start wrap q-pa-sx"
+        style="border-bottom: 1px solid black; height: 150px"
       >
         <RoutineLoader :routine="routine" @remove="removeRoutine" />
       </div>
@@ -30,6 +30,7 @@
         눌러주세요.
       </span>
     </div>
+    <q-space style="height: 500px" />
   </q-scroll-area>
 </template>
 

@@ -9,7 +9,7 @@
     <q-scroll-area style="height: 100%; border-left: 1px solid #ddd">
       <q-list padding>
         <q-item-section>
-          <q-item class="justify-center text-no-wrap q-pa-sm q-pr-md">
+          <q-item class="justify-center text-no-wrap q-pa-none">
             <q-item-label v-if="isLoggedIn">
               <span class="cursor-pointer">
                 logged in as <b>{{ userStoreRefs.user.value.userName }}</b>
@@ -36,21 +36,12 @@
                 >
               </div>
             </q-item-label>
-            <div v-if="!isLoggedIn">
-              <q-item-label class="lt-md fontsize-11"
+            <div v-if="!isLoggedIn" class="q-pa-none q-ma-none">
+              <q-item-label class=""
                 >타이머, 루틴 정보를 서버에<br />저장하려면 로그인
                 해주세요.</q-item-label
               >
-              <q-item-label class="gt-sm"
-                >타이머, 루틴 정보를 서버에<br />저장하려면 로그인
-                해주세요.</q-item-label
-              >
-              <q-item-label class="lt-md fontsize-9" caption
-                >기본적으로 로컬에 저장됩니다.</q-item-label
-              >
-              <q-item-label class="gt-sm" caption
-                >기본적으로 로컬에 저장됩니다.</q-item-label
-              >
+              <q-item-label caption>기본적으로 로컬에 저장됩니다.</q-item-label>
             </div>
           </q-item>
         </q-item-section>

@@ -1,6 +1,6 @@
 <template>
   <q-space style="height: 1rem" />
-  <div class="row wrap justify-center q-pt-lg">
+  <div class="row wrap justify-center q-pt-sx">
     <div class="col-9 q-pt-lg">
       <PanelCore class="area" />
     </div>

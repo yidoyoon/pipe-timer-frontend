@@ -3,7 +3,7 @@
     v-if="!isEmptyObj(timer) || !isEmptyObj(routine)"
     class="row fit justify-center"
   >
-    <q-scroll-area class="full-width" style="height: 15vh">
+    <q-scroll-area class="full-width" style="height: 140px">
       <q-card class="no-shadow my-card" style="background: transparent">
         <q-card-section class="q-py-md relative-position" style="top: 4px">
           <div class="row justify-center">
@@ -11,7 +11,7 @@
             <div
               v-if="panelStore.mode === 'routine'"
               class="row justify-start no-wrap"
-              style="height: 5rem; white-space: nowrap"
+              style="height: 100px; white-space: nowrap"
             >
               <div
                 v-for="(t, index) in routine.routineToTimer"
