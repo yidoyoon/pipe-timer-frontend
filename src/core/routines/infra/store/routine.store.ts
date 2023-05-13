@@ -110,13 +110,19 @@ export const useRoutineStore = defineStore('RoutineStore', {
       if (!!target) {
         delete this.routine[routineId];
         const i = this.routineIds.lastIndexOf(routineId);
+
         if (i > -1) this.routineIds.splice(i, 1);
+
         if (routineId === panelStore.routine.id) {
           panelStore.routine = _.cloneDeep({} as IRoutine);
         }
+
         if (userStore.user !== null) {
-          // TODO: 에러처리
-          const res = await api.post('routine/remove', target.id);
+          try {
+            await api.post('routine/remove', target.id);
+          } catch (err) {
+            console.log(err);
+          }
         }
       }
     },

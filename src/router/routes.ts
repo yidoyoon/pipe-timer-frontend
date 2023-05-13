@@ -26,7 +26,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'check-email',
         component: () =>
-          import('../core/users/presentation/components/UserCheckEmail.vue'),
+          import('../core/users/presentation/components/CheckDuplicateEmail.vue'),
         name: 'check-email',
         beforeEnter: (to, from, next) => {
           if (from.name !== 'login') next('/');
@@ -59,7 +59,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'verify-email',
         component: () =>
-          import('../core/users/presentation/components/UserSignupVerify.vue'),
+          import('../core/users/presentation/components/VerifySignupToken.vue'),
         name: 'verify-email',
       },
       {
@@ -71,10 +71,10 @@ const routes: RouteRecordRaw[] = [
         name: 'verify-reset-password',
       },
       {
-        path: 'verify-change-email',
+        path: 'verify-change-email-token',
         component: () =>
           import('../core/users/presentation/components/ChangeEmailVerify.vue'),
-        name: 'verify-change-email',
+        name: 'verify-change-email-token',
       },
     ],
   },

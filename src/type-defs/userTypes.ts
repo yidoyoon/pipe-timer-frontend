@@ -1,6 +1,6 @@
 export interface IUser {
   id: string;
-  userName: string;
+  name: string;
   email: string;
   isVerified: boolean;
 }
@@ -24,14 +24,14 @@ export interface ILoginInput {
 
 export interface ISignupInput {
   email: string;
-  userName: string;
+  name: string;
   password: string;
-  passwordConfirm: string;
+  confirmPassword: string;
 }
 
 export interface IChangePasswordInput {
   password: string;
-  passwordConfirm: string;
+  confirmPassword: string;
 }
 
 export interface IEmailInput {

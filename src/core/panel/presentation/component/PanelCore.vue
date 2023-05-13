@@ -214,14 +214,16 @@ const elapse = () => {
     timer = _.cloneDeep(panelStore.routine.routineToTimer[round.value].timer);
     timer.duration--;
     panelStore.routine.routineToTimer[round.value].timer = _.cloneDeep(timer);
+
     useMeta({ title: `${formattedTime.value.value}` });
   } else if (panelStore.mode === 'timer') {
     timer = _.cloneDeep(panelStore.timer);
     timer.duration--;
     panelStore.timer = _.cloneDeep(timer);
+
     useMeta({ title: `${formattedTime.value.value}` });
   }
-  if (timer !== null && timer.duration <= 0) {
+  if (timer !== null && timer.duration < 0) {
     if (!!notification.value) {
       clearInterval(panelStore.intervalId);
       notifyRoundEnd();
@@ -374,8 +376,10 @@ const timeEnd = () => {
       round.value = 0;
     } else {
       clearInterval(panelStore.intervalId);
+
       panelStoreRefs.state = ref('');
       panelStoreRefs.round = ref(0);
+
       $q.notify({ message: '타이머를 종료합니다', color: 'green' });
     }
   } else if (panelStore.mode === 'timer' && +round.value >= 1) {
@@ -383,8 +387,10 @@ const timeEnd = () => {
       round.value = 0;
     } else {
       clearInterval(panelStore.intervalId);
+
       panelStore.state = '';
       panelStore.round = 0;
+
       $q.notify({ message: '타이머를 종료합니다', color: 'green' });
     }
   }
@@ -455,25 +461,7 @@ onBeforeUnmount(() => {
   clearInterval(panelStore.intervalId);
 });
 
-const highlightBorder = (timer: ITimer) => {
-  return {
-    border: 'solid teal 0.3rem',
-    ...colorExtractor(timer),
-  };
-};
 
-const notCurrent = (timer: ITimer) => {
-  return {
-    border: 'solid transparent 0.3rem',
-    ...colorExtractor(timer),
-  };
-};
-
-const colorExtractor = (timer: ITimer) => {
-  return {
-    background: timer.color,
-  };
-};
 </script>
 
 <style lang="scss" scoped>

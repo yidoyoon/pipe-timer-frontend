@@ -39,7 +39,7 @@ import { toFormValidator } from '@vee-validate/zod';
 import { useQuasar } from 'quasar';
 import { userMsg } from 'src/core/users/domain/user.const';
 import {
-  sendChangeMailFn,
+  sendChangeEmailTokenFn,
   checkEmailFn,
 } from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
@@ -113,7 +113,7 @@ const sendNewEmail = async (newEmail: IEmailInput): Promise<void> => {
 
   if (userStore.user !== null) {
     if (userStore.user.email !== newEmail.email) {
-      await sendChangeMailFn(newEmail);
+      await sendChangeEmailTokenFn(newEmail);
     } else {
       $q.notify({
         color: 'negative',

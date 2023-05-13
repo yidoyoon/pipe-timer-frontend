@@ -103,22 +103,27 @@ export const useTimerStore = defineStore('TimerStore', {
     async remove(timerId: string) {
       const userStore = useUserStore();
       const panelStore = usePanelStore();
+
       const target = this.timers[timerId];
 
       if (!!target) {
         delete this.timers[timerId];
+
         if (timerId === panelStore.timer.timerId) {
           panelStore.timer = _.cloneDeep({} as ITimer);
         }
         const i = this.timerIds.lastIndexOf(timerId);
         if (i > -1) this.timerIds.splice(i, 1);
       }
+
       if (userStore.user !== null) {
-        await this.saveTimer().catch(() => {
+        try {
+          await this.saveTimer();
+        } catch (err) {
           Notify.create({
             message: '타이머 삭제 중 오류가 발생했습니다.',
           });
-        });
+        }
       }
     },
 
