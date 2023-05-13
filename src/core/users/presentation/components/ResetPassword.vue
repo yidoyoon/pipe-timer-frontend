@@ -28,7 +28,7 @@
         </template>
       </q-input>
       <q-input
-        v-model="passwordConfirm"
+        v-model="confirmPassword"
         filled
         label="Re-enter password"
         :type="isPwd ? 'password' : 'text'"
@@ -80,12 +80,12 @@ const registerSchema = toFormValidator(
         .min(CHECK_EMPTY, userMsg.EMPTY_USER_PASSWORD)
         .min(userVar.PASSWORD_MIN_LEN, userMsg.BELOW_MIN_USER_PASSWORD)
         .max(userVar.PASSWORD_MAX_LEN, userMsg.ABOVE_MAX_USER_PASSWORD),
-      passwordConfirm: zod
+      confirmPassword: zod
         .string()
         .min(CHECK_EMPTY, userMsg.EMPTY_CONFIRM_PASSWORD),
     })
-    .refine((data) => data.password === data.passwordConfirm, {
-      path: ['passwordConfirm'],
+    .refine((data) => data.password === data.confirmPassword, {
+      path: ['confirmPassword'],
       message: userMsg.MISMATCH_PASSWORD,
     })
 );
@@ -96,8 +96,8 @@ const { handleSubmit, resetForm, errors } = useForm({
 
 const { value: password, errorMessage: passwordError } =
   useField<string>('password');
-const { value: passwordConfirm, errorMessage: passwordConfirmError } =
-  useField<string>('passwordConfirm');
+const { value: confirmPassword, errorMessage: passwordConfirmError } =
+  useField<string>('confirmPassword');
 
 const { isLoading, mutate } = useMutation(
   (credentials: IChangePasswordInput) => changePassword(credentials),
@@ -124,7 +124,7 @@ const { isLoading, mutate } = useMutation(
 const onSubmit = handleSubmit((values) => {
   mutate({
     password: values.password,
-    passwordConfirm: values.passwordConfirm,
+    confirmPassword: values.confirmPassword,
   });
   resetForm();
 });

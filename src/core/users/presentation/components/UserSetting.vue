@@ -35,11 +35,11 @@
 
       <div class="row justify-start items-end">
         <div class="text-h6 col-8">
-          Username
+          Name
           <q-field outlined style="width: 17rem" dense class="q-pt-xs">
             <template v-slot:control>
               <div class="self-center full-width no-outline" tabindex="0">
-                {{ userStoreRefs.user.value?.userName }}
+                {{ userStoreRefs.user.value?.name }}
               </div>
             </template>
           </q-field>
@@ -49,7 +49,7 @@
           class="col-3 text-no-wrap"
           text-color="black"
           :size="$q.screen.lt.md ? '0.8rem' : '0.9rem'"
-          label="Change Username"
+          label="Change Name"
           @click="changeNameBtn"
         />
       </div>
@@ -99,25 +99,42 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
 import ChangeEmailPrompt from 'src/core/users/presentation/components/prompts/ChangeEmailPrompt.vue';
 import ChangeNamePrompt from 'src/core/users/presentation/components/prompts/ChangeNamePrompt.vue';
 import DeleteAccountPrompt from 'src/core/users/presentation/components/prompts/DeleteAccountPrompt.vue';
 import PasswordResetPrompt from 'src/core/users/presentation/components/prompts/PasswordResetPrompt.vue';
 import { useQuasar } from 'quasar';
+import { onBeforeMount, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 
+onBeforeMount(() => {
+  routineStore.bottomDrawerHeight = 36;
+});
+
+onBeforeUnmount(() => {
+  routineStore.bottomDrawerHeight = 348;
+});
+
 const userStore = useUserStore();
 const userStoreRefs = storeToRefs(userStore);
-const $q = useQuasar();
-const $router = useRouter();
+const routineStore = useRoutineStore();
+
+onBeforeMount(() => {
+  routineStore.bottomDrawerHeight = 36;
+});
+
+onBeforeUnmount(() => {
+  routineStore.bottomDrawerHeight = 348;
+});
 
 let email = 'undefined';
-let userName = 'undefined';
+let name = 'undefined';
 
 if (userStore.user !== null) {
   email = userStore.user.email;
-  userName = userStore.user.userName;
+  name = userStore.user.name;
 }
 
 const resetPasswordBtn = () => {

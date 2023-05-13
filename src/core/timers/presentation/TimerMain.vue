@@ -12,7 +12,7 @@
           <q-item class="justify-center text-no-wrap q-pa-none">
             <q-item-label v-if="isLoggedIn">
               <span class="cursor-pointer">
-                logged in as <b>{{ userStoreRefs.user.value.userName }}</b>
+                logged in as <b>{{ userStoreRefs.user.value.name }}</b>
                 <q-menu>
                   <q-list style="min-width: 100px">
                     <q-item clickable v-close-popup to="/users/setting">
@@ -99,9 +99,9 @@
 
         <q-separator />
 
+        <!--        Timer list-->
         <TimerCore
           :timers="timerStoreRef.listTimers.value"
-          class="col-12"
           @remove="remove"
           @removeLocal="removeLocalTimer"
         />
@@ -294,15 +294,17 @@ watch(props, () => {
   rightDrawerOpen.value = props.rightDrawerOpen;
 });
 
-const remove = (timerId: string) => {
-  timerStore.remove(timerId);
-  timerStore.fetchAll();
-  routineStore.fetchAll();
+const remove = async (timerId: string) => {
+  await timerStore.remove(timerId);
+
+  await timerStore.fetchAll();
+  await routineStore.fetchAll();
 };
 
-const removeLocalTimer = (timerId: string) => {
-  timerStore.remove(timerId);
-  routineStore.removeLocalTimer(timerId);
+const removeLocalTimer = async (timerId: string) => {
+  await timerStore.remove(timerId);
+
+  await routineStore.removeLocalTimer(timerId);
 };
 
 const createTimerBtn = () => {
