@@ -4,10 +4,10 @@
     style="background: transparent"
     @dblclick="toPanel(props.routine)"
   >
-    <div class="text-subtitle1 text-black q-px-md">
-      <b>Name: {{ props.routine.name }}</b>
+    <div class="text-subtitle1 text-black q-pa-none">
+      <b>{{ props.routine.name }}</b>
     </div>
-    <q-card-section class="q-py-none">
+    <q-card-section class="q-pa-none">
       <div
         v-if="props.routine.routineToTimer.length"
         class="row justify-between no-wrap"
