@@ -13,59 +13,73 @@
     :move="orderTimer"
   >
     <template #item="{ element, index }">
-      <div>
-        <q-card
-          class="my-card text-white cursor-pointer no-shadow q-ma-sm"
-          :style="colorExtractor(element)"
-          v-ripple
-          @dblclick="toPanel(element)"
-        >
-          <q-menu touch-position context-menu :disable="!!isEdit">
-            <q-list dense style="min-width: 100px">
-              <q-item
-                clickable
-                v-close-popup
-                @click="editTimer(element)"
-                :disable="
-                  isEdit || panelStore.state === 'start' ||
-                  panelStore.state === 'pause'
+      <div class="row justify-between">
+        <q-space />
+        <div class="q-py-sm">
+          <q-card
+            class="cursor-pointer no-shadow q-ma-none"
+            style="width: 130px; border-color: black"
+            bordered
+            v-ripple
+            @dblclick="toPanel(element)"
+          >
+            <q-menu touch-position context-menu :disable="isEdit">
+              <q-list dense style="min-width: 100px">
+                <q-item
+                  clickable
+                  v-close-popup
+                  @click="editTimer(element)"
+                  :disable="
+                    isEdit ||
+                    panelStore.state === 'start' ||
+                    panelStore.state === 'pause'
+                  "
+                >
+                  <q-item-section>수정</q-item-section>
+                </q-item>
+                <q-separator />
+                <q-item
+                  clickable
+                  v-close-popup
+                  @click="remove(index)"
+                  :disable="
+                    isEdit ||
+                    panelStore.state === 'start' ||
+                    panelStore.state === 'pause'
+                  "
+                >
+                  <q-item-section style="color: #8b1c00">삭제</q-item-section>
+                </q-item>
+              </q-list>
+              <q-tooltip v-if="isEdit" anchor="top middle" self="top middle">
+                루틴 생성 및 수정 시, 타이머 삭제 및 수정이 불가능합니다.
+              </q-tooltip>
+              <q-tooltip
+                v-if="
+                  panelStore.state === 'start' || panelStore.state === 'pause'
                 "
+                anchor="top middle"
+                self="top middle"
               >
-                <q-item-section>수정</q-item-section>
-              </q-item>
-              <q-separator></q-separator>
-              <q-item
-                clickable
-                v-close-popup
-                @click="remove(index)"
-                :disable="
-                  isEdit || panelStore.state === 'start' ||
-                  panelStore.state === 'pause'
-                "
-              >
-                <q-item-section style="color: #8b1c00">삭제</q-item-section>
-              </q-item>
-            </q-list>
-            <q-tooltip v-if="!!isEdit" anchor="top middle" self="top middle">
-              루틴 생성 및 수정 시, 타이머 삭제 및 수정이 불가능합니다.
-            </q-tooltip>
-            <q-tooltip
-              v-if="
-                panelStore.state === 'start' || panelStore.state === 'pause'
-              "
-              anchor="top middle"
-              self="top middle"
+                타이머 혹은 루틴 작동 중엔 삭제가 불가능 합니다.<br />'Stop'을
+                눌러 완전히 정지한 후 진행해 주세요.
+              </q-tooltip>
+            </q-menu>
+            <q-card-section
+              class="q-pa-none"
+              style="height: 20px"
+              :style="colorExtractor(element)"
             >
-              타이머 혹은 루틴 작동 중엔 삭제가 불가능 합니다.<br />'Stop'을
-              눌러 완전히 정지한 후 진행해 주세요.
-            </q-tooltip>
-          </q-menu>
+            </q-card-section>
 
-          <q-card-section>
-            {{ element.name }} <br />
-            <q-icon name="timer" /> {{ timeFormatter(element.duration).value }}
-          </q-card-section>
-        </q-card>
+            <q-card-section style="background-color: #fefefe">
+              {{ element.name }} <br />
+              <q-icon name="timer" />
+              {{ timeFormatter(element.duration).value }}
+            </q-card-section>
+          </q-card>
+        </div>
+        <q-space />
 
         <q-dialog v-model="editPrompt" persistent>
           <q-card style="min-width: 350px">
@@ -198,12 +212,13 @@ const panelStore = usePanelStore();
 const routineStore = useRoutineStore();
 const userStore = useUserStore();
 const builderStore = useBuilderStore();
+
 const builderStoreRefs = storeToRefs(builderStore);
 const timerStoreRefs = storeToRefs(timerStore);
 
-const $q = useQuasar();
-
 let rTimers = timerStoreRefs.listTimers;
+
+const $q = useQuasar();
 
 const isEdit = computed(() => {
   return builderStoreRefs.isEditBuilder.value;
@@ -441,9 +456,11 @@ const toPanel = (timer: ITimer) => {
   // Session storage for saving initial state of routines, timers
   try {
     $q.sessionStorage.set('timers-data', timer);
+    clearInterval(panelStore.intervalId);
+    stop();
+
     panelStore.timer = _.cloneDeep(timer);
     panelStore.mode = 'timer';
-    panelStore.state = 'pause';
     panelStore.round = 0;
   } catch (e) {
     console.log(e);
