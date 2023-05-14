@@ -9,6 +9,7 @@ export interface PanelState {
   mode: string; // 'routine', 'timer', ''
   state: string; // 'start', 'pause', 'stop', ''
   round: number;
+  originDur: number;
   amount: number;
   endless: boolean;
   autoStart: boolean;
@@ -25,6 +26,7 @@ export const usePanelStore = defineStore('PanelStore', {
       state: '',
       round: 0,
       amount: 0,
+      originDur: 0,
       endless: false,
       autoStart: false,
       notification: false,

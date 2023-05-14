@@ -55,16 +55,27 @@
           </q-menu>
 
           <q-card
-            class="inner-my-card text-white flat"
-            style="background: black; display: inline-block; width: 116px"
-            :style="colorExtractor(t.timer)"
+            class="inner-my-card flat"
+            bordered
+            flat
+            style="
+              background: transparent;
+              display: inline-block;
+              width: 130px;
+              height: 100px;
+              border-color: black;
+            "
           >
-            <q-card-section class="q-img-container">
-              <div>{{ t.timer.name }}</div>
-              <div>
-                <q-icon name="timer" />
-                {{ timeFormatter(t.timer.duration).value }}<br />
-              </div>
+            <q-card-section
+              class="q-pa-none"
+              style="height: 20px"
+              :style="colorExtractor(t.timer)"
+            >
+            </q-card-section>
+            <q-card-section class="q-img-container q-ma-none q-pa-md">
+              {{ t.timer.name }} <br />
+              <q-icon name="timer" />
+              {{ timeFormatter(t.timer.duration).value }}
             </q-card-section>
           </q-card>
           <div class="row items-center">
@@ -186,6 +197,9 @@ const colorExtractor = (timer: ITimer) => {
 const toPanel = (routine: IRoutine) => {
   // Session storage for saving initial state of routines, timers
   $q.sessionStorage.set('panel-data', routine);
+  clearInterval(panelStore.intervalId);
+  stop();
+
   panelStore.routine = _.cloneDeep(routine);
   panelStore.mode = 'routine';
   panelStore.state = 'pause';
