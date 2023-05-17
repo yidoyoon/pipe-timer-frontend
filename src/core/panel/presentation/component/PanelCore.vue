@@ -350,69 +350,6 @@ const notifyRoundEnd = () => {
   }
 };
 
-// const notifyRoundEnd = () => {
-//   let name = '';
-//   let duration = 0;
-//   let nextRound = round.value + 1;
-//
-//   if (
-//     panelStore.mode === 'routine' &&
-//     nextRound < panelStore.routine.routineToTimer.length
-//   ) {
-//     const timer = panelStore.routine.routineToTimer[nextRound].timer;
-//     name = timer.name;
-//     duration = timer.duration;
-//   } else if (
-//     panelStore.mode === 'routine' &&
-//     nextRound === panelStore.routine.routineToTimer.length
-//   ) {
-//     nextRound = 0;
-//     const timer = panelStore.routine.routineToTimer[nextRound].timer;
-//     name = timer.name;
-//     duration = timer.duration;
-//   } else if (panelStore.mode === 'timer') {
-//     const id = panelStore.timer.timerId;
-//     const timer = timerStore.timers[id];
-//     name = timer.name;
-//     duration = timer.duration;
-//   }
-//
-//   if (
-//     panelStore.mode === 'routine' &&
-//     nextRound < panelStore.routine.routineToTimer.length
-//   ) {
-//     if (nextRound === panelStore.routine.routineToTimer.length) nextRound = 0;
-//     name = panelStore.routine.routineToTimer[nextRound].timer.name;
-//     duration = panelStore.routine.routineToTimer[nextRound].timer.duration;
-//   } else if (panelStore.mode === 'timer') {
-//     const id = panelStore.timer.timerId;
-//     const timer = timerStore.timers[id];
-//     name = timer.name;
-//     duration = timer.duration;
-//   }
-//
-//   let nextTimerInfo = `타이머 이름: ${name}\n시간: ${
-//     timeFormatter(duration).value
-//   }`;
-//
-//   if (autoStart.value) {
-//     new Notification('Pipe Timer', {
-//       ...notificationOptions,
-//       body: `다음 타이머를 실행합니다.\n${nextTimerInfo}`,
-//     });
-//     panelStore.intervalId = setInterval(elapse, 1000);
-//   } else {
-//     if (
-//       !(
-//         panelStore.mode === 'routine' &&
-//         round.value > panelStore.routine.routineToTimer.length
-//       )
-//     ) {
-//       endRoundPush(nextTimerInfo);
-//     }
-//   }
-// };
-
 const timeEnd = () => {
   if (
     panelStore.mode === 'routine' &&
