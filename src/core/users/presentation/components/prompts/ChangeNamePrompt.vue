@@ -59,7 +59,7 @@ const changeNameSchema = toFormValidator(
         .regex(/^[A-Za-z0-9]+$/, { message: '영문과 숫자만 입력 가능합니다.' })
         .max(39),
     })
-    .refine((data) => data.newName !== userStore.user?.userName, {
+    .refine((data) => data.newName !== userStore.user?.name, {
       path: ['newName'],
       message: userMsg.SAME_NEW_USERNAME,
     })
@@ -93,7 +93,7 @@ const { isLoading, mutate } = useMutation(
     onError: (err: any) => {
       const errMsg = err.response.data.message;
 
-      if (errMsg === 'Duplicate username') {
+      if (errMsg === 'Duplicate name') {
         setErrors('이미 사용중인 유저네임 입니다.');
       } else if (errMsg === 'Contains some prohibited words') {
         setErrors('사용 불가능한 단어가 포함되어 있습니다.');
@@ -110,7 +110,7 @@ const { isLoading, mutate } = useMutation(
     },
     onSuccess: (response) => {
       userStore.changeNamePrompt = false;
-      userStore.user = { ...userStore.user, userName: newName.value } as IUser;
+      userStore.user = { ...userStore.user, name: newName.value } as IUser;
 
       $q.notify({
         color: 'positive',

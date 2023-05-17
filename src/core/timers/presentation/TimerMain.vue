@@ -356,7 +356,7 @@ const saveTimers = () => {
 const resendSignupEmail = async () => {
   if (userStore.user !== null) {
     const result = await resendSignupEmailFn(userStore.user.email);
-    if (result.success) {
+    if (!result) {
       $q.notify({
         message: '인증 메일을 재전송했습니다.',
         color: 'positive',

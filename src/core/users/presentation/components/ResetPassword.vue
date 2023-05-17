@@ -33,8 +33,8 @@
         label="Re-enter password"
         :type="isPwd ? 'password' : 'text'"
         hint="비밀번호를 한번 더 입력해주세요."
-        :error-message="passwordConfirmError"
-        :error="!!passwordConfirmError"
+        :error-message="confirmPasswordError"
+        :error="!!confirmPasswordError"
         debounce="500"
       />
       <div class="row">
@@ -96,7 +96,7 @@ const { handleSubmit, resetForm, errors } = useForm({
 
 const { value: password, errorMessage: passwordError } =
   useField<string>('password');
-const { value: confirmPassword, errorMessage: passwordConfirmError } =
+const { value: confirmPassword, errorMessage: confirmPasswordError } =
   useField<string>('confirmPassword');
 
 const { isLoading, mutate } = useMutation(

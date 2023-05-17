@@ -104,9 +104,7 @@ import ChangeEmailPrompt from 'src/core/users/presentation/components/prompts/Ch
 import ChangeNamePrompt from 'src/core/users/presentation/components/prompts/ChangeNamePrompt.vue';
 import DeleteAccountPrompt from 'src/core/users/presentation/components/prompts/DeleteAccountPrompt.vue';
 import PasswordResetPrompt from 'src/core/users/presentation/components/prompts/PasswordResetPrompt.vue';
-import { useQuasar } from 'quasar';
 import { onBeforeMount, onBeforeUnmount } from 'vue';
-import { useRouter } from 'vue-router';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 
 onBeforeMount(() => {
@@ -120,14 +118,6 @@ onBeforeUnmount(() => {
 const userStore = useUserStore();
 const userStoreRefs = storeToRefs(userStore);
 const routineStore = useRoutineStore();
-
-onBeforeMount(() => {
-  routineStore.bottomDrawerHeight = 36;
-});
-
-onBeforeUnmount(() => {
-  routineStore.bottomDrawerHeight = 348;
-});
 
 let email = 'undefined';
 let name = 'undefined';

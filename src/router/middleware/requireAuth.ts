@@ -25,17 +25,15 @@ export default async function requireAuth({
   }
 
   try {
-    const response = await getMeFn();
-    const user = { ...response };
-    userStore.setUser(user);
-
-    if (!user) {
+    const user = await getMeFn();
+    if (user !== null) {
+      userStore.setUser(user);
       timerStore.fetchAll();
       routineStore.fetchAll();
-
+    } else {
       return next({ name: 'login' });
     }
-  } catch (error) {
+  } catch (err) {
     Notify.create({
       type: 'warning',
       textColor: 'black',

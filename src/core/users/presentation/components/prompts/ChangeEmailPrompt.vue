@@ -109,8 +109,6 @@ const { isLoading, mutate } = useMutation(
 );
 
 const sendNewEmail = async (newEmail: IEmailInput): Promise<void> => {
-  const data = {} as IEmailInput;
-
   if (userStore.user !== null) {
     if (userStore.user.email !== newEmail.email) {
       await sendChangeEmailTokenFn(newEmail);
