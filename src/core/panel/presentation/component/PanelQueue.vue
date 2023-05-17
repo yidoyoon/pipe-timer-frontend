@@ -7,7 +7,7 @@
     class="row fit justify-center"
   >
     <q-scroll-area class="full-width" style="height: 140px">
-      <q-card class="no-shadow my-card" style="background: transparent">
+      <q-card class="flat no-shadow" style="background: transparent">
         <q-card-section class="q-py-md relative-position" style="top: 4px">
           <div class="row justify-center">
             <!--        Routine Mode-->
@@ -24,8 +24,8 @@
               >
                 <q-card
                   bordered
-                  class="no-shadow"
-                  style="border-color: black; width: 130px"
+                  class="flat no-shadow"
+                  style="border-color: black; width: 130px; height: 98px"
                 >
                   <q-card-section
                     class="q-pa-none"
@@ -79,7 +79,7 @@
               <div class="q-pa-none row no-wrap">
                 <q-card
                   bordered
-                  class="inner-my-card flat no-shadow"
+                  class="flat no-shadow"
                   style="border-color: black; width: 130px"
                   flat
                 >

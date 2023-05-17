@@ -53,12 +53,14 @@
 </template>
 
 <script setup lang="ts">
+import { usePanelStore } from 'src/core/panel/infra/store/panel.store';
 import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
+import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
 import { CHECK_EMPTY, userMsg } from 'src/core/users/domain/user.const';
 import * as zod from 'zod';
 import { ILoginInput } from 'src/type-defs/userTypes';
 import { getMeFn, loginUserFn } from 'src/core/users/infra/http/user.api';
-import { onBeforeMount, onBeforeUnmount, onBeforeUpdate, ref } from 'vue';
+import { onBeforeMount, onBeforeUpdate, ref } from 'vue';
 import { toFormValidator } from '@vee-validate/zod';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { useField, useForm } from 'vee-validate';
@@ -72,15 +74,13 @@ const router = useRouter();
 
 const userStore = useUserStore();
 const routineStore = useRoutineStore();
+const panelStore = usePanelStore();
+const timerStore = useTimerStore();
 
 const userData = userStore.user;
 
 onBeforeMount(() => {
   routineStore.bottomDrawerHeight = 36;
-});
-
-onBeforeUnmount(() => {
-  routineStore.bottomDrawerHeight = 348;
 });
 
 const loginSchema = toFormValidator(
@@ -116,7 +116,6 @@ const { isLoading, mutate } = useMutation(
   {
     onError: (err: any) => {
       const errMsg = err.response.data.message as string;
-      const response = err.response.data;
 
       if (
         errMsg === 'Incorrect email or password' ||
@@ -131,15 +130,13 @@ const { isLoading, mutate } = useMutation(
       routineStore.$reset();
 
       const response = await getMeFn();
-      const user = { ...response };
-
-      userStore.setUser(user);
-
-      await timerStore.fetchAll();
-      await routineStore.fetchAll();
+      userStore.setUser({ ...response });
 
       await queryClient.refetchQueries(['user']);
       await router.push({ name: 'panel' });
+
+      await timerStore.fetchAll();
+      await routineStore.fetchAll();
     },
   }
 );

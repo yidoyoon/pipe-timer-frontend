@@ -62,7 +62,7 @@
                 height: 6rem;
                 white-space: nowrap;
                 position: relative;
-                bottom: -1.0rem;
+                bottom: -1rem;
               "
             >
               <q-card

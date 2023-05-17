@@ -1,7 +1,7 @@
 <template>
   <div class="row fit justify-center content-start">
     <div id="clock">
-      <div class="time">{{ formattedTime.value }}</div>
+      <div class="time">{{ formattedCurrentTime.value }}</div>
     </div>
 
     <q-space class="flex-break"></q-space>
@@ -158,7 +158,7 @@ const timeFormatter = (duration: number) =>
     return dayjs.duration(time, 'seconds').format('HH:mm:ss');
   });
 
-const formattedTime = computed(() => {
+const formattedCurrentTime = computed(() => {
   return timeFormatter(currDuration.value);
 });
 
@@ -215,13 +215,13 @@ const elapse = () => {
     timer.duration--;
     panelStore.routine.routineToTimer[round.value].timer = _.cloneDeep(timer);
 
-    useMeta({ title: `${formattedTime.value.value}` });
+    useMeta({ title: `${formattedCurrentTime.value.value}` });
   } else if (panelStore.mode === 'timer') {
     timer = _.cloneDeep(panelStore.timer);
     timer.duration--;
     panelStore.timer = _.cloneDeep(timer);
 
-    useMeta({ title: `${formattedTime.value.value}` });
+    useMeta({ title: `${formattedCurrentTime.value.value}` });
   }
   if (timer !== null && timer.duration < 0) {
     if (!!notification.value) {
@@ -311,21 +311,18 @@ const notifyRoundEnd = () => {
   let duration = 0;
   let nextRound = round.value + 1;
 
-  if (
-    panelStore.mode === 'routine' &&
-    nextRound < panelStore.routine.routineToTimer.length
-  ) {
-    const timer = panelStore.routine.routineToTimer[nextRound].timer;
-    name = timer.name;
-    duration = timer.duration;
-  } else if (
-    panelStore.mode === 'routine' &&
-    nextRound === panelStore.routine.routineToTimer.length
-  ) {
-    nextRound = 0;
-    const timer = panelStore.routine.routineToTimer[nextRound].timer;
-    name = timer.name;
-    duration = timer.duration;
+  if (panelStore.mode === 'routine') {
+    const routineToTimerLength = panelStore.routine.routineToTimer.length;
+    if (nextRound < routineToTimerLength) {
+      const timer = panelStore.routine.routineToTimer[nextRound].timer;
+      name = timer.name;
+      duration = timer.duration;
+    } else if (nextRound === routineToTimerLength) {
+      nextRound = 0;
+      const timer = panelStore.routine.routineToTimer[nextRound].timer;
+      name = timer.name;
+      duration = timer.duration;
+    }
   } else if (panelStore.mode === 'timer') {
     const id = panelStore.timer.timerId;
     const timer = timerStore.timers[id];
@@ -333,39 +330,88 @@ const notifyRoundEnd = () => {
     duration = timer.duration;
   }
 
-  if (
-    panelStore.mode === 'routine' &&
-    nextRound < panelStore.routine.routineToTimer.length
-  ) {
-    if (nextRound === panelStore.routine.routineToTimer.length) nextRound = 0;
-    name = panelStore.routine.routineToTimer[nextRound].timer.name;
-    duration = panelStore.routine.routineToTimer[nextRound].timer.duration;
-  } else if (panelStore.mode === 'timer') {
-    const id = panelStore.timer.timerId;
-    const timer = timerStore.timers[id];
-    name = timer.name;
-    duration = timer.duration;
-  }
+  let nextTimerInfo = `타이머 이름: ${name}\n시간: ${
+    timeFormatter(duration).value
+  }`;
 
-  let nextTimerInfo = `타이머 이름: ${name}\n시간: ${duration}초`;
-
-  if (!!autoStart.value) {
+  if (autoStart.value) {
     new Notification('Pipe Timer', {
       ...notificationOptions,
       body: `다음 타이머를 실행합니다.\n${nextTimerInfo}`,
     });
     panelStore.intervalId = setInterval(elapse, 1000);
   } else {
+    const routineToTimerLength = panelStore.routine.routineToTimer.length;
     if (
-      !(
-        panelStore.mode === 'routine' &&
-        round.value > panelStore.routine.routineToTimer.length
-      )
+      !(panelStore.mode === 'routine' && round.value > routineToTimerLength)
     ) {
       endRoundPush(nextTimerInfo);
     }
   }
 };
+
+// const notifyRoundEnd = () => {
+//   let name = '';
+//   let duration = 0;
+//   let nextRound = round.value + 1;
+//
+//   if (
+//     panelStore.mode === 'routine' &&
+//     nextRound < panelStore.routine.routineToTimer.length
+//   ) {
+//     const timer = panelStore.routine.routineToTimer[nextRound].timer;
+//     name = timer.name;
+//     duration = timer.duration;
+//   } else if (
+//     panelStore.mode === 'routine' &&
+//     nextRound === panelStore.routine.routineToTimer.length
+//   ) {
+//     nextRound = 0;
+//     const timer = panelStore.routine.routineToTimer[nextRound].timer;
+//     name = timer.name;
+//     duration = timer.duration;
+//   } else if (panelStore.mode === 'timer') {
+//     const id = panelStore.timer.timerId;
+//     const timer = timerStore.timers[id];
+//     name = timer.name;
+//     duration = timer.duration;
+//   }
+//
+//   if (
+//     panelStore.mode === 'routine' &&
+//     nextRound < panelStore.routine.routineToTimer.length
+//   ) {
+//     if (nextRound === panelStore.routine.routineToTimer.length) nextRound = 0;
+//     name = panelStore.routine.routineToTimer[nextRound].timer.name;
+//     duration = panelStore.routine.routineToTimer[nextRound].timer.duration;
+//   } else if (panelStore.mode === 'timer') {
+//     const id = panelStore.timer.timerId;
+//     const timer = timerStore.timers[id];
+//     name = timer.name;
+//     duration = timer.duration;
+//   }
+//
+//   let nextTimerInfo = `타이머 이름: ${name}\n시간: ${
+//     timeFormatter(duration).value
+//   }`;
+//
+//   if (autoStart.value) {
+//     new Notification('Pipe Timer', {
+//       ...notificationOptions,
+//       body: `다음 타이머를 실행합니다.\n${nextTimerInfo}`,
+//     });
+//     panelStore.intervalId = setInterval(elapse, 1000);
+//   } else {
+//     if (
+//       !(
+//         panelStore.mode === 'routine' &&
+//         round.value > panelStore.routine.routineToTimer.length
+//       )
+//     ) {
+//       endRoundPush(nextTimerInfo);
+//     }
+//   }
+// };
 
 const timeEnd = () => {
   if (
@@ -397,7 +443,7 @@ const timeEnd = () => {
   loadSession();
 };
 
-const endRoundPush = (timerInfo: string) => {
+const endRoundPush = (timerInfo: any) => {
   panelStore.state = 'pause';
 
   if (Notification.permission === 'granted') {
@@ -460,8 +506,6 @@ document.onkeydown = function (e) {
 onBeforeUnmount(() => {
   clearInterval(panelStore.intervalId);
 });
-
-
 </script>
 
 <style lang="scss" scoped>

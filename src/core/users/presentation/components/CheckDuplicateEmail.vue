@@ -72,7 +72,7 @@ const { isLoading, mutate } = useMutation(
       setFieldError('email', '중복된 이메일입니다. 다른 메일을 사용해주세요.');
     },
     onSuccess: (res) => {
-      userStore.verifiedEmail = res.data;
+      userStore.verifiedEmail = res.email;
 
       router.push({ name: 'signup' });
     },

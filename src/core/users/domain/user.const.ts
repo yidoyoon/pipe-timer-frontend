@@ -41,8 +41,7 @@ export const userMsg = {
 
   // Email verification
   VERIFY_USER_EMAIL: '인증 코드를 입력해주세요.',
-  VERIFY_EMAIL_SUCCESS:
-    '인증되었습니다. 서비스를 이용하시려면 로그인해주세요.',
+  VERIFY_EMAIL_SUCCESS: '인증되었습니다. 서비스를 이용하시려면 로그인해주세요.',
   INVALID_EMAIL_VERIFICATION_CODE: '유효하지 않은 인증정보입니다.',
   ALREADY_VERIFIED_EMAIL: '이미 인증된 계정입니다.',
 
@@ -63,5 +62,5 @@ export const userMsg = {
   CHANGE_USERNAME_SUCCESS: '유저네임을 변경했습니다.',
 
   // Delete account success
-  DELETE_ACCOUNT_SUCCESS: '회원 탈퇴되었습니다.'
+  DELETE_ACCOUNT_SUCCESS: '회원 탈퇴되었습니다.',
 };

@@ -26,7 +26,9 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'check-email',
         component: () =>
-          import('../core/users/presentation/components/CheckDuplicateEmail.vue'),
+          import(
+            '../core/users/presentation/components/CheckDuplicateEmail.vue'
+          ),
         name: 'check-email',
         beforeEnter: (to, from, next) => {
           if (from.name !== 'login') next('/');

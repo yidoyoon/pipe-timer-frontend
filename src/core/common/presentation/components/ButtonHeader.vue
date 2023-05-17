@@ -40,32 +40,12 @@ const routineStore = useRoutineStore();
 const panelStore = usePanelStore();
 
 const { mutate: logoutUser } = useMutation(() => logoutUserFn(), {
-  onSuccess: () => {
+  onMutate: () => {
     userStore.$reset();
     timerStore.$reset();
     routineStore.$reset();
     panelStore.$reset();
     router.push({ name: 'login' });
-  },
-  onError: (error) => {
-    const errMsg = (error as any).response.data.error;
-    const response = (error as any).response.data;
-
-    if (Array.isArray(errMsg)) {
-      errMsg.forEach((el: any) =>
-        $q.notify({
-          type: 'negative',
-          message: el.message,
-          icon: 'warning',
-        })
-      );
-    } else {
-      $q.notify({
-        type: 'negative',
-        message: response,
-        icon: 'warning',
-      });
-    }
   },
 });
 

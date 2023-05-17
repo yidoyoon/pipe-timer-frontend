@@ -1,23 +1,22 @@
+import { api } from 'boot/axios';
+import { Notify } from 'quasar';
+import { usePanelStore } from 'src/core/panel/infra/store/panel.store';
+import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
 import { userMsg } from 'src/core/users/domain/user.const';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import {
-  IEmailInput,
-  INameInput,
-  IValidationInput,
-  IErrorResponse,
-  IRes,
-  ILoginInput,
   IChangePasswordInput,
+  IEmailInput,
+  ILoginInput,
+  INameInput,
+  IRes,
   ISignupInput,
   IUser,
+  IValidationInput,
 } from 'src/type-defs/userTypes';
-import { Notify } from 'quasar';
-import { api } from 'boot/axios';
 
 export const refreshAccessTokenFn = () => {
-  const response = api.get<IRes<IUser> | IErrorResponse>('auth/refresh');
-
-  return response;
+  return api.get<IRes<IUser>>('auth/refresh');
 };
 
 // TODO: retry, retryDelay, maxRetries 설정
@@ -30,20 +29,26 @@ api.interceptors.response.use(
   // TODO: 미들웨어에서 router.push 수행하도록 수정
   async (err) => {
     const userStore = useUserStore();
+    const panelStore = usePanelStore();
+    const timerStore = useTimerStore();
+
     const errMsg = err.response.data?.message as string;
-    // const originalRequest = error.config;
 
     if (errMsg === 'Unauthorized' || errMsg === 'User not found') {
-      return await refreshAccessTokenFn().catch(() => {
+      try {
+        await refreshAccessTokenFn();
+      } catch {
+        userStore.$reset();
+        panelStore.$reset();
+        timerStore.$reset();
+
         Notify.create({
           html: true,
           color: 'negative',
           message: userMsg.INVALID_TOKEN,
           icon: 'error',
         });
-
-        userStore.$reset();
-      });
+      }
     }
 
     return Promise.reject(err);
@@ -51,7 +56,8 @@ api.interceptors.response.use(
 );
 
 export const checkEmailFn = async (email: IEmailInput) => {
-  const response = await api.post('auth/check-email', email);
+  const response = await api.patch('auth/check-duplicate-email', email);
+
   return response.data;
 };
 
@@ -67,13 +73,14 @@ export const loginUserFn = async (user: ILoginInput) => {
 
 export const verifyEmailFn = async (signupToken: string): Promise<IRes> => {
   const response = await api.get(
-    `users/verify-email?signupToken=${signupToken}`
+    `users/verify-signup-token?signupToken=${signupToken}`
   );
   return response.data ? response.data : response;
 };
 
 export const logoutUserFn = async () => {
   const response = await api.delete('auth/logout');
+
   return response.data;
 };
 
@@ -86,6 +93,7 @@ export const sendResetPasswordEmailFn = async (
   email: IEmailInput
 ): Promise<IRes> => {
   const response = await api.post('users/send-reset-password-email', email);
+
   return response.data;
 };
 
@@ -103,20 +111,26 @@ export const changePassword = async (password: IChangePasswordInput) => {
   return response.data;
 };
 
-export const sendChangeMailFn = async (email: IEmailInput) => {
-  const response = await api.post('users/send-change-mail', email);
+export const sendChangeEmailTokenFn = async (
+  email: IEmailInput
+): Promise<void> => {
+  const response = await api.post('users/send-change-email-token', email);
+
   return response.data;
 };
 
-export const verifyChangeEmailTokenFn = async (changeEmailToken: string) => {
+export const verifyChangeEmailTokenFn = async (
+  token: string
+): Promise<void> => {
   const response = await api.get(
-    `users/verify-change-email?changeEmailToken=${changeEmailToken}`
+    `users/verify-change-email-token?changeEmailToken=${token}`
   );
+
   return response.data ? response.data : response;
 };
 
-export const changeNameFn = async (userName: INameInput) => {
-  const response = await api.post('users/change-name', userName);
+export const changeNameFn = async (name: INameInput) => {
+  const response = await api.post('users/change-name', name);
   return response.data;
 };
 

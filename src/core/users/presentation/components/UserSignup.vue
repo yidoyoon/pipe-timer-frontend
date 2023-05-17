@@ -14,16 +14,18 @@
         v-model="email"
         label="Email"
         hint="로그인에 사용될 이메일입니다."
+        :error-message="emailErrorMessage"
+        :error="!!emailErrorMessage"
         debounce="500"
         disable
       />
       <q-input
         filled
         v-model="name"
-        label="Username"
-        :hint="!nameError ? '유저네임을 설정해주세요.' : ''"
-        :error-message="nameError"
-        :error="!!nameError"
+        label="Name"
+        :hint="!nameErrorMessage ? '유저네임을 설정해주세요.' : ''"
+        :error-message="nameErrorMessage"
+        :error="!!nameErrorMessage"
         debounce="500"
       />
       <q-input
@@ -45,13 +47,13 @@
         </template>
       </q-input>
       <q-input
-        v-model="passwordConfirm"
+        v-model="confirmPassword"
         filled
         label="Re-enter password"
         :type="isPwd ? 'password' : 'text'"
         hint="비밀번호를 한번 더 입력해주세요."
-        :error-message="passwordConfirmError"
-        :error="!!passwordConfirmError"
+        :error-message="confirmPasswordError"
+        :error="!!confirmPasswordError"
         debounce="500"
       />
       <div class="row">
@@ -77,7 +79,7 @@ import {
   userVar,
 } from 'src/core/users/domain/user.const';
 import { ISignupInput } from 'src/type-defs/userTypes';
-import { computed, ref } from 'vue';
+import { computed, onBeforeMount, ref } from 'vue';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { signUpUserFn } from 'src/core/users/infra/http/user.api';
 import { toFormValidator } from '@vee-validate/zod';
@@ -97,30 +99,30 @@ const registerSchema = toFormValidator(
     .object({
       name: zod
         .string()
-        .min(userVar.USER_NAME_MIN_LEN, userMsg.BELOW_MIN_USER_NAME),
+        .min(userVar.USER_NAME_MIN_LEN, userMsg.BELOW_MIN_USER_NAME)
+        .refine((value) => /^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$/.test(value), {
+          message: '이름에 사용 불가능한 문자가 포함되어 있습니다.',
+        })
+        .refine(
+          (value) => {
+            filter.add(['admin', 'webmaster']);
+            const formatted = value.replace(/[0-9\s]/g, '');
+
+            return !filter.check(formatted);
+          },
+          { message: userMsg.PROFANE_WORDS }
+        ),
       password: zod
         .string()
         .min(CHECK_EMPTY, userMsg.EMPTY_USER_PASSWORD)
         .min(userVar.PASSWORD_MIN_LEN, userMsg.BELOW_MIN_USER_PASSWORD)
         .max(userVar.PASSWORD_MAX_LEN, userMsg.ABOVE_MAX_USER_PASSWORD),
-      passwordConfirm: zod
+      confirmPassword: zod
         .string()
         .min(CHECK_EMPTY, userMsg.EMPTY_CONFIRM_PASSWORD),
     })
-    .refine(
-      (data) => {
-        filter.add(['admin', 'webmaster', 'yidoyoon']);
-        const formatted = data.name.replace(/[0-9\s]/g, '');
-
-        return !filter.check(formatted);
-      },
-      {
-        path: ['name'],
-        message: userMsg.PROFANE_WORDS,
-      }
-    )
-    .refine((data) => data.password === data.passwordConfirm, {
-      path: ['passwordConfirm'],
+    .refine((data) => data.password === data.confirmPassword, {
+      path: ['confirmPassword'],
       message: userMsg.MISMATCH_PASSWORD,
     })
 );
@@ -129,43 +131,45 @@ const { handleSubmit, resetForm, errors } = useForm({
   validationSchema: registerSchema,
 });
 
-const email = computed(() => {
-  return userStore.verifiedEmail;
-});
-
+const {
+  value: email,
+  errorMessage: emailErrorMessage,
+  setErrors: setEmailErrors,
+} = useField<string>('email');
 const {
   value: name,
-  errorMessage: nameError,
-  setErrors,
+  errorMessage: nameErrorMessage,
+  setErrors: setNameErrors,
 } = useField<string>('name');
 const { value: password, errorMessage: passwordError } =
   useField<string>('password');
-const { value: passwordConfirm, errorMessage: passwordConfirmError } =
-  useField<string>('passwordConfirm');
+const { value: confirmPassword, errorMessage: confirmPasswordError } =
+  useField<string>('confirmPassword');
 
-const { isLoading, mutate } = useMutation(
+onBeforeMount(() => {
+  email.value = userStore.verifiedEmail !== null ? userStore.verifiedEmail : '';
+});
+
+const { mutate } = useMutation(
   (credentials: ISignupInput) => signUpUserFn(credentials),
   {
     onError: (err: any) => {
-      const errMsg = err.response.data.message;
+      const errorMessage = err.response.data.message;
 
-      if (err.response === undefined) {
+      if (errorMessage === name.value) {
+        setNameErrors('이미 사용 중인 유저네임입니다.');
+      } else if (errorMessage === email.value) {
+        setEmailErrors('이미 사용 중인 이메일입니다.');
+      } else if (
+        errorMessage === 'Name contains prohibited words' ||
+        errorMessage[0] ===
+          'name must match /^[A-Za-z0-9]+$/ regular expression'
+      ) {
+        setNameErrors('이름에 사용 불가능한 문자가 포함되어 있습니다.');
+      } else {
         $q.notify({
           type: 'negative',
-          message: '서버 점검중입니다.',
-          icon: 'warning',
-        });
-      }
-      if (errMsg === 'Duplicate username') {
-        setErrors('이미 사용 중인 유저네임입니다.');
-      } else if (errMsg === 'Contains some prohibited words') {
-        setErrors('사용 불가능한 단어가 포함되어 있습니다.');
-      } else if (errMsg == 'Cannot send email') {
-        $q.notify({
-          type: 'negative',
-          message:
-            '알 수 없는 오류로 인증 메일을 전송할 수 없습니다. 로그인 후 이메일 재전송 버튼을 눌러주세요. 증상이 반복되면 관리자에게 문의바랍니다.',
-          icon: 'warning',
+          message: 'UNKNOWN_ERROR',
         });
       }
     },
@@ -184,9 +188,9 @@ const onSubmit = handleSubmit((values) => {
   if (!!email.value) {
     mutate({
       email: email.value,
-      userName: values.name,
+      name: values.name,
       password: values.password,
-      passwordConfirm: values.passwordConfirm,
+      confirmPassword: values.confirmPassword,
     });
   } else {
     $q.notify({
