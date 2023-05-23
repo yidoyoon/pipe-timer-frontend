@@ -7,8 +7,8 @@
   "private": true,
   "scripts": {
     "start:dev": "cross-env ENV_NAME=development quasar dev -m pwa",
-    "build:dev": "cross-env ENV_NAME=staging quasar build -m pwa --history",
-    "serve:dev": "cross-env ENV_NAME=staging quasar serve ./dist/pwa --hostname 127.0.0.1 --history --https --port 4000 -m pwa -K ./certs/127.0.0.1-key.pem -C ./certs/127.0.0.1-cert.pem",
+    "build:dev": "cross-env ENV_NAME=development quasar build -m pwa --history",
+    "serve:dev": "cross-env ENV_NAME=development quasar serve ./dist/pwa --hostname 127.0.0.1 --history --https --port 443 -m pwa -K certs/key.pem -C certs/cert.pem",
     "lint": "eslint --ext .js,.ts,.vue ./",
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
     "test": "echo \"No test specified\" && exit 0",

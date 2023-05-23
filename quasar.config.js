@@ -117,10 +117,10 @@ module.exports = configure(function (ctx) {
       port: 4000,
       https: {
         key: fs.readFileSync(
-          path.resolve(__dirname, './certs/127.0.0.1-key.pem')
+          path.resolve(__dirname, './certs/key.pem')
         ),
         cert: fs.readFileSync(
-          path.resolve(__dirname, './certs/127.0.0.1-cert.pem')
+          path.resolve(__dirname, './certs/cert.pem')
         ),
       },
       pwa: true,
