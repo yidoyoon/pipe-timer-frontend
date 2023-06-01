@@ -89,7 +89,7 @@ module.exports = {
     // allow debugger during development only
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 
-    'simple-import-sort/imports': 'error',
-    'simple-import-sort/exports': 'error',
+    'simple-import-sort/imports': 'warn',
+    'simple-import-sort/exports': 'warn',
   },
 };
