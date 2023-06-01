@@ -29,11 +29,12 @@ COPY --chown=node:node . .
 
 USER root
 
-RUN ENV_NAME=$ENV_NAME_ARG quasar build -m pwa
+RUN ENV_NAME=$ENV_NAME_ARG quasar build -m pwa --history
 
 FROM nginx:alpine as prod
 
 COPY --from=build /app/dist/pwa /usr/share/nginx/html
+COPY templates/nginx.conf /etc/nginx/templates/nginx.conf.template
 
 EXPOSE 80 443
 

@@ -21,7 +21,9 @@ export const refreshAccessTokenFn = () => {
 
 // TODO: retry, retryDelay, maxRetries 설정
 api.interceptors.response.use(
-  (response) => response,
+  (res) => {
+    return res;
+  },
   // TODO: 토큰 만료 확인 기능 추가
   // 토큰 만료로 인한 에러 메시지 발생
   // TODO: 서버 자체가 열려있지 않을 때 로그인 비활성화
@@ -108,6 +110,7 @@ export const verifyResetPasswordTokenFn = async (
 
 export const changePassword = async (password: IChangePasswordInput) => {
   const response = await api.post('users/change-password', password);
+
   return response.data;
 };
 
@@ -131,11 +134,13 @@ export const verifyChangeEmailTokenFn = async (
 
 export const changeNameFn = async (name: INameInput) => {
   const response = await api.post('users/change-name', name);
+
   return response.data;
 };
 
 export const deleteAccountFn = async (validation: IValidationInput) => {
   const response = await api.post('users/delete-account', validation);
+
   return response.data;
 };
 
