@@ -21,8 +21,8 @@ declare module '@vue/runtime-core' {
 
 const apiURL =
   process.env.ENV_NAME === 'development'
-    ? `https://${process.env.FRONT_URL}:3000`
-    : `https://${process.env.FRONT_URL}/api`;
+    ? `https://${process.env.HOST_URL}:3000`
+    : `https://${process.env.HOST_URL}/api`;
 
 const api = axios.create({
   baseURL: apiURL,
