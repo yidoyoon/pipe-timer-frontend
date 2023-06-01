@@ -12,7 +12,7 @@
       <div
         v-for="routine in listRoutine"
         :key="routine"
-        class="row justify-start wrap q-pa-sx"
+        class="row justify-start wrap q-pa-sx q-mt-sx"
         style="border-bottom: 1px solid black; height: 150px"
       >
         <RoutineLoader :routine="routine" @remove="removeRoutine" />
