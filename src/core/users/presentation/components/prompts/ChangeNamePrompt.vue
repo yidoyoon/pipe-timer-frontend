@@ -108,7 +108,7 @@ const { isLoading, mutate } = useMutation(
         );
       }
     },
-    onSuccess: (response) => {
+    onSuccess: () => {
       userStore.changeNamePrompt = false;
       userStore.user = { ...userStore.user, username: newName.value } as IUser;
 
