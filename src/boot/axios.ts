@@ -64,10 +64,9 @@ export default boot(({ app }) => {
     Expires: '0',
   };
   api.defaults.headers.post['Access-Control-Allow-Origin'] = [
-    process.env.DEV
-      ? 'https://127.0.0.1:3000'
-      : 'https://api.pipetimer.com:3000',
-    'https://pipetimer.com',
+    process.env.ENV_NAME === 'development'
+      ? 'https://127.0.0.1'
+      : 'https://pipetimer.com',
   ];
 });
 
