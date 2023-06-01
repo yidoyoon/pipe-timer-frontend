@@ -1,10 +1,10 @@
 import { api } from 'boot/axios';
 import { defineStore } from 'pinia';
 import { LocalStorage } from 'quasar';
+import { Notify } from 'quasar';
 import { IRoutine, Routine } from 'src/core/routines/domain/routine.model';
 import { IRoutineToTimer } from 'src/core/timers/domain/timer.model';
 import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
-import { Notify } from 'quasar';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 
 export interface BuilderState {

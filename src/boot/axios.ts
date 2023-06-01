@@ -1,9 +1,9 @@
+import axios, { AxiosInstance } from 'axios';
 import axiosRetry from 'axios-retry';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { boot } from 'quasar/wrappers';
-import axios, { AxiosInstance } from 'axios';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {

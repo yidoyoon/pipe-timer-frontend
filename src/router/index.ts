@@ -1,6 +1,8 @@
 import { route } from 'quasar/wrappers';
 import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
 import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
+import { useUserStore } from 'src/core/users/infra/store/user.store';
+import middlewarePipeline from 'src/router/middlewarePipeline';
 import {
   createMemoryHistory,
   createRouter,
@@ -11,8 +13,6 @@ import {
 } from 'vue-router';
 
 import routes from './routes';
-import { useUserStore } from 'src/core/users/infra/store/user.store';
-import middlewarePipeline from 'src/router/middlewarePipeline';
 
 /*
  * If not building with SSR mode, you can

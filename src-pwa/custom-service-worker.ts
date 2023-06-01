@@ -8,11 +8,11 @@ declare const self: ServiceWorkerGlobalScope & typeof globalThis;
 
 import { clientsClaim } from 'workbox-core';
 import {
-  precacheAndRoute,
   cleanupOutdatedCaches,
   createHandlerBoundToURL,
+  precacheAndRoute,
 } from 'workbox-precaching';
-import { registerRoute, NavigationRoute } from 'workbox-routing';
+import { NavigationRoute, registerRoute } from 'workbox-routing';
 
 self.skipWaiting();
 clientsClaim();

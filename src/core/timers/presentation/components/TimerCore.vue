@@ -206,6 +206,7 @@ import { useField, useForm } from 'vee-validate';
 import { computed, reactive, ref } from 'vue';
 import * as zod from 'zod';
 import draggable from 'vuedraggable';
+import * as zod from 'zod';
 
 const timerStore = useTimerStore();
 const panelStore = usePanelStore();

@@ -33,13 +33,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useMeta, useQuasar } from 'quasar';
-
 import BottomDrawer from 'src/core/common/presentation/components/BottomDrawer.vue';
+import ButtonHeader from 'src/core/common/presentation/components/ButtonHeader.vue';
 import TabsMain from 'src/core/tabs/presentation/TabsMain.vue';
 import RightDrawer from 'src/core/timers/presentation/TimerMain.vue';
-import ButtonHeader from 'src/core/common/presentation/components/ButtonHeader.vue';
+import { ref } from 'vue';
 
 const $q = useQuasar();
 

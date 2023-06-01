@@ -1,5 +1,5 @@
-import { NavigationGuardNext } from 'vue-router';
 import { Router } from 'src/router';
+import { NavigationGuardNext } from 'vue-router';
 
 export default async function skipAuth({
   next,

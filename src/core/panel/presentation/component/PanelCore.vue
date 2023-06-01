@@ -87,8 +87,9 @@ import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
 import {
   computed,
   onBeforeMount,
-  onBeforeUnmount,
   onMounted,
+  onUnmounted,
+  onUpdated,
   ref,
   watch,
   watchEffect,
@@ -439,10 +440,6 @@ document.onkeydown = function (e) {
     else if (panelStore.state === 'start') pause();
   }
 };
-
-onBeforeUnmount(() => {
-  clearInterval(panelStore.intervalId);
-});
 </script>
 
 <style lang="scss" scoped>
