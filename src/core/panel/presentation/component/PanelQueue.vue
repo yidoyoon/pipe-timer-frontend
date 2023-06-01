@@ -120,7 +120,6 @@ import _ from 'lodash-es';
 import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
 import { usePanelStore } from 'src/core/panel/infra/store/panel.store';
-import { IRoutine } from 'src/core/routines/domain/routine.model';
 import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
 import { ITimer } from 'src/core/timers/domain/timer.model';
 import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
@@ -140,11 +139,12 @@ const panelStoreRefs = storeToRefs(panelStore);
 
 onUpdated(() => {
   if (panelStoreRefs.mode.value === 'routine') {
-    const timer = $q.sessionStorage.getItem('panel-data') as IRoutine;
-    panelStore.originDur =
-      timer.routineToTimer[panelStore.round].timer.duration;
+    const timer = panelStore.backupRoutine;
+    panelStore.originDur = !!timer.routineToTimer.length
+      ? timer.routineToTimer[panelStore.round].timer.duration
+      : 0;
   } else if (panelStoreRefs.mode.value === 'timer') {
-    const timer = $q.sessionStorage.getItem('timers-data') as ITimer;
+    const timer = panelStore.backupTimer;
     panelStore.originDur = timer.duration;
   }
 });

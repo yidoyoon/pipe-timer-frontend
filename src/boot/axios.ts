@@ -19,9 +19,10 @@ declare module '@vue/runtime-core' {
 // for each client)
 // const api = axios.create({ baseURL: 'https://api.example.com' });
 
-const apiURL = process.env.DEV
-  ? `https://${process.env.FRONT_URL}:3000`
-  : `https://${process.env.FRONT_URL}/api`;
+const apiURL =
+  process.env.ENV_NAME === 'development'
+    ? `https://${process.env.FRONT_URL}:3000`
+    : `https://${process.env.FRONT_URL}/api`;
 
 const api = axios.create({
   baseURL: apiURL,
@@ -63,11 +64,10 @@ export default boot(({ app }) => {
     Expires: '0',
   };
   api.defaults.headers.post['Access-Control-Allow-Origin'] = [
-    process.env.DEV
-      ? 'https://127.0.0.1:3000'
-      : 'https://api.pipetimer.com:3000',
-    'https://pipetimer.com',
+    process.env.ENV_NAME === 'development'
+      ? 'https://127.0.0.1'
+      : 'https://pipetimer.com',
   ];
 });
 
-export { axios, api };
+export { api, axios };

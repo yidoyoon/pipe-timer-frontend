@@ -1,6 +1,7 @@
 import { api } from 'boot/axios';
 import { Notify } from 'quasar';
 import { usePanelStore } from 'src/core/panel/infra/store/panel.store';
+import { ITimer } from 'src/core/timers/domain/timer.model';
 import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
 import { userMsg } from 'src/core/users/domain/user.const';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
@@ -146,5 +147,12 @@ export const deleteAccountFn = async (validation: IValidationInput) => {
 
 export const resendSignupEmailFn = async (email: string): Promise<IRes> => {
   const response = await api.post('auth/resend-signup-email', { email });
+
+  return response.data;
+};
+
+export const saveTimerFn = async (timers: ITimer[]): Promise<IRes> => {
+  const response = await api.post('timer/save', timers);
+
   return response.data;
 };

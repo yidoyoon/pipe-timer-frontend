@@ -135,16 +135,16 @@ onBeforeMount(() => {
 });
 
 const currDuration = computed(() => {
-  if (panelStore.routine.routineToTimer?.length === 0) {
-    panelStore.$reset();
-  }
-
   if (panelStore.mode === 'routine') {
     const data = panelStore.routine;
-
-    return data.routineToTimer[round.value].timer.duration < 0
-      ? 0
-      : data.routineToTimer[round.value].timer.duration;
+    if (
+      data.routineToTimer[round.value] &&
+      'timer' in data.routineToTimer[round.value]
+    ) {
+      return data.routineToTimer[round.value].timer.duration;
+    } else {
+      return 0;
+    }
   } else if (panelStore.mode === 'timer') {
     return panelStore.timer.duration < 0 ? 0 : panelStore.timer.duration;
   }
@@ -154,7 +154,7 @@ const currDuration = computed(() => {
 
 const timeFormatter = (duration: number) =>
   computed(() => {
-    const time = duration || 0;
+    const time = duration !== undefined && duration >= 0 ? duration : 0;
 
     return dayjs.duration(time, 'seconds').format('HH:mm:ss');
   });
@@ -192,14 +192,14 @@ const skip = () => {
     panelStore.round = 0;
   }
 
-  loadSession();
+  loadBackupTimer();
   panelStore.state = 'pause';
   clearInterval(panelStore.intervalId);
 };
 
 const stop = () => {
   if (panelStore.state === 'stop') return;
-  loadSession();
+  loadBackupTimer();
 
   panelStore.state = 'stop';
   panelStore.round = 0;
@@ -208,6 +208,10 @@ const stop = () => {
   useMeta({ title: 'Pipe Timer' });
 };
 
+onUpdated(() => {
+  useMeta({ title: `${formattedCurrentTime.value.value}` });
+});
+
 const elapse = () => {
   panelStore.state = 'start';
 
@@ -215,14 +219,10 @@ const elapse = () => {
     timer = _.cloneDeep(panelStore.routine.routineToTimer[round.value].timer);
     timer.duration--;
     panelStore.routine.routineToTimer[round.value].timer = _.cloneDeep(timer);
-
-    useMeta({ title: `${formattedCurrentTime.value.value}` });
   } else if (panelStore.mode === 'timer') {
     timer = _.cloneDeep(panelStore.timer);
     timer.duration--;
     panelStore.timer = _.cloneDeep(timer);
-
-    useMeta({ title: `${formattedCurrentTime.value.value}` });
   }
   if (timer !== null && timer.duration < 0) {
     if (!!notification.value) {
@@ -234,16 +234,16 @@ const elapse = () => {
   }
 };
 
-const loadSession = () => {
+const loadBackupTimer = () => {
   let data;
   if (panelStore.mode === 'routine') {
-    data = $q.sessionStorage.getItem('panel-data') as IRoutine;
+    data = _.cloneDeep(panelStore.backupRoutine);
     panelStore.routine = _.cloneDeep(data);
     panelStore.timer = _.cloneDeep({} as ITimer);
     const id = data.id;
     routineStore.routine[id] = data;
   } else if (panelStore.mode === 'timer') {
-    data = $q.sessionStorage.getItem('timers-data') as ITimer;
+    data = _.cloneDeep(panelStore.backupTimer);
     panelStore.timer = _.cloneDeep(data);
     panelStore.routine = _.cloneDeep({} as IRoutine);
     const id = data.timerId;
@@ -365,6 +365,7 @@ const timeEnd = () => {
       panelStoreRefs.round = ref(0);
 
       $q.notify({ message: '타이머를 종료합니다', color: 'green' });
+      stop();
     }
   } else if (panelStore.mode === 'timer' && +round.value >= 1) {
     if (endless.value === true) {
@@ -376,9 +377,10 @@ const timeEnd = () => {
       panelStore.round = 0;
 
       $q.notify({ message: '타이머를 종료합니다', color: 'green' });
+      stop();
     }
   }
-  loadSession();
+  loadBackupTimer();
 };
 
 const endRoundPush = (timerInfo: any) => {

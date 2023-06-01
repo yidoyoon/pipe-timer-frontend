@@ -58,7 +58,7 @@
         <div class="row justify-evenly">
           <div>
             <q-btn
-              @click="createTimerBtn"
+              @click="addTimerButton"
               dense
               icon="add"
               flat
@@ -211,18 +211,20 @@
 
 <script setup lang="ts">
 import { toFormValidator } from '@vee-validate/zod';
-import { api } from 'boot/axios';
 import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
 import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
 import { Timer } from 'src/core/timers/domain/timer.model';
 import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
-import { resendSignupEmailFn } from 'src/core/users/infra/http/user.api';
+import TimerCore from 'src/core/timers/presentation/components/TimerCore.vue';
+import {
+  resendSignupEmailFn,
+  saveTimerFn,
+} from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { useField, useForm } from 'vee-validate';
 import { ref, watch } from 'vue';
-import TimerCore from 'src/core/timers/presentation/components/TimerCore.vue';
 import * as zod from 'zod';
 
 const props = withDefaults(defineProps<{ rightDrawerOpen: boolean }>(), {
@@ -288,8 +290,6 @@ const { value: seconds, errorMessage: secondsError } =
   useField<number>('seconds');
 const { value: color, errorMessage: colorError } = useField<string>('color');
 
-timerStore.fetchAll();
-
 watch(props, () => {
   rightDrawerOpen.value = props.rightDrawerOpen;
 });
@@ -307,11 +307,11 @@ const removeLocalTimer = async (timerId: string) => {
   await routineStore.removeLocalTimer(timerId);
 };
 
-const createTimerBtn = () => {
+const addTimerButton = () => {
   timerPrompt.value = true;
 };
 
-const createTimer = () => {
+const addTimer = () => {
   const totalDuration =
     +hours.value * 3600 + +minutes.value * 60 + +seconds.value;
   timerStore.add(
@@ -321,7 +321,9 @@ const createTimer = () => {
       color: color.value,
     })
   );
+
   timerPrompt.value = false;
+  saveTimers();
 };
 
 const saveTimersBtn = () => {
@@ -334,9 +336,10 @@ const saveTimersBtn = () => {
   }
 };
 
-const saveTimers = () => {
+const saveTimers = async () => {
   if (!!userStore.user) {
-    const res = api.post('timer/save', timerStore.listTimers);
+    const res = await saveTimerFn(timerStore.listTimers);
+
     if (!res) {
       $q.notify({
         message: '저장이 완료되지 않았습니다. 인터넷 연결 상태를 확인해주세요',
@@ -348,7 +351,8 @@ const saveTimers = () => {
         color: 'positive',
       });
 
-      timerStore.fetchAll();
+      await timerStore.fetchAll();
+      await routineStore.fetchAll();
     }
   }
 };
@@ -376,7 +380,7 @@ resetForm({
 });
 
 const onSubmit = handleSubmit(() => {
-  createTimer();
+  addTimer();
   resetForm({
     values: {
       timerName: '새로운 타이머',
