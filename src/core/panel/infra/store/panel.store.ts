@@ -15,6 +15,8 @@ export interface PanelState {
   autoStart: boolean;
   notification: boolean;
   intervalId: string | number | NodeJS.Timeout | undefined;
+  backupTimer: ITimer;
+  backupRoutine: IRoutine;
 }
 
 export const usePanelStore = defineStore('PanelStore', {
@@ -31,6 +33,8 @@ export const usePanelStore = defineStore('PanelStore', {
       autoStart: false,
       notification: false,
       intervalId: undefined,
+      backupTimer: {} as ITimer,
+      backupRoutine: {} as IRoutine,
     };
   },
   persist: {

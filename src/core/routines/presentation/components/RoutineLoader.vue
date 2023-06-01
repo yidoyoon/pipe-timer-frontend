@@ -194,12 +194,11 @@ const colorExtractor = (timer: ITimer) => {
 
 // Panel related
 const toPanel = (routine: IRoutine) => {
-  // Session storage for saving initial state of routines, timers
-  $q.sessionStorage.set('panel-data', routine);
   clearInterval(panelStore.intervalId);
   stop();
 
   panelStore.routine = _.cloneDeep(routine);
+  panelStore.backupRoutine = _.cloneDeep(routine);
   panelStore.mode = 'routine';
   panelStore.state = 'pause';
   panelStore.round = 0;

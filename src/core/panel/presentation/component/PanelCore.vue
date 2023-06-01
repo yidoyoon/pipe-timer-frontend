@@ -234,16 +234,16 @@ const elapse = () => {
   }
 };
 
-const loadSession = () => {
+const loadBackupTimer = () => {
   let data;
   if (panelStore.mode === 'routine') {
-    data = $q.sessionStorage.getItem('panel-data') as IRoutine;
+    data = _.cloneDeep(panelStore.backupRoutine);
     panelStore.routine = _.cloneDeep(data);
     panelStore.timer = _.cloneDeep({} as ITimer);
     const id = data.id;
     routineStore.routine[id] = data;
   } else if (panelStore.mode === 'timer') {
-    data = $q.sessionStorage.getItem('timers-data') as ITimer;
+    data = _.cloneDeep(panelStore.backupTimer);
     panelStore.timer = _.cloneDeep(data);
     panelStore.routine = _.cloneDeep({} as IRoutine);
     const id = data.timerId;
@@ -378,7 +378,7 @@ const timeEnd = () => {
       $q.notify({ message: '타이머를 종료합니다', color: 'green' });
     }
   }
-  loadSession();
+  loadBackupTimer();
 };
 
 const endRoundPush = (timerInfo: any) => {
