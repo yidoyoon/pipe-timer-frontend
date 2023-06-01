@@ -200,11 +200,11 @@ import { usePanelStore } from 'src/core/panel/infra/store/panel.store';
 import { useRoutineStore } from 'src/core/routines/infra/store/routine.store';
 import { IRoutineToTimer, ITimer } from 'src/core/timers/domain/timer.model';
 import { useTimerStore } from 'src/core/timers/infra/store/timer.store';
+import { saveTimerFn } from 'src/core/users/infra/http/user.api';
 import { useUserStore } from 'src/core/users/infra/store/user.store';
 import { isEmptyObj } from 'src/util/is-empty-object.util';
 import { useField, useForm } from 'vee-validate';
-import { computed, reactive, ref } from 'vue';
-import * as zod from 'zod';
+import { computed, ref } from 'vue';
 import draggable from 'vuedraggable';
 import * as zod from 'zod';
 
@@ -413,8 +413,9 @@ const update = () => {
   newTimer.isEditing = isEditing.value;
 
   timerStore.edit(newTimer);
-
   editPrompt.value = false;
+
+  saveTimerFn(timerStore.listTimers);
 };
 
 const editTimer = (timer: ITimer) => {
@@ -456,11 +457,12 @@ const computeInitIdx = (e: any) => {
 const toPanel = (timer: ITimer) => {
   // Session storage for saving initial state of routines, timers
   try {
-    $q.sessionStorage.set('timers-data', timer);
+    // $q.sessionStorage.set('timers-data', timer);
     clearInterval(panelStore.intervalId);
     stop();
 
     panelStore.timer = _.cloneDeep(timer);
+    panelStore.backupTimer = _.cloneDeep(timer);
     panelStore.mode = 'timer';
     panelStore.round = 0;
   } catch (e) {
