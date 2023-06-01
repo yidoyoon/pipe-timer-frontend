@@ -1,6 +1,6 @@
 export interface IUser {
   id: string;
-  name: string;
+  username: string;
   email: string;
   isVerified: boolean;
 }
@@ -24,7 +24,7 @@ export interface ILoginInput {
 
 export interface ISignupInput {
   email: string;
-  name: string;
+  username: string;
   password: string;
   confirmPassword: string;
 }

@@ -21,11 +21,11 @@
       />
       <q-input
         filled
-        v-model="name"
-        label="Name"
-        :hint="!nameErrorMessage ? '유저네임을 설정해주세요.' : ''"
-        :error-message="nameErrorMessage"
-        :error="!!nameErrorMessage"
+        v-model="username"
+        label="Username"
+        :hint="!usernameErrorMessage ? '유저네임을 설정해주세요.' : ''"
+        :error-message="usernameErrorMessage"
+        :error="!!usernameErrorMessage"
         debounce="500"
       />
       <q-input
@@ -40,7 +40,7 @@
       >
         <template v-slot:append>
           <q-icon
-            :name="isPwd ? 'visibility_off' : 'visibility'"
+            :username="isPwd ? 'visibility_off' : 'visibility'"
             class="cursor-pointer"
             @click="isPwd = !isPwd"
           />
@@ -97,7 +97,7 @@ const userStore = useUserStore();
 const registerSchema = toFormValidator(
   zod
     .object({
-      name: zod
+      username: zod
         .string()
         .min(userVar.USER_NAME_MIN_LEN, userMsg.BELOW_MIN_USER_NAME)
         .refine((value) => /^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$/.test(value), {
@@ -137,10 +137,10 @@ const {
   setErrors: setEmailErrors,
 } = useField<string>('email');
 const {
-  value: name,
-  errorMessage: nameErrorMessage,
-  setErrors: setNameErrors,
-} = useField<string>('name');
+  value: username,
+  errorMessage: usernameErrorMessage,
+  setErrors: setUsernameErrors,
+} = useField<string>('username');
 const { value: password, errorMessage: passwordError } =
   useField<string>('password');
 const { value: confirmPassword, errorMessage: confirmPasswordError } =
@@ -156,16 +156,16 @@ const { mutate } = useMutation(
     onError: (err: any) => {
       const errorMessage = err.response.data.message;
 
-      if (errorMessage === name.value) {
-        setNameErrors('이미 사용 중인 유저네임입니다.');
+      if (errorMessage === username.value) {
+        setUsernameErrors('이미 사용 중인 유저네임입니다.');
       } else if (errorMessage === email.value) {
         setEmailErrors('이미 사용 중인 이메일입니다.');
       } else if (
         errorMessage === 'Name contains prohibited words' ||
         errorMessage[0] ===
-          'name must match /^[A-Za-z0-9]+$/ regular expression'
+          'username must match /^[A-Za-z0-9]+$/ regular expression'
       ) {
-        setNameErrors('이름에 사용 불가능한 문자가 포함되어 있습니다.');
+        setUsernameErrors('이름에 사용 불가능한 문자가 포함되어 있습니다.');
       } else {
         $q.notify({
           type: 'negative',
@@ -188,7 +188,7 @@ const onSubmit = handleSubmit((values) => {
   if (!!email.value) {
     mutate({
       email: email.value,
-      name: values.name,
+      username: values.username,
       password: values.password,
       confirmPassword: values.confirmPassword,
     });

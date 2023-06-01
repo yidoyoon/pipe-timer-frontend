@@ -12,7 +12,7 @@
           <q-item class="justify-center text-no-wrap q-pa-none">
             <q-item-label v-if="isLoggedIn">
               <span class="cursor-pointer">
-                logged in as <b>{{ userStoreRefs.user.value.name }}</b>
+                logged in as <b>{{ userStoreRefs.user.value.username }}</b>
                 <q-menu>
                   <q-list style="min-width: 100px">
                     <q-item clickable v-close-popup to="/users/setting">

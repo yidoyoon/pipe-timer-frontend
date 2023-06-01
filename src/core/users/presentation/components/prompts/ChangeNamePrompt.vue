@@ -59,7 +59,7 @@ const changeNameSchema = toFormValidator(
         .regex(/^[A-Za-z0-9]+$/, { message: '영문과 숫자만 입력 가능합니다.' })
         .max(39),
     })
-    .refine((data) => data.newName !== userStore.user?.name, {
+    .refine((data) => data.newName !== userStore.user?.username, {
       path: ['newName'],
       message: userMsg.SAME_NEW_USERNAME,
     })
@@ -110,7 +110,7 @@ const { isLoading, mutate } = useMutation(
     },
     onSuccess: (response) => {
       userStore.changeNamePrompt = false;
-      userStore.user = { ...userStore.user, name: newName.value } as IUser;
+      userStore.user = { ...userStore.user, username: newName.value } as IUser;
 
       $q.notify({
         color: 'positive',
