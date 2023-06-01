@@ -94,6 +94,7 @@ import {
   watch,
   watchEffect,
 } from 'vue';
+import {onBeforeRouteLeave} from 'vue-router';
 
 const $q = useQuasar();
 
@@ -131,6 +132,12 @@ onBeforeMount(() => {
   }
   if (panelStore.state === 'start') {
     start();
+  }
+});
+
+onBeforeRouteLeave(() => {
+  for (let i = 1; i < 99999; i++) {
+    clearInterval(i);
   }
 });
 
