@@ -15,9 +15,14 @@
       <div class="row justify-start items-end">
         <div class="text-h6 col-8">
           Email
-          <q-field outlined style="width: 17rem" dense class="q-pt-xs">
+          <q-field
+            outlined
+            style="min-width: 5vw; width: 20vw"
+            dense
+            class="q-pt-xs row flex"
+          >
             <template v-slot:control>
-              <div class="self-center full-width no-outline" tabindex="0">
+              <div class="self-center no-outline" tabindex="0">
                 {{ userStoreRefs.user?.value.email }}
               </div>
             </template>
@@ -30,16 +35,22 @@
           :size="$q.screen.lt.md ? '0.8rem' : '0.9rem'"
           label="Change Email"
           @click="changeEmailBtn"
+          style="min-width: 8rem"
         />
       </div>
 
       <div class="row justify-start items-end">
         <div class="text-h6 col-8">
           Name
-          <q-field outlined style="width: 17rem" dense class="q-pt-xs">
+          <q-field
+            outlined
+            style="min-width: 5vw; width: 20vw"
+            dense
+            class="q-pt-xs row flex"
+          >
             <template v-slot:control>
               <div class="self-center full-width no-outline" tabindex="0">
-                {{ userStoreRefs.user.value?.name }}
+                {{ userStoreRefs.user.value?.username }}
               </div>
             </template>
           </q-field>
@@ -51,6 +62,7 @@
           :size="$q.screen.lt.md ? '0.8rem' : '0.9rem'"
           label="Change Name"
           @click="changeNameBtn"
+          style="min-width: 8rem"
         />
       </div>
 
@@ -68,6 +80,7 @@
           :size="$q.screen.lt.md ? '0.8rem' : '0.9rem'"
           label="Change Password"
           @click="resetPasswordBtn"
+          style="min-width: 8rem"
         />
       </div>
 
@@ -85,6 +98,7 @@
           :size="$q.screen.lt.md ? '0.8rem' : '0.9rem'"
           label="Delete Account"
           @click="deleteAccountBtn"
+          style="min-width: 8rem"
         />
       </div>
     </div>
@@ -118,14 +132,6 @@ onBeforeUnmount(() => {
 const userStore = useUserStore();
 const userStoreRefs = storeToRefs(userStore);
 const routineStore = useRoutineStore();
-
-let email = 'undefined';
-let name = 'undefined';
-
-if (userStore.user !== null) {
-  email = userStore.user.email;
-  name = userStore.user.name;
-}
 
 const resetPasswordBtn = () => {
   userStore.resetPasswordPrompt = !userStore.resetPasswordPrompt;
