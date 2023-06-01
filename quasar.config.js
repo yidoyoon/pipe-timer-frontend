@@ -64,7 +64,7 @@ module.exports = configure(function (ctx) {
     build: {
       env: {
         ENV_NAME: process.env.ENV_NAME,
-        FRONT_URL: process.env.FRONT_URL,
+        HOST_URL: process.env.HOST_URL,
       },
 
       target: {
